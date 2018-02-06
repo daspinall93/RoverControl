@@ -75,7 +75,7 @@ void main_testLocom(){
 
 	//generate the command
 	locom_comConf.newCommand = 1;	//new command being applied
-	locom_comConf.msecDur = 5000;	//command duration
+	locom_comConf.msecDur = 6000;	//command duration
 	locom_comConf.command = LOCOM_COMMAND_STRAIGHT_FORWARD;
 	locom_comConf.power = 100;
 
