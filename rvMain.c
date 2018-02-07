@@ -51,6 +51,7 @@ void main_start(){
 	//initlialise the bcm2835 library to allocate memory
 	printf("Initialisation of BCM library = %d \n", bcm2835_init());
 
+	bcm2835_delay(1000);
 	//setup the modules
 	//startup the main I/O of the system
 	printf("Enabling and setting up locomotion module... \n");
@@ -65,6 +66,7 @@ void main_stop(){
 	//startup the main I/O of the system
 	printf("Disabling locomotion functions... \n");
 	locom_stop();
+	bcm2835_delay(1000);
 
 	//close the library to release allocated memory
 	printf("Closing of BCM library = %d \n",bcm2835_close());
@@ -77,36 +79,46 @@ void main_testLocom(){
 	locom_comConf.newCommand = 1;	//new command being applied
 	locom_comConf.msecDur = 6000;	//command duration
 	locom_comConf.command = LOCOM_COMMAND_STRAIGHT_FORWARD;
-	locom_comConf.power = 100;
+	locom_do(&locom_comConf, &locom_statRep);
 
-	while(locom_statRep.comElapsedTimems < 3000){
-		locom_do(&locom_comConf, &locom_statRep);
-		bcm2835_delay(1000);
-	}
+	bcm2835_delay(5000);
 
-	//generate new command
+	//generate the command
 	locom_comConf.newCommand = 1;	//new command being applied
+	locom_comConf.msecDur = 6000;	//command duration
 	locom_comConf.command = LOCOM_COMMAND_STOP;
-	locom_comConf.msecDur = 2000;
-	locom_comConf.power = 0;
-
-	locom_do(&locom_comConf, &locom_statRep);
-	bcm2835_delay(1000);
-
 	locom_do(&locom_comConf, &locom_statRep);
 
-	locom_comConf.newCommand = 1;	//new command being applied
-	locom_comConf.command = LOCOM_COMMAND_TURN_LEFT;
-	locom_comConf.msecDur = 2000;
+//	while(locom_statRep.comElapsedTimems < 3000){
+//		locom_do(&locom_comConf, &locom_statRep);
+//		bcm2835_delay(1000);
+//	}
+//
+//	//generate new command
+//	locom_comConf.newCommand = 1;	//new command being applied
+//	locom_comConf.command = LOCOM_COMMAND_STOP;
+//	locom_comConf.msecDur = 2000;
+//	locom_do(&locom_comConf, &locom_statRep);
+//	bcm2835_delay(1000);
+//
+//	locom_comConf.newCommand = 1;	//new command being applied
+//	locom_comConf.command = LOCOM_COMMAND_TURN_LEFT;
+//	locom_comConf.msecDur = 2000;
+//	locom_do(&locom_comConf, &locom_statRep);
+//	bcm2835_delay(2000);
+//
+//	locom_comConf.newCommand = 1;	//new command being applied
+//	locom_comConf.command = LOCOM_COMMAND_TURN_RIGHT;
+//	locom_comConf.msecDur = 2000;
+//	locom_do(&locom_comConf, &locom_statRep);
+//	bcm2835_delay(2000);
+//
+//	locom_comConf.newCommand = 1;	//new command being applied
+//	locom_comConf.command = LOCOM_COMMAND_STOP;
+//	locom_comConf.msecDur = 2000;
+//	locom_do(&locom_comConf, &locom_statRep);
+//	bcm2835_delay(2000);
 
-	locom_do(&locom_comConf, &locom_statRep);
-
-	bcm2835_delay(500);
-	locom_do(&locom_comConf, &locom_statRep);
-
-	locom_comConf.newCommand = 1;	//new command being applied
-	locom_comConf.command = LOCOM_COMMAND_STOP;
-	locom_comConf.msecDur = 2000;
 }
 
 //void test_loc(){

@@ -27,6 +27,11 @@
 #define LOCOM_STATE_TURN_RIGHT 3
 #define LOCOM_STATE_TURN_LEFT 4
 
+//state of the wheels (forward, backward and stop)
+#define LOCOM_WHEEL_FORWARD 1
+#define LOCOM_WHEEL_BACKWARD 2
+#define LOCOM_WHEEL_STOP 0
+
 //structure definitions
 //CAN BE ALTERED BY ANYONE
 //structure containing the configuration of locomotion module
@@ -59,13 +64,15 @@ typedef struct {
 	long int comStartTimems;	//when the command started
 	long int comElapsedTimems;		//how long command has been running for
 	uint8_t locomSubMode; //current state of the module
+	uint8_t locomRightWheel;	//current state of the right wheel
+	uint8_t locomLeftWheel;	//current state of the left wheel
 	//uint8_t locomNextState; //state to transition to next
 
 } locom_internStateStruct;
 
 //locmotion public functions
 void locom_start();
-void locom_do(struct locom_comConfStruct* p_locom_comConf, struct locom_statRepStruct* p_locom_statRep);
+void locom_do(locom_comConfStruct* p_locom_comConf, locom_statRepStruct* p_locom_statRep);
 void locom_stop();
 
 #endif /* RVLOCOM_H_ */

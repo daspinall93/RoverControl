@@ -27,7 +27,7 @@ locom_internStateStruct locom_internState;
 locom_modConfStruct locom_modConf;
 
 //private functions
-void locom_digSet(uint8_t drive, uint8_t m1Direction, uint8_t m2Direction);
+void locom_subModeAction();
 void locom_genStatRep(locom_statRepStruct* p_locom_statRep);
 void locom_subModeTransition(locom_comConfStruct* p_locom_comConf);
 
@@ -41,23 +41,17 @@ void locom_start(){
 	bcm2835_gpio_fsel(ENA, BCM2835_GPIO_FSEL_OUTP);	//use 5v or 0 for the pwm output
 	bcm2835_gpio_fsel(ENB, BCM2835_GPIO_FSEL_OUTP);
 
-	//set the speed to 0 (0V) to start with
-	bcm2835_gpio_write(ENA, LOW);
-	bcm2835_gpio_write(ENB, LOW);
-
-	//set the direction to forward for both motors to begin with
-	//right motor
-	bcm2835_gpio_write(IN1, HIGH);
+	bcm2835_gpio_write(IN1, LOW);
 	bcm2835_gpio_write(IN2, LOW);
-	//left motor
-	bcm2835_gpio_write(IN3, HIGH);
+	bcm2835_gpio_write(IN3, LOW);
 	bcm2835_gpio_write(IN4, LOW);
-
-	//generate the locom configuration parameters
-	locom_modConf.pwmRange = 1024;
+	bcm2835_gpio_write(ENA, HIGH);
+	bcm2835_gpio_write(ENB, HIGH);
 
 	//initialise the state structure
 	locom_internState.locomSubMode = LOCOM_COMMAND_STOP;
+	locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
+	locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
 	locom_internState.comElapsedTimems = 0;
 	locom_internState.comStartTimems = 0;
 }
@@ -65,27 +59,39 @@ void locom_start(){
 void locom_do(locom_comConfStruct* p_locom_comConf, locom_statRepStruct* p_locom_statRep){
 
 	//print out state of the module
-	printf("[LOCOM ENTRY]submode = %d \t Time elapsed = %ld  \t new command = %d \n", locom_internState.locomSubMode, locom_internState.comElapsedTimems, p_locom_comConf->newCommand);
+	printf("[LOCOM ENTRY]right wheel = %d \t left wheel = %d \n", locom_internState.locomLeftWheel, locom_internState.locomRightWheel);
+
 
 	//carry out state transition if new command received
 	locom_subModeTransition(p_locom_comConf);
 
+	//carry out actions depending on new state
+	locom_subModeAction();
+
 	//generate the status report
 	locom_genStatRep(p_locom_statRep);
 
-	printf("[LOCOM EXIT]submode = %d \t Time elapsed = %ld  \t new command = %d \n", locom_internState.locomSubMode, locom_internState.comElapsedTimems, p_locom_comConf->newCommand);
+	//printf("[LOCOM EXIT]right wheel = %d \t left wheel = %d \n", locom_internState.locomLeftWheel, locom_internState.locomRightWheel);
 
 }
 
 void locom_stop(){
 
 	//turn of the pins
-	bcm2835_gpio_fsel(IN1, BCM2835_GPIO_FSEL_INPT);	//Basic out function
-	bcm2835_gpio_fsel(IN2, BCM2835_GPIO_FSEL_INPT);
-	bcm2835_gpio_fsel(IN3, BCM2835_GPIO_FSEL_INPT);
-	bcm2835_gpio_fsel(IN4, BCM2835_GPIO_FSEL_INPT);
-	bcm2835_gpio_fsel(ENA, BCM2835_GPIO_FSEL_INPT);	//use 5v or 0 for the pwm output
-	bcm2835_gpio_fsel(ENB, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_write(ENA, LOW);
+	bcm2835_gpio_write(ENB, LOW);
+
+	bcm2835_gpio_write(IN1, LOW);
+	bcm2835_gpio_write(IN2, LOW);
+	bcm2835_gpio_write(IN3, LOW);
+	bcm2835_gpio_write(IN4, LOW);
+
+//	bcm2835_gpio_fsel(IN1, BCM2835_GPIO_FSEL_INPT);	//Basic out function
+//	bcm2835_gpio_fsel(IN2, BCM2835_GPIO_FSEL_INPT);
+//	bcm2835_gpio_fsel(IN3, BCM2835_GPIO_FSEL_INPT);
+//	bcm2835_gpio_fsel(IN4, BCM2835_GPIO_FSEL_INPT);
+//	bcm2835_gpio_fsel(ENA, BCM2835_GPIO_FSEL_INPT);	//use 5v or 0 for the pwm output
+//	bcm2835_gpio_fsel(ENB, BCM2835_GPIO_FSEL_INPT);
 
 }
 
@@ -101,40 +107,44 @@ void locom_subModeTransition(locom_comConfStruct* p_locom_comConf){
 			case LOCOM_COMMAND_STOP:
 				//stay in standby
 
-				locom_digSet(0,0,0);
 				locom_internState.locomSubMode = LOCOM_STATE_STOP;
+				locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
+				locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
 				break;
 
 			case LOCOM_COMMAND_STRAIGHT_FORWARD:
 				//drive straight command
 
 				//set to drive all wheels forward
-				locom_digSet(1,1,1);
 				locom_internState.locomSubMode = LOCOM_STATE_STRAIGHT_FORWARD;
+				locom_internState.locomLeftWheel = LOCOM_WHEEL_FORWARD;
+				locom_internState.locomRightWheel = LOCOM_WHEEL_FORWARD;
 				break;
 
 			case LOCOM_COMMAND_STRAIGHT_BACKWARD:
 				//go in a straight line backwards
 
 				//set to drive all wheels backward
-				locom_digSet(1,0,0);
 				locom_internState.locomSubMode = LOCOM_STATE_STRAIGHT_BACKWARD;
+				locom_internState.locomLeftWheel = LOCOM_WHEEL_BACKWARD;
+				locom_internState.locomRightWheel = LOCOM_WHEEL_BACKWARD;
 				break;
 
 			case LOCOM_COMMAND_TURN_LEFT:
 				//turn left command
 
 				//set to drive left wheels back and right forward
-				locom_digSet(1,1,0);
 				locom_internState.locomSubMode = LOCOM_STATE_TURN_LEFT;
+				locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
+				locom_internState.locomRightWheel = LOCOM_WHEEL_FORWARD;
 				break;
 			case LOCOM_COMMAND_TURN_RIGHT:
 				//turn right command
 
 				//set to drive left wheels forward and right backward
-				locom_digSet(1,0,1);
 				locom_internState.locomSubMode = LOCOM_STATE_TURN_RIGHT;
-
+				locom_internState.locomLeftWheel = LOCOM_WHEEL_FORWARD;
+				locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
 				break;
 
 			default:
@@ -156,8 +166,9 @@ void locom_subModeTransition(locom_comConfStruct* p_locom_comConf){
 		if(locom_internState.comElapsedTimems >= p_locom_comConf->msecDur){
 			//the command has ended so turn of motors and set appropriate
 
-			locom_digSet(0,0,0);
 			locom_internState.locomSubMode = LOCOM_STATE_STOP;
+			locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
+			locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
 			locom_internState.comElapsedTimems = 0;
 
 		}
@@ -174,51 +185,52 @@ void locom_genStatRep(locom_statRepStruct* p_locom_statRep){
 
 }
 
-void locom_digSet(uint8_t drive, uint8_t m1Direction, uint8_t m2Direction){
+void locom_subModeAction(){
 
-	//speed set
-	//1 = forward, 0 = reverse
-	if (drive){
-		//motors to drive
-		bcm2835_gpio_write(ENA, HIGH);
-		bcm2835_gpio_write(ENB, HIGH);
+	switch (locom_internState.locomLeftWheel){
 
-	}else{
-		//motors don't drive
-		bcm2835_gpio_write(ENA, LOW);
-		bcm2835_gpio_write(ENB, LOW);
+		case LOCOM_WHEEL_FORWARD:
+
+			bcm2835_gpio_write(IN1, HIGH);
+			bcm2835_gpio_write(IN2, LOW);
+			break;
+
+		case LOCOM_WHEEL_BACKWARD:
+
+			bcm2835_gpio_write(IN1, LOW);
+			bcm2835_gpio_write(IN2, HIGH);
+			break;
+
+		case LOCOM_WHEEL_STOP:
+
+			bcm2835_gpio_write(IN1, LOW);
+			bcm2835_gpio_write(IN2, LOW);
+			break;
+
+	}
+
+	switch (locom_internState.locomRightWheel){
+
+		case LOCOM_WHEEL_FORWARD:
+
+			bcm2835_gpio_write(IN3, HIGH);
+			bcm2835_gpio_write(IN4, LOW);
+			break;
+
+		case LOCOM_WHEEL_BACKWARD:
+
+			bcm2835_gpio_write(IN3, LOW);
+			bcm2835_gpio_write(IN4, HIGH);
+			break;
+
+		case LOCOM_WHEEL_STOP:
+
+			bcm2835_gpio_write(IN3, LOW);
+			bcm2835_gpio_write(IN4, LOW);
+			break;
 
 	}
 
-
-	//directions set
-	//1 = forward, 0 = reverse
-	if (m1Direction == 1){
-		//forward
-		//right motor
-		bcm2835_gpio_write(IN1, HIGH);
-		bcm2835_gpio_write(IN2, LOW);
-
-	}else{
-		//reverse
-		//right motor
-		bcm2835_gpio_write(IN1, LOW);
-		bcm2835_gpio_write(IN2, HIGH);
-
-	}
-	if (m2Direction == 1){
-		//forward
-		//left motor
-		bcm2835_gpio_write(IN3, HIGH);
-		bcm2835_gpio_write(IN4, LOW);
-
-	}else{
-		//reverse
-		//left motor
-		bcm2835_gpio_write(IN3, LOW);
-		bcm2835_gpio_write(IN4, HIGH);
-
-	}
 }
 
 
