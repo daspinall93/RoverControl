@@ -12,7 +12,7 @@ int sockfd, n;
 struct sockaddr_in serv_addr;
 struct hostent *server;
 char buffer[256];
-
+//
 /*
  * Function to start seperate process that will handle the comms connect to the server (i.e ground station)
  * Parameters - port_no is the port number to connect to the server
