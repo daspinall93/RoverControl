@@ -13,15 +13,16 @@ void MotorClass::Start(){
 
 	//setup motor outputs
 
-//	bcm2835_gpio_fsel(Parameters.inPin1 , BCM2835_GPIO_FSEL_OUTP);	//Basic out function
-//	bcm2835_gpio_fsel(Parameters.inPin2, BCM2835_GPIO_FSEL_OUTP);
-//	bcm2835_gpio_fsel(Parameters.pwmPin, BCM2835_GPIO_FSEL_OUTP);
-//
-//	//initialise motor output
-//	bcm2835_gpio_write(Parameters.inPin1, LOW);
-//	bcm2835_gpio_write(Parameters.inPin2, LOW);
-//	bcm2835_gpio_write(Parameters.pwmPin, LOW);
+	bcm2835_gpio_fsel(Parameters.inPin1 , BCM2835_GPIO_FSEL_OUTP);	//Basic out function
+	bcm2835_gpio_fsel(Parameters.inPin2, BCM2835_GPIO_FSEL_OUTP);
+	bcm2835_gpio_fsel(Parameters.pwmPin, BCM2835_GPIO_FSEL_OUTP);
 
+	//initialise motor output
+	bcm2835_gpio_write(Parameters.inPin1, LOW);
+	bcm2835_gpio_write(Parameters.inPin2, LOW);
+	bcm2835_gpio_write(Parameters.pwmPin, LOW);
+
+	State.mode = MOTOR_MODE_STOP;
 
 }
 
@@ -68,7 +69,9 @@ void MotorClass::Execute(){
 
 void MotorClass::ModeStop(){
 
-
+	bcm2835_gpio_write(Parameters.inPin1, LOW);
+	bcm2835_gpio_write(Parameters.inPin2, LOW);
+	bcm2835_gpio_write(Parameters.pwmPin, LOW);
 	State.mode = MOTOR_MODE_STOP;
 	State.speed = Command.power;
 
@@ -76,7 +79,9 @@ void MotorClass::ModeStop(){
 
 void MotorClass::ModeForward(){
 
-
+	bcm2835_gpio_write(Parameters.inPin1, HIGH);
+	bcm2835_gpio_write(Parameters.inPin2, LOW);
+	bcm2835_gpio_write(Parameters.pwmPin, HIGH);
 	State.mode = MOTOR_MODE_FORWARD;
 	State.speed = Command.power;
 
@@ -84,7 +89,9 @@ void MotorClass::ModeForward(){
 
 void MotorClass::ModeBackward(){
 
-
+	bcm2835_gpio_write(Parameters.inPin1, LOW);
+	bcm2835_gpio_write(Parameters.inPin2, HIGH);
+	bcm2835_gpio_write(Parameters.pwmPin, HIGH);
 	State.mode = MOTOR_MODE_BACKWARD;
 	State.speed = Command.power;
 

@@ -33,8 +33,6 @@ public:
 
 	struct {
 
-
-
 	} Report;
 
 	struct {

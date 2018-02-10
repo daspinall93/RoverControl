@@ -14,13 +14,13 @@
 
 void LocomClass::Start(){
 
-	Motor1.Parameters.motorid = 0;
+	Motor1.Parameters.motorid = 1;
 	Motor1.Parameters.pwmPin = ENA;
 	Motor1.Parameters.inPin1 = IN1;
 	Motor1.Parameters.inPin2 = IN2;
 	Motor1.Start();
 
-	Motor2.Parameters.motorid = 1;
+	Motor2.Parameters.motorid = 2;
 	Motor2.Parameters.pwmPin = ENB;
 	Motor2.Parameters.inPin1 = IN3;
 	Motor2.Parameters.inPin2 = IN4;
