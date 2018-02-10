@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "MotorClass.h"
 #include "Utils.h"
 
 //definition of the different locomotion manoeuvres
@@ -56,11 +57,20 @@ public:
 
 	} Command;
 
+	struct {
+		//struct containg some configuration parameters for the object
+		int pwmResolution;
+
+	} Parameters;
+
 	//public member functions for calling
 	LocomClass(){};	//replace locom_start()
 	void Start();
 	void Execute();
-	void Debug();
+
+	//private objects
+	MotorClass Motor1;
+	MotorClass Motor2;
 
 private:
 	//members that can only be accessed by the class
@@ -73,12 +83,6 @@ private:
 
 	} State;
 
-	struct {
-		//struct containg some configuration parameters for the object
-		int pwmRange;
-
-	} Parameters;
-
 	//private member functions called internally
 	//mode actions
 	void ModeStop();
@@ -88,6 +92,7 @@ private:
 	void ModeTurnLeft();
 
 	void UpdateReport();
+	void Debug();
 
 
 protected:
