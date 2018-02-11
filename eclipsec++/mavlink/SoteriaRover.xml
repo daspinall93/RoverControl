@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<mavlink>
+    <version>3</version>  
+    <dialect>0</dialect>
+    <enums>
+        <enum name="LOCOM_COMAMND_ID">
+            <description>Commands for the locomotion module</description>
+            <entry value="0" name="LOCOM_COMMAND_STOP">
+                <description>Command the locom module to stop the rover</description>
+            </entry>
+            <entry value="1" name="LOCOM_COMMAND_STRAIGHT_FORWARD">
+                <description>Command the rover to drive straight forward</description>
+            </entry>
+            <entry value="2" name="LOCOM_COMMAND_STRAIGHT_BACKWARD">
+                <description>Command the rover to drive straight backward</description>
+            </entry>
+            <entry value="3" name="LOCOM_COMMAND_TURN_RIGHT">
+                <description>Command the rover to turn right</description>
+            </entry>
+            <entry value="4" name="LOCOM_COMMAND_TURN_LEFT">
+                <description>Command the rover to turn left</description>
+            </entry>
+        </enum>
+        <enum name="LOCOM_MODE">
+            <description>Commands for the locomotion module</description>
+            <entry value="0" name="LOCOM_MODE_STOP">
+                <description>Command the locom module to stop the rover</description>
+            </entry>
+            <entry value="1" name="LOCOM_MODE_STRAIGHT_FORWARD">
+                <description>Command the rover to drive straight forward</description>
+            </entry>
+            <entry value="2" name="LOCOM_MODE_STRAIGHT_BACKWARD">
+                <description>Command the rover to drive straight backward</description>
+            </entry>
+            <entry value="3" name="LOCOM_TURN_RIGHT">
+                <description>Command the rover to turn right</description>
+            </entry>
+            <entry value="4" name="LOCOM_TURN_LEFT">
+                <description>Command the rover to turn left</description>
+            </entry>
+        </enum>   
+    </enums>
+    <messages>
+        <message id="0" name="HEARTBEAT">
+            <description>The heartbeat message shows that a system is present and responding. Currently contains the locomotion module mode and mavlink version</description>
+            <field type="uint8_t" name="Locom_mode" enum="LOCOM_MODE">mode of the locomotion module, see LOCOM_MODE enum</field>
+            <field type="uint8_t_mavlink_version" name="mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
+        </message>
+        <message id="1" name="LOCOM_COMMAND">
+            <description>A command to the locomotion module</description>
+            <field type="uint8_t" name="command_id" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
+            <field type="uint32_t" name="duration_ms">duration of the locomotion command</field>
+            <field type="uint32_t" name="power">Power (0-100%) of the commanded locomotion manoeuvre</field>
+        </message>
+    </messages>
+</mavlink>
