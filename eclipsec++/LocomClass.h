@@ -12,13 +12,14 @@
 
 #include "MotorClass.h"
 #include "Utils.h"
+#include "mavlink/v2.0/SoteriaRover/mavlink.h"
 
 //definition of the different locomotion manoeuvres
-#define LOCOM_COMMAND_STOP 0
-#define LOCOM_COMMAND_STRAIGHT_FORWARD 1
-#define LOCOM_COMMAND_STRAIGHT_BACKWARD 2
-#define LOCOM_COMMAND_TURN_RIGHT 3
-#define LOCOM_COMMAND_TURN_LEFT 4
+//#define LOCOM_COMMAND_STOP 0
+//#define LOCOM_COMMAND_STRAIGHT_FORWARD 1
+//#define LOCOM_COMMAND_STRAIGHT_BACKWARD 2
+//#define LOCOM_COMMAND_TURN_RIGHT 3
+//#define LOCOM_COMMAND_TURN_LEFT 4
 
 //definition of the different states
 #define LOCOM_MODE_STOP 0
