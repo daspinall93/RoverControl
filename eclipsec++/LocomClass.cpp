@@ -4,31 +4,31 @@
  *  Created on: 9 Feb 2018
  *      Author: dan
  */
-#include "Locom.h"
+#include "LocomClass.h"
 
-#include <bcm2835.h>
+/* PUBLIC FUNCTIONS */
+
+/*
+ * Function to start/setup the object by configuring the motors
+ */
 
 void LocomClass::Start(){
 
-//	//setup motor outputs
-//	bcm2835_gpio_fsel(IN1, BCM2835_GPIO_FSEL_OUTP);	//Basic out function
-//	bcm2835_gpio_fsel(IN2, BCM2835_GPIO_FSEL_OUTP);
-//	bcm2835_gpio_fsel(IN3, BCM2835_GPIO_FSEL_OUTP);
-//	bcm2835_gpio_fsel(IN4, BCM2835_GPIO_FSEL_OUTP);
-//	bcm2835_gpio_fsel(ENA, BCM2835_GPIO_FSEL_OUTP);	//use 5v or 0 for the pwm output
-//	bcm2835_gpio_fsel(ENB, BCM2835_GPIO_FSEL_OUTP);
-//
-//	bcm2835_gpio_write(IN1, LOW);
-//	bcm2835_gpio_write(IN2, LOW);
-//	bcm2835_gpio_write(IN3, LOW);
-//	bcm2835_gpio_write(IN4, LOW);
-//	bcm2835_gpio_write(ENA, HIGH);
-//	bcm2835_gpio_write(ENB, HIGH);
+	Motor1.Parameters.motorid = 1;
+	Motor1.Parameters.pwmPin = ENA;
+	Motor1.Parameters.inPin1 = IN1;
+	Motor1.Parameters.inPin2 = IN2;
+
+	Motor2.Parameters.motorid = 2;
+	Motor2.Parameters.pwmPin = ENB;
+	Motor2.Parameters.inPin1 = IN3;
+	Motor2.Parameters.inPin2 = IN4;
 
 	//initialise the state structure
 	State.mode = LOCOM_MODE_STOP;
 	State.modeElapsedTime = 0;
 	State.modeStartTime = 0;
+
 
 }
 
@@ -36,6 +36,7 @@ void LocomClass::Execute(){
 
 	Debug();
 
+	//execute mode transitions for locom
 	if (Command.newCommand){
 		switch(Command.commandid){
 
@@ -64,6 +65,7 @@ void LocomClass::Execute(){
 				//set to drive left wheels back and right forward
 				ModeTurnLeft();
 				break;
+
 			case LOCOM_COMMAND_TURN_RIGHT:
 				//turn right command
 
@@ -98,6 +100,7 @@ void LocomClass::Execute(){
 
 	}
 
+	//execute the changes for the motors
 	Debug();
 }
 
@@ -106,6 +109,16 @@ void LocomClass::Execute(){
  */
 void LocomClass::ModeStop(){
 
+	//currenty only need to set directions as not using PWM
+	Motor1.Command.commandid = MOTOR_COMMAND_STOP;
+	Motor1.Command.newCommand = 1;
+	Motor1.Command.power = Command.power;
+
+	Motor2.Command.commandid = MOTOR_COMMAND_STOP;
+	Motor2.Command.newCommand = 1;
+	Motor2.Command.power = Command.power;
+
+	//update to the new state
 	State.mode = LOCOM_MODE_STOP;
 
 }
@@ -115,6 +128,15 @@ void LocomClass::ModeStop(){
  */
 void LocomClass::ModeStraightForward(){
 
+	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
+	Motor1.Command.newCommand = 1;
+	Motor1.Command.power = Command.power;
+
+	Motor2.Command.commandid = MOTOR_COMMAND_FORWARD;
+	Motor2.Command.newCommand = 1;
+	Motor2.Command.power = Command.power;
+
+	//update to the new state
 	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
 
 
@@ -125,6 +147,17 @@ void LocomClass::ModeStraightForward(){
  */
 void LocomClass::ModeStraightBackward(){
 
+	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
+	Motor1.Command.newCommand = 1;
+	Motor1.Command.power = Command.power;
+	Motor1.Execute();
+
+	Motor2.Command.commandid = MOTOR_COMMAND_BACKWARD;
+	Motor2.Command.newCommand = 1;
+	Motor2.Command.power = Command.power;
+	Motor2.Execute();
+
+	//update to the new state
 	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
 
 }
@@ -134,6 +167,15 @@ void LocomClass::ModeStraightBackward(){
  */
 void LocomClass::ModeTurnRight(){
 
+	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
+	Motor1.Command.newCommand = 1;
+	Motor1.Command.power = Command.power;
+
+	Motor2.Command.commandid = MOTOR_COMMAND_BACKWARD;
+	Motor2.Command.newCommand = 1;
+	Motor2.Command.power = Command.power;
+
+	//update to the new state
 	State.mode = LOCOM_MODE_TURN_RIGHT;
 
 }
@@ -143,6 +185,14 @@ void LocomClass::ModeTurnRight(){
  */
 void LocomClass::ModeTurnLeft(){
 
+	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
+	Motor1.Command.newCommand = 1;
+	Motor1.Command.power = Command.power;
+
+	Motor2.Command.commandid = MOTOR_COMMAND_FORWARD;
+	Motor2.Command.newCommand = 1;
+	Motor2.Command.power = Command.power;
+	//update to the new state
 	State.mode = LOCOM_MODE_TURN_LEFT;
 
 }
@@ -150,12 +200,13 @@ void LocomClass::ModeTurnLeft(){
 void LocomClass::UpdateReport(){
 
 	Report.mode = State.mode;
+	Report.modeElapsedTime = State.modeElapsedTime;
 
 }
 
 void LocomClass::Debug(){
 
-	printf("Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
+	printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
 
 }
 
