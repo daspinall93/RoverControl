@@ -4,7 +4,7 @@
  *  Created on: 9 Feb 2018
  *      Author: dan
  */
-#include "LocomClass.h"
+#include "LocomContainer.h"
 
 /* PUBLIC FUNCTIONS */
 
@@ -12,8 +12,8 @@
  * Function to start/setup the object by configuring the motors
  */
 
-void LocomClass::Start(){
-
+void LocomContainer::Start()
+{
 	//initialise the motors
 	Motor1.Start(IN1, IN2, ENA, 0);
 	Motor1.Start(IN3, IN4, ENB, 1);
@@ -22,17 +22,17 @@ void LocomClass::Start(){
 	State.mode = LOCOM_MODE_STOP;
 	State.modeElapsedTime = 0;
 	State.modeStartTime = 0;
-
 }
 
-void LocomClass::Execute(){
-
+void LocomContainer::Execute()
+{
 	Debug();
 
 	//execute mode transitions for locom
-	if (Command.newCommand){
-		switch(Command.commandid){
-
+	if (Command.newCommand)
+	{
+		switch(Command.commandid)
+		{
 			case LOCOM_COMMAND_STOP:
 				//stay in standby
 
@@ -78,11 +78,14 @@ void LocomClass::Execute(){
 		State.modeElapsedTime = 0;
 		Command.newCommand = 0;	//set to 0 as new command has been processed
 
-	}else{
+	}
+	else
+	{
 
 		//no new command so need to check time elapsed
 		State.modeElapsedTime = (utils_getTimems() - State.modeStartTime);
-		if(State.modeElapsedTime >= Command.durmsec){
+		if(State.modeElapsedTime >= Command.durmsec)
+		{
 			//the command has ended so turn of motors and reset elapsed time
 
 			State.modeStartTime = utils_getTimems();;
@@ -100,8 +103,8 @@ void LocomClass::Execute(){
 /*
  * Private function to put the rover into the stop mode
  */
-void LocomClass::ModeStop(){
-
+void LocomContainer::ModeStop()
+{
 	//currenty only need to set directions as not using PWM
 	Motor1.Command.commandid = MOTOR_COMMAND_STOP;
 	Motor1.Command.newCommand = 1;
@@ -113,14 +116,13 @@ void LocomClass::ModeStop(){
 
 	//update to the new state
 	State.mode = LOCOM_MODE_STOP;
-
 }
 
 /*
  * Private function to put the rover into the drive straight forward mode
  */
-void LocomClass::ModeStraightForward(){
-
+void LocomContainer::ModeStraightForward()
+{
 	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
 	Motor1.Command.newCommand = 1;
 	Motor1.Command.power = Command.power;
@@ -131,15 +133,13 @@ void LocomClass::ModeStraightForward(){
 
 	//update to the new state
 	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
-
-
 }
 
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomClass::ModeStraightBackward(){
-
+void LocomContainer::ModeStraightBackward()
+{
 	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
 	Motor1.Command.newCommand = 1;
 	Motor1.Command.power = Command.power;
@@ -152,14 +152,13 @@ void LocomClass::ModeStraightBackward(){
 
 	//update to the new state
 	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
-
 }
 
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomClass::ModeTurnRight(){
-
+void LocomContainer::ModeTurnRight()
+{
 	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
 	Motor1.Command.newCommand = 1;
 	Motor1.Command.power = Command.power;
@@ -170,14 +169,13 @@ void LocomClass::ModeTurnRight(){
 
 	//update to the new state
 	State.mode = LOCOM_MODE_TURN_RIGHT;
-
 }
 
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomClass::ModeTurnLeft(){
-
+void LocomContainer::ModeTurnLeft()
+{
 	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
 	Motor1.Command.newCommand = 1;
 	Motor1.Command.power = Command.power;
@@ -187,20 +185,17 @@ void LocomClass::ModeTurnLeft(){
 	Motor2.Command.power = Command.power;
 	//update to the new state
 	State.mode = LOCOM_MODE_TURN_LEFT;
-
 }
 
-void LocomClass::UpdateReport(){
-
+void LocomContainer::UpdateReport()
+{
 	Report.mode = State.mode;
 	Report.modeElapsedTime = State.modeElapsedTime;
-
 }
 
-void LocomClass::Debug(){
-
+void LocomContainer::Debug()
+{
 	printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
-
 }
 
 

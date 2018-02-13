@@ -5,12 +5,12 @@
  *      Author: dan
  */
 
-#include "MotorClass.h"
+#include "MotorContainer.h"
 
 #include <stdio.h>
 
-void MotorClass::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8_t motorid, uint8_t pwmChannel){
-
+void MotorContainer::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8_t motorid, uint8_t pwmChannel)
+{
 	Config.motorid = motorid;
 	Config.pwmPin = pwmPin;
 	Config.inPin1 = inPin1;
@@ -44,10 +44,12 @@ void MotorClass::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8_t m
 
 }
 
-void MotorClass::Execute(){
-
-	if (Command.newCommand){
-		switch(Command.commandid){
+void MotorContainer::Execute()
+{
+	if (Command.newCommand)
+	{
+		switch(Command.commandid)
+		{
 
 			case MOTOR_COMMAND_STOP:
 				//stay in standby
@@ -82,13 +84,14 @@ void MotorClass::Execute(){
 	}
 
 	Debug();
-
 }
 
-void MotorClass::ModeStop(){
-
+void MotorContainer::ModeStop()
+{
 #if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
+	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
+	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, LOW);
@@ -96,13 +99,14 @@ void MotorClass::ModeStop(){
 #endif
 	State.mode = MOTOR_MODE_STOP;
 	State.speed = Command.power;
-
 }
 
-void MotorClass::ModeForward(){
-
+void MotorContainer::ModeForward()
+{
 #if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
+	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
+	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
 	bcm2835_gpio_write(Config.inPin1, HIGH);
 	bcm2835_gpio_write(Config.inPin2, LOW);
@@ -111,12 +115,14 @@ void MotorClass::ModeForward(){
 
 	State.mode = MOTOR_MODE_FORWARD;
 	State.speed = Command.power;
-
 }
 
-void MotorClass::ModeBackward(){
+void MotorContainer::ModeBackward()
+{
 #if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
+	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
+	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, HIGH);
@@ -125,13 +131,15 @@ void MotorClass::ModeBackward(){
 
 	State.mode = MOTOR_MODE_BACKWARD;
 	State.speed = Command.power;
-
 }
 
+void MotorContainer::UpdateReport()
+{
+	Report.mode = State.mode;
+}
 
-void MotorClass::Debug(){
-
+void MotorContainer::Debug()
+{
 	printf("[MOTOR%d]Mode = %d \t speed = %d \n", Config.motorid, State.mode, State.speed);
-
-
 }
+

@@ -21,6 +21,17 @@
                 <description>Command the rover to turn left</description>
             </entry>
         </enum>
+        <enum name="MOTOR_COMMAND">
+            <description>Mode of each motor (i.e m1 and m2)</description>
+            <entry value="0" name="MOTOR_COMMAND_STOP">
+                <description>Command to stop motor</description>
+            </entry>
+            <entry value="1" name="MOTOR_COMMAND_FORWARD">
+                <description>Command for motor to travel forward</description>
+            </entry>
+            <entry value="2" name="MOTOR_COMMAND_BACKWARD">
+                <description>Command for motor to go backward</description>
+        </entry>
         <enum name="LOCOM_MODE">
             <description>Commands for the locomotion module</description>
             <entry value="0" name="LOCOM_MODE_STOP">
@@ -39,6 +50,17 @@
                 <description>Command the rover to turn left</description>
             </entry>
         </enum>   
+        <enum name="MOTOR_MODE">
+            <description>Mode of each motor (i.e m1 and m2)</description>
+            <entry value="0" name="MOTOR_MODE_STOP">
+                <description>The motor is in stopped mode</description>
+            </entry>
+            <entry value="1" name="MOTOR_MODE_FORWARD">
+                <description>The motor is in forward mode</description>
+            </entry>
+            <entry value="2" name="MOTOR_MODE_BACKWARD">
+                <description>The motor is in backward mode</description>
+            </entry>
     </enums>
     <messages>
         <message id="0" name="HEARTBEAT">
@@ -52,5 +74,11 @@
             <field type="uint32_t" name="duration_ms">duration of the locomotion command</field>
             <field type="uint32_t" name="power">Power (0-100%) of the commanded locomotion manoeuvre</field>
         </message>
+        <message id="2" name="ROVER_STATUS">
+            <description>A packet defining the status of the various moudles</description>
+            <field type="uint8_t" name="locom_mode" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
+            <field type="uint32_t" name="motor1_mode">duration of the locomotion command</field>
+            <field type="uint32_t" name="motor2_mode">Power (0-100%) of the commanded locomotion manoeuvre</field>
+        </message>            
     </messages>
 </mavlink>

@@ -10,8 +10,8 @@
  * -Include pwm control of pins ENA and ENB
  *
  */
-#ifndef MOTORCLASS_H_
-#define MOTORCLASS_H_
+#ifndef MOTORCONTAINER_H_
+#define MOTORCONTAINER_H_
 
 #include <stdint.h>
 #include <bcm2835.h>
@@ -27,24 +27,27 @@
 #define PWM_ENABLED 0
 #define PWM_RANGE 1024
 
-class MotorClass{
+class MotorContainer{
 public:
 
 	//public data members
-	struct {
-
+	//the command interface for motor to be called
+	struct
+	{
 		uint8_t commandid;	//forward, backard or stop
 		bool newCommand;	//flag for new command
 		int power;	//power for the pwm
-
+		int pwmData;	//the corresponding pwm output for the power provided
 	} Command;
 
-	struct {
-
+	//the report interface for caller to see
+	struct
+	{
+		uint8_t mode;	//flag specifying if the motor currently has a voltage applied
 	} Report;
 
-	struct {
-
+	struct
+	{
 		uint8_t motorid;
 
 		uint8_t pwmPin;
@@ -53,11 +56,10 @@ public:
 
 		uint8_t pwmChannel;	//the channel on t
 		uint8_t pwmRange;
-
 	} Config;
 
 	//public function members
-	MotorClass(){};
+	MotorContainer(){};
 	void Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, int motorid, int pwmChannel);
 	void Execute();
 
@@ -74,6 +76,7 @@ private:
 	void ModeStop();
 	void ModeForward();
 	void ModeBackward();
+	void calculatepwmData();
 
 	void UpdateReport();
 	void Debug();
@@ -85,4 +88,4 @@ protected:
 };
 
 
-#endif /* MOTORCLASS_H_ */
+#endif /* MOTORCONTAINER_H_ */
