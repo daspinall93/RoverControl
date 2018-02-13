@@ -35,7 +35,7 @@ void MotorClass::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8_t m
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, LOW);
 
-#ifdef PWM_ENABLED
+#if PWM_ENABLED
 	bcm2835_pwm_set_data(Config.pwmChannel, 0);
 #else
 	bcm2835_gpio_write(Config.pwmPin, LOW);
@@ -87,7 +87,7 @@ void MotorClass::Execute(){
 
 void MotorClass::ModeStop(){
 
-#ifdef PWM_ENABLED
+#if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
 #else
 	bcm2835_gpio_write(Config.inPin1, LOW);
@@ -101,19 +101,28 @@ void MotorClass::ModeStop(){
 
 void MotorClass::ModeForward(){
 
+#if PWM_ENABLED
+	//calculate the appropriate pwm value depending on the
+#else
 	bcm2835_gpio_write(Config.inPin1, HIGH);
 	bcm2835_gpio_write(Config.inPin2, LOW);
 	bcm2835_gpio_write(Config.pwmPin, HIGH);
+#endif
+
 	State.mode = MOTOR_MODE_FORWARD;
 	State.speed = Command.power;
 
 }
 
 void MotorClass::ModeBackward(){
-
+#if PWM_ENABLED
+	//calculate the appropriate pwm value depending on the
+#else
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, HIGH);
 	bcm2835_gpio_write(Config.pwmPin, HIGH);
+#endif
+
 	State.mode = MOTOR_MODE_BACKWARD;
 	State.speed = Command.power;
 
