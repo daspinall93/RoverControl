@@ -21,6 +21,8 @@
 #include "mavlink/v2.0/SoteriaRover/mavlink.h"
 
 #define BUFFER_LENGTH 2041
+#define GROUND_IP_ADDRESS "127.0.0.1"
+
 class CommsContainer {
 public:
 

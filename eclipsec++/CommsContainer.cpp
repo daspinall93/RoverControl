@@ -12,7 +12,7 @@ CommsContainer::CommsContainer() {
 	SocketConfig.socketLength = sizeof(struct sockaddr_in);
 	SocketConfig.portNumber = 9006;
 
-	strcpy(SocketConfig.groundipAddr, "127.0.0.1");
+	strcpy(SocketConfig.groundipAddr, GROUND_IP_ADDRESS);
 	SocketConfig.socketLength = sizeof(struct sockaddr_in);
 
 	//set all buffers to 0

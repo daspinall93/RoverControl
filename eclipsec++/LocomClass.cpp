@@ -14,21 +14,14 @@
 
 void LocomClass::Start(){
 
-	Motor1.Parameters.motorid = 1;
-	Motor1.Parameters.pwmPin = ENA;
-	Motor1.Parameters.inPin1 = IN1;
-	Motor1.Parameters.inPin2 = IN2;
-
-	Motor2.Parameters.motorid = 2;
-	Motor2.Parameters.pwmPin = ENB;
-	Motor2.Parameters.inPin1 = IN3;
-	Motor2.Parameters.inPin2 = IN4;
+	//initialise the motors
+	Motor1.Start(IN1, IN2, ENA, 0);
+	Motor1.Start(IN3, IN4, ENB, 1);
 
 	//initialise the state structure
 	State.mode = LOCOM_MODE_STOP;
 	State.modeElapsedTime = 0;
 	State.modeStartTime = 0;
-
 
 }
 

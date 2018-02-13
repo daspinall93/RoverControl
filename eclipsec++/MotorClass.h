@@ -5,6 +5,11 @@
  *      Author: dan
  */
 
+/*
+ * TODO:
+ * -Include pwm control of pins ENA and ENB
+ *
+ */
 #ifndef MOTORCLASS_H_
 #define MOTORCLASS_H_
 
@@ -19,15 +24,18 @@
 #define MOTOR_MODE_FORWARD 1
 #define MOTOR_MODE_BACKWARD 2
 
+#define PWM_ENABLED 0
+#define PWM_RANGE 1024
+
 class MotorClass{
 public:
 
 	//public data members
 	struct {
 
-		uint8_t commandid;
-		bool newCommand;
-		int power;
+		uint8_t commandid;	//forward, backard or stop
+		bool newCommand;	//flag for new command
+		int power;	//power for the pwm
 
 	} Command;
 
@@ -37,16 +45,20 @@ public:
 
 	struct {
 
+		uint8_t motorid;
+
 		uint8_t pwmPin;
 		uint8_t inPin1;	//if high and pin2 low then wheel goes forward
 		uint8_t inPin2;
-		uint8_t motorid;
 
-	} Parameters;
+		uint8_t pwmChannel;	//the channel on t
+		uint8_t pwmRange;
+
+	} Config;
 
 	//public function members
 	MotorClass(){};
-	void Start();
+	void Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, int motorid, int pwmChannel);
 	void Execute();
 
 

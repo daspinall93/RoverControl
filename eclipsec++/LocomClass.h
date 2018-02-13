@@ -4,6 +4,11 @@
  *  Created on: 9 Feb 2018
  *      Author: dan
  */
+
+/* TODO
+ * -Incorporate ability to control the power being applied to the motors (PWM)
+ * -
+ */
 #ifndef C___LOCOM_H_
 #define C___LOCOM_H_
 
