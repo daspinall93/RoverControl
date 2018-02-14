@@ -125,7 +125,6 @@ void CommsContainer::ReceivePacket()
 	{
 		//data was received
 		//parse the received packet
-
 		for (int i = 0; i < SocketState.bytesReceived; i++)
 		{
 			//printf("current byte: 0x%02x \n", SocketState.bufferArray[i]);
@@ -133,9 +132,7 @@ void CommsContainer::ReceivePacket()
 			{
 				//printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
 			}
-
 		}
-
 		MavOutput.newPacketReceived = 1;
 		//switch depending on the message id received and then set the corresponding output structure
 		switch (MavOutput.standard.msgid){

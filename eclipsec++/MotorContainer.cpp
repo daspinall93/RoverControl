@@ -88,13 +88,15 @@ void MotorContainer::Execute()
 
 void MotorContainer::ModeStop()
 {
-#if PWM_ENABLED
-	//calculate the appropriate pwm value depending on the
-	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
-	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
-#else
+	//the direction of the outputted voltage
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, LOW);
+
+	//set the magnitude of the average output voltage
+#if PWM_ENABLED
+	//calculate the appropriate pwm value depending on the
+	bcm2835_pwm_set_data(Config.pwmChannel, 0);
+#else
 	bcm2835_gpio_write(Config.pwmPin, LOW);
 #endif
 	State.mode = MOTOR_MODE_STOP;
@@ -103,13 +105,17 @@ void MotorContainer::ModeStop()
 
 void MotorContainer::ModeForward()
 {
+	//set direction of the outputted voltage
+	bcm2835_gpio_write(Config.inPin1, HIGH);
+	bcm2835_gpio_write(Config.inPin2, LOW);
+
+	//set the magnitude of the average output voltage
 #if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
 	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
 	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
-	bcm2835_gpio_write(Config.inPin1, HIGH);
-	bcm2835_gpio_write(Config.inPin2, LOW);
+
 	bcm2835_gpio_write(Config.pwmPin, HIGH);
 #endif
 
@@ -119,13 +125,17 @@ void MotorContainer::ModeForward()
 
 void MotorContainer::ModeBackward()
 {
+	//set direction of the outputted voltage
+	bcm2835_gpio_write(Config.inPin1, LOW);
+	bcm2835_gpio_write(Config.inPin2, HIGH);
+
+	//set the magnitude of the average outputted voltage
 #if PWM_ENABLED
 	//calculate the appropriate pwm value depending on the
 	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
 	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
-	bcm2835_gpio_write(Config.inPin1, LOW);
-	bcm2835_gpio_write(Config.inPin2, HIGH);
+
 	bcm2835_gpio_write(Config.pwmPin, HIGH);
 #endif
 
