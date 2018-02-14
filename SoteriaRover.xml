@@ -21,7 +21,7 @@
                 <description>Command the rover to turn left</description>
             </entry>
         </enum>
-        <enum name="MOTOR_COMMAND">
+        <enum name="MOTOR_COMMAND_ID">
             <description>Mode of each motor (i.e m1 and m2)</description>
             <entry value="0" name="MOTOR_COMMAND_STOP">
                 <description>Command to stop motor</description>
@@ -76,9 +76,9 @@
         </message>
         <message id="2" name="ROVER_STATUS">
             <description>A packet defining the status of the various moudles</description>
-            <field type="uint8_t" name="locom_mode" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
-            <field type="uint32_t" name="motor1_mode">duration of the locomotion command</field>
-            <field type="uint32_t" name="motor2_mode">Power (0-100%) of the commanded locomotion manoeuvre</field>
+            <field type="uint8_t" name="locom_mode" enum="LOCOM_MODE">Mode of the locomotion module</field>
+            <field type="uint8_t" name="motor1_mode" enum="MOTOR_MODE">Mode of motor 1</field>
+            <field type="uint8_t" name="motor2_mode" enum="MOTOR_MODE">Mode of motor 2</field>
         </message>            
     </messages>
 </mavlink>

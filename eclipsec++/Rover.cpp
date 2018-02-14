@@ -8,15 +8,15 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "LocomClass.h"
 #include "CommsContainer.h"
+#include "LocomContainer.h"
 #include "Utils.h"
 
 void testLocom();
 
 int main(){
 	//bcm2835_init();
-	LocomClass Locom;
+	LocomContainer Locom;
 	CommsContainer Comms;
 	Comms.Start();
 	Locom.Start();

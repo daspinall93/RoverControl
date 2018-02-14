@@ -1,5 +1,5 @@
 all:main
-OBJS=main.o Utils.o MotorClass.o LocomClass.o CommsContainer.o
+OBJS=Rover.o Utils.o MotorClass.o LocomClass.o CommsContainer.o
 LIBS=-lbcm2835
 
 main: $(OBJS)
