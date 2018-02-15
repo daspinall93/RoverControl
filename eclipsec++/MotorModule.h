@@ -14,22 +14,14 @@
 #define MOTORCONTAINER_H_
 
 #include <stdint.h>
+#include "mavlink/v2.0/SoteriaRover/mavlink.h"
 #include <bcm2835.h>
-
-#define MOTOR_COMMAND_STOP 0
-#define MOTOR_COMMAND_FORWARD 1
-#define MOTOR_COMMAND_BACKWARD 2
-
-#define MOTOR_MODE_STOP 0
-#define MOTOR_MODE_FORWARD 1
-#define MOTOR_MODE_BACKWARD 2
 
 #define PWM_ENABLED 0
 #define PWM_RANGE 1024
 
-class MotorContainer{
+class MotorModule{
 public:
-
 	//public data members
 	//the command interface for motor to be called
 	struct
@@ -46,25 +38,8 @@ public:
 		uint8_t mode;	//flag specifying if the motor currently has a voltage applied
 	} Report;
 
-	struct
-	{
-		uint8_t motorid;
-
-		uint8_t pwmPin;
-		uint8_t inPin1;	//if high and pin2 low then wheel goes forward
-		uint8_t inPin2;
-
-		uint8_t pwmChannel;	//the channel on t
-		uint8_t pwmRange;
-	} Config;
-
 	//public function members
-	MotorContainer(){};
-	void Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, int motorid, int pwmChannel);
-	void Execute();
-
-
-private:
+	MotorModule(){};
 
 	struct {
 
@@ -81,7 +56,21 @@ private:
 	void UpdateReport();
 	void Debug();
 
-protected:
+	struct
+	{
+		uint8_t motorid;
+
+		uint8_t pwmPin;
+		uint8_t inPin1;	//if high and pin2 low then wheel goes forward
+		uint8_t inPin2;
+
+		uint8_t pwmChannel;	//the channel on t
+		uint8_t pwmRange;
+	} Config;
+
+
+	void Start(uint8_t motorid);
+	void Execute();
 
 
 

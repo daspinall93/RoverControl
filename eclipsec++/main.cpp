@@ -8,20 +8,18 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "CommsContainer.h"
-#include "LocomContainer.h"
+#include "CommsModule.h"
+#include "LocomModule.h"
 #include "Utils.h"
 
 void testLocom();
 
 int main(){
-	//bcm2835_init();
-	LocomContainer Locom;
-	CommsContainer Comms;
+	//bcm2835_initlocom();
+	LocomModule Locom;
+	CommsModule Comms;
 	Comms.Start();
 	Locom.Start();
-//	Locom.Motor1.Start();
-//	Locom.Motor2.Start();
 
 	//set up new send command
 	Comms.MavInput.heartBeat.Locom_mode = LOCOM_MODE_STRAIGHT_FORWARD;

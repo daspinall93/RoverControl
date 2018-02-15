@@ -5,16 +5,40 @@
  *      Author: dan
  */
 
-#include "MotorContainer.h"
+#include "MotorModule.h"
 
 #include <stdio.h>
+#include "MotorContainer.h"
 
-void MotorContainer::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8_t motorid, uint8_t pwmChannel)
+/* all enumerations are define in SoteriaRover header from Mavlink */
+
+#define ENA 18	//PWM
+#define ENB 19	//PWM
+//M1=right motor
+#define IN1 4	//dig for M1
+#define IN2 17	//dig for M1
+//M2 = left motor
+#define IN3 27	//dig for M2
+#define IN4 22	//dig for M2
+
+void MotorModule::Start(uint8_t motorid)
 {
+	//set configuration according to the motorid given
 	Config.motorid = motorid;
-	Config.pwmPin = pwmPin;
-	Config.inPin1 = inPin1;
-	Config.inPin2 = inPin2;
+
+	if (!motorid){
+		Config.pwmPin = ENA;
+		Config.inPin1 = IN1;
+		Config.inPin2 = IN2;
+		Config.pwmChannel = 0;
+	}
+	else
+	{
+		Config.pwmPin = ENA;
+		Config.inPin1 = IN1;
+		Config.inPin2 = IN2;
+		Config.pwmChannel = 1;
+	}
 	Config.pwmRange = PWM_RANGE;
 
 	//setup motor outputs
@@ -44,7 +68,7 @@ void MotorContainer::Start(uint8_t inPin1, uint8_t inPin2, uint8_t pwmPin, uint8
 
 }
 
-void MotorContainer::Execute()
+void MotorModule::Execute()
 {
 	if (Command.newCommand)
 	{
@@ -86,7 +110,7 @@ void MotorContainer::Execute()
 	Debug();
 }
 
-void MotorContainer::ModeStop()
+void MotorModule::ModeStop()
 {
 	//the direction of the outputted voltage
 	bcm2835_gpio_write(Config.inPin1, LOW);
@@ -103,7 +127,7 @@ void MotorContainer::ModeStop()
 	State.speed = Command.power;
 }
 
-void MotorContainer::ModeForward()
+void MotorModule::ModeForward()
 {
 	//set direction of the outputted voltage
 	bcm2835_gpio_write(Config.inPin1, HIGH);
@@ -123,7 +147,7 @@ void MotorContainer::ModeForward()
 	State.speed = Command.power;
 }
 
-void MotorContainer::ModeBackward()
+void MotorModule::ModeBackward()
 {
 	//set direction of the outputted voltage
 	bcm2835_gpio_write(Config.inPin1, LOW);
@@ -143,12 +167,12 @@ void MotorContainer::ModeBackward()
 	State.speed = Command.power;
 }
 
-void MotorContainer::UpdateReport()
+void MotorModule::UpdateReport()
 {
 	Report.mode = State.mode;
 }
 
-void MotorContainer::Debug()
+void MotorModule::Debug()
 {
 	printf("[MOTOR%d]Mode = %d \t speed = %d \n", Config.motorid, State.mode, State.speed);
 }

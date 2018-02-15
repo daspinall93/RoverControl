@@ -17,20 +17,12 @@
 
 #include "Utils.h"
 #include "mavlink/v2.0/SoteriaRover/mavlink.h"
-#include "MotorContainer.h"
+#include "MotorModule.h"
 
 /* all enumerations are define in SoteriaRover header from Mavlink */
 
-#define ENA 18	//PWM
-#define ENB 19	//PWM
-//M1=right motor
-#define IN1 4	//dig for M1
-#define IN2 17	//dig for M1
-//M2 = left motor
-#define IN3 27	//dig for M2
-#define IN4 22	//dig for M2
 
-class LocomContainer
+class LocomModule
 {
 public:
 	//members that can be accessed from outside of the class
@@ -52,24 +44,23 @@ public:
 		bool newCommand;	//boolean for if a new command has been produced
 	} Command;
 
+	LocomModule(){};	//replace locom_start()
+
+	//members that can only be accessed by the class
 	struct
 	{
 		//struct containg some configuration parameters for the object
-		int pwmResolution;
-	} Parameters;
+
+	} Config;
 
 	//public member functions for calling
-	LocomContainer(){};	//replace locom_start()
-	void Start();
+
+	void Start(MotorModule* M1, MotorModule* M2);
 	void Execute();
 
 	//private objects
-	MotorClass Motor1;
-	MotorClass Motor2;
-
-private:
-	//members that can only be accessed by the class
-
+	MotorModule Motor1;
+	MotorModule Motor2;
 	struct
 	{
 		//struct containing to keep track of internal state of the object
@@ -88,9 +79,6 @@ private:
 
 	void UpdateReport();
 	void Debug();
-
-
-protected:
 
 };
 

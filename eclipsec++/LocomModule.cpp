@@ -4,7 +4,7 @@
  *  Created on: 9 Feb 2018
  *      Author: dan
  */
-#include "LocomContainer.h"
+#include "LocomModule.h"
 
 /* PUBLIC FUNCTIONS */
 
@@ -12,11 +12,11 @@
  * Function to start/setup the object by configuring the motors
  */
 
-void LocomContainer::Start()
+void LocomModule::Start(MotorModule* M1, MotorModule* M2)
 {
-	//initialise the motors
-	Motor1.Start(IN1, IN2, ENA, 0);
-	Motor1.Start(IN3, IN4, ENB, 1);
+	//use the motor modules created outside of the locom module to send commands
+	Motor1 = *M1;
+	Motor2 = *M2;
 
 	//initialise the state structure
 	State.mode = LOCOM_MODE_STOP;
@@ -24,7 +24,7 @@ void LocomContainer::Start()
 	State.modeStartTime = 0;
 }
 
-void LocomContainer::Execute()
+void LocomModule::Execute()
 {
 	Debug();
 
@@ -103,7 +103,7 @@ void LocomContainer::Execute()
 /*
  * Private function to put the rover into the stop mode
  */
-void LocomContainer::ModeStop()
+void LocomModule::ModeStop()
 {
 	//currenty only need to set directions as not using PWM
 	Motor1.Command.commandid = MOTOR_COMMAND_STOP;
@@ -121,7 +121,7 @@ void LocomContainer::ModeStop()
 /*
  * Private function to put the rover into the drive straight forward mode
  */
-void LocomContainer::ModeStraightForward()
+void LocomModule::ModeStraightForward()
 {
 	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
 	Motor1.Command.newCommand = 1;
@@ -138,7 +138,7 @@ void LocomContainer::ModeStraightForward()
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomContainer::ModeStraightBackward()
+void LocomModule::ModeStraightBackward()
 {
 	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
 	Motor1.Command.newCommand = 1;
@@ -157,7 +157,7 @@ void LocomContainer::ModeStraightBackward()
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomContainer::ModeTurnRight()
+void LocomModule::ModeTurnRight()
 {
 	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
 	Motor1.Command.newCommand = 1;
@@ -174,7 +174,7 @@ void LocomContainer::ModeTurnRight()
 /*
  * Private function to put the rover into the drive straight backward mode
  */
-void LocomContainer::ModeTurnLeft()
+void LocomModule::ModeTurnLeft()
 {
 	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
 	Motor1.Command.newCommand = 1;
@@ -187,13 +187,13 @@ void LocomContainer::ModeTurnLeft()
 	State.mode = LOCOM_MODE_TURN_LEFT;
 }
 
-void LocomContainer::UpdateReport()
+void LocomModule::UpdateReport()
 {
 	Report.mode = State.mode;
 	Report.modeElapsedTime = State.modeElapsedTime;
 }
 
-void LocomContainer::Debug()
+void LocomModule::Debug()
 {
 	printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
 }

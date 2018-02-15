@@ -5,8 +5,8 @@
  *      Author: dan
  */
 
-#ifndef COMMSCONTAINER_H_
-#define COMMSCONTAINER_H_
+#ifndef CommsModule_H_
+#define CommsModule_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,10 +23,9 @@
 #define BUFFER_LENGTH 2041
 #define GROUND_IP_ADDRESS "127.0.0.1"
 
-class CommsContainer
+class CommsModule
 {
 public:
-
 	/* PUBLIC DATA MEMBERS */
 
 	/* MAVLINK INPUT DATA */
@@ -37,7 +36,7 @@ public:
 		mavlink_message_t standard;	//the base type used retrieve the data with payload not decoded
 		mavlink_heartbeat_t heartBeat;	//heartbeat message sent periodically
 		mavlink_locom_command_t  locomCommand;	//command for the locomotion module
-	} MavOutput;
+	} Report;
 
 	//structure containing the input structures for each of the packets to be used
 	//the corresponding structure values will need to be set before the call of the send function
@@ -48,16 +47,11 @@ public:
 		mavlink_message_t standard;	//the base type used retrieve the data with payload not decoded
 		mavlink_heartbeat_t heartBeat;	//heartbeat message sent periodically
 		mavlink_locom_command_t  locomCommand;	//command for the locomotion module
-	} MavInput;
+	} Command;
 	/* PUBLIC FUNCTION MEMBERS */
 
-	CommsContainer();
-	~CommsContainer();
-	void Start();
-	void Execute();
-	void Stop();
-
-private:
+	CommsModule();
+	~CommsModule();
 
 	/* PRIVATE DATA MEMBERS */
 	/* SOCKET DATA */
@@ -99,6 +93,10 @@ private:
 	void ReceivePacket();
 	void Debug();
 
+	void Start();
+	void Execute();
+	void Stop();
+
 };
 
-#endif /* COMMSCONTAINER_H_ */
+#endif /* CommsModule_H_ */

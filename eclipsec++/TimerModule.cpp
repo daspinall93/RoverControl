@@ -1,13 +1,13 @@
 /*
- * TimerContainer.cpp
- *
+ * TimerModule.cpp
+ * will call module execute functions at specified times
  *  Created on: 14 Feb 2018
  *      Author: AUser
  */
 
-#include "TimerContainer.h"
+#include "TimerModule.h"
 
-void TimerContainer::Start()
+void TimerModule::Start()
 {
 	//set the initial time
 	clock_gettime(CLOCK_MONOTONIC, &State.tspecInit);
@@ -18,19 +18,24 @@ void TimerContainer::Start()
 
 	State.prevMilSec = round(State.tspecInit.tv_nsec / 1.0e6);
 	State.prevMilSec = State.prevMilSec + (State.tspecInit.tv_sec * 1000);
+
 }
 
-void TimerContainer::Execute()
+void TimerModule::Execute()
 {
+
+
 	//when it starts update the times
 	UpdateState();
 
-	/* Update the flags to signify whether on this loop which functions are called */
+	/* UPDAETE FLAGS */
 	UpdateReport();
+
+	/* CALL EXECUTE FUNCTIONS */
 
 }
 
-void TimerContainer::UpdateState()
+void TimerModule::UpdateState()
 {
 	//update the times
 	clock_gettime(CLOCK_MONOTONIC, &State.tspec);
@@ -41,9 +46,10 @@ void TimerContainer::UpdateState()
 	//set the new time
 	State.milSec = round(State.tspec.tv_nsec / 1.0e6);
 	State.milSec = State.microSec + (State.tspecInit.tv_sec * 1000);
+
 }
 
-void TimerContainer::UpdateReport()
+void TimerModule::UpdateReport()
 {
 	//the difference in time between the last call and the current
 	long int delta = State.milSec - State.prevMilSec;
@@ -67,5 +73,4 @@ void TimerContainer::UpdateReport()
 	{
 		Report.tenhzFlag = 0;
 	}
-
 }

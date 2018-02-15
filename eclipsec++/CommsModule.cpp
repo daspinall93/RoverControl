@@ -5,9 +5,9 @@
  *      Author: dan
  */
 
-#include "CommsContainer.h"
+#include "CommsModule.h"
 
-CommsContainer::CommsContainer()
+CommsModule::CommsModule()
 {
 	// TODO Auto-generated constructor stub
 	SocketConfig.socketLength = sizeof(struct sockaddr_in);
@@ -17,17 +17,17 @@ CommsContainer::CommsContainer()
 	SocketConfig.socketLength = sizeof(struct sockaddr_in);
 
 	//set all buffers to 0
-	memset(&MavOutput, 0, sizeof(MavOutput));
-	memset(&MavInput, 0, sizeof(MavInput));
+	memset(&Report, 0, sizeof(Report));
+	memset(&Command, 0, sizeof(Command));
 }
 
-CommsContainer::~CommsContainer()
+CommsModule::~CommsModule()
 {
 	// TODO Auto-generated destructor stub
 }
 
 /* Create the socket connection */
-void CommsContainer::Start()
+void CommsModule::Start()
 {
 	//TODO Add error checking to the socket set up process
 	//create a socket
@@ -57,7 +57,7 @@ void CommsContainer::Start()
 }
 
 /* Execute will either receive or send messages over the connection created by Start() */
-void CommsContainer::Execute()
+void CommsModule::Execute()
 {
 	//as an example send heartbeat
 
@@ -68,27 +68,27 @@ void CommsContainer::Execute()
 	Debug();
 }
 
-void CommsContainer::Stop()
+void CommsModule::Stop()
 {
 	//close the socket
 	close(SocketConfig.socketNum);
 }
 
 /* Send a packet depending on the value of messageid */
-void CommsContainer::SendPacket()
+void CommsModule::SendPacket()
 {
-	if (MavInput.newSendCommand == 1)
+	if (Command.newSendCommand == 1)
 	{
 		//clear the buffer socket before sending
 		memset(&SocketState.bufferArray, 0, sizeof(SocketState.bufferArray));
 
 		//switch according to what messageid is set to
-		switch(MavInput.messageid)
+		switch(Command.messageid)
 		{
 		case MAVLINK_MSG_ID_HEARTBEAT:
 			//send a heartbeat message
 			//create the message in mavLink format
-			mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &MavOutput.standard, MavInput.heartBeat.Locom_mode);
+			mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Report.standard, Command.heartBeat.Locom_mode);
 
 			break;
 
@@ -98,13 +98,13 @@ void CommsContainer::SendPacket()
 		}
 
 		//pass to buffer and send to Ground
-		SocketState.bufferLength = mavlink_msg_to_send_buffer(SocketState.bufferArray, &MavOutput.standard);
+		SocketState.bufferLength = mavlink_msg_to_send_buffer(SocketState.bufferArray, &Report.standard);
 		SocketState.bytesSent = sendto(SocketConfig.socketNum, SocketState.bufferArray,
 				SocketState.bufferLength, 0, (struct sockaddr*) &SocketConfig.socketidGround, sizeof(struct sockaddr_in));
 
 		//update messages sent and newCommand flag
 		SocketState.messagesSent += 1;
-		MavInput.newSendCommand = 0;
+		Command.newSendCommand = 0;
 
 	}
 	else
@@ -114,7 +114,7 @@ void CommsContainer::SendPacket()
 	}
 }
 
-void CommsContainer::ReceivePacket()
+void CommsModule::ReceivePacket()
 {
 	memset(&SocketState.bufferArray, 0, sizeof(SocketState.bufferArray));
 
@@ -128,21 +128,21 @@ void CommsContainer::ReceivePacket()
 		for (int i = 0; i < SocketState.bytesReceived; i++)
 		{
 			//printf("current byte: 0x%02x \n", SocketState.bufferArray[i]);
-			if(mavlink_parse_char(MAVLINK_COMM_0, SocketState.bufferArray[i], &MavOutput.standard, &mavlinkState))
+			if(mavlink_parse_char(MAVLINK_COMM_0, SocketState.bufferArray[i], &Report.standard, &mavlinkState))
 			{
 				//printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
 			}
 		}
-		MavOutput.newPacketReceived = 1;
+		Report.newPacketReceived = 1;
 		//switch depending on the message id received and then set the corresponding output structure
-		switch (MavOutput.standard.msgid){
+		switch (Report.standard.msgid){
 
 		case MAVLINK_MSG_ID_HEARTBEAT:
 
 			break;
 
 		case MAVLINK_MSG_ID_LOCOM_COMMAND:
-			mavlink_msg_locom_command_decode(&MavOutput.standard, &MavOutput.locomCommand);
+			mavlink_msg_locom_command_decode(&Report.standard, &Report.locomCommand);
 			break;
 
 		}
@@ -151,18 +151,18 @@ void CommsContainer::ReceivePacket()
 	else
 	{
 		//no new packet was received so set the flag to false
-		MavOutput.newPacketReceived = 0;
+		Report.newPacketReceived = 0;
 		return;
 	}
 }
 
-void CommsContainer::Debug()
+void CommsModule::Debug()
 {
 //	printf("[COMMS]bytes sent = %d \n", SocketState.bytesSent);
 //	printf("[COMMS]bytes received = %d \n", SocketState.bytesReceived);
-	printf("[COMMS]locom_commandid = %d \n", MavOutput.locomCommand.Locom_commandid);
-	printf("[COMMS]locom_duration = %d \n", MavOutput.locomCommand.duration_ms);
-	printf("[COMMS]locom_power = %d \n", MavOutput.locomCommand.power);
+	printf("[COMMS]locom_commandid = %d \n", Report.locomCommand.Locom_commandid);
+	printf("[COMMS]locom_duration = %d \n", Report.locomCommand.duration_ms);
+	printf("[COMMS]locom_power = %d \n", Report.locomCommand.power);
 }
 
 
