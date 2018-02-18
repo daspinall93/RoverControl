@@ -26,13 +26,13 @@ void MotorModule::Start(uint8_t motorid)
 	//set configuration according to the motorid given
 	Config.motorid = motorid;
 
-	if (!motorid){
+	if (motorid==1){
 		Config.pwmPin = ENA;
 		Config.inPin1 = IN1;
 		Config.inPin2 = IN2;
 		Config.pwmChannel = 0;
 	}
-	else
+	else if (motorid==2)
 	{
 		Config.pwmPin = ENA;
 		Config.inPin1 = IN1;

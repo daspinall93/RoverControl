@@ -88,7 +88,7 @@ void CommsModule::SendPacket()
 		case MAVLINK_MSG_ID_HEARTBEAT:
 			//send a heartbeat message
 			//create the message in mavLink format
-			mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Report.standard, Command.heartBeat.Locom_mode);
+			mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Command.standard, Command.heartBeat.Locom_mode);
 
 			break;
 
@@ -98,7 +98,7 @@ void CommsModule::SendPacket()
 		}
 
 		//pass to buffer and send to Ground
-		SocketState.bufferLength = mavlink_msg_to_send_buffer(SocketState.bufferArray, &Report.standard);
+		SocketState.bufferLength = mavlink_msg_to_send_buffer(SocketState.bufferArray, &Command.standard);
 		SocketState.bytesSent = sendto(SocketConfig.socketNum, SocketState.bufferArray,
 				SocketState.bufferLength, 0, (struct sockaddr*) &SocketConfig.socketidGround, sizeof(struct sockaddr_in));
 

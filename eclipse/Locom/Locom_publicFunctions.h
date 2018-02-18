@@ -5,33 +5,31 @@
  *      Author: dan
  */
 
+/* EXTERNAL LIBRARIES */
 #include <math.h>
 #include <stdio.h>
 #include "bcm2835.h"	//interface with motors
-#include "rvLocom.h"
+
+/* LOCOM LIBRARIES */
+#include "Locom_privateConst.h"
+#include "Locom_privateStructs.h"
+#include "Locom_privateFunctions.h"
+
 #include "rvUtils.h"	//helpful self-contained functions
+
+
+#include "Locom_privateFunctions.h"
+#include "../mavlink/v2.0/SoteriaRover/mavlink.h"
+#include "Locom_publicStructs.h"
 
 //pin defintions
 //drive pins
-#define ENA 18	//PWM
-#define ENB 19	//PWM
-//M1=right motor
-#define IN1 4	//dig for M1
-#define IN2 17	//dig for M1
-//M2 = left motor
-#define IN3 27	//dig for M2
-#define IN4 22	//dig for M2
 
 //private data for locom to access
 locom_internStateStruct locom_internState;
 locom_modConfStruct locom_modConf;
 
-//private functions
-void locom_subModeAction();
-void locom_genStatRep(locom_statRepStruct* p_locom_statRep);
-void locom_subModeTransition(locom_comConfStruct* p_locom_comConf);
-
-void locom_start(){
+void Locom_Start(){
 
 	//setup motor outputs
 	bcm2835_gpio_fsel(IN1, BCM2835_GPIO_FSEL_OUTP);	//Basic out function
@@ -56,20 +54,19 @@ void locom_start(){
 	locom_internState.comStartTimems = 0;
 }
 
-void locom_do(locom_comConfStruct* p_locom_comConf, locom_statRepStruct* p_locom_statRep){
+void Locom_Do(locom_comConfStruct* p_locom_comConf, locom_statRepStruct* p_locom_statRep){
 
 	//print out state of the module
 	printf("[LOCOM ENTRY]right wheel = %d \t left wheel = %d \n", locom_internState.locomLeftWheel, locom_internState.locomRightWheel);
 
-
 	//carry out state transition if new command received
-	locom_subModeTransition(p_locom_comConf);
+	Locom_SubModeTransition(p_locom_comConf);
 
 	//carry out actions depending on new state
-	locom_subModeAction();
+	Locom_SubModeAction();
 
 	//generate the status report
-	locom_genStatRep(p_locom_statRep);
+	Locom_GenStatRep(p_locom_statRep);
 
 	//printf("[LOCOM EXIT]right wheel = %d \t left wheel = %d \n", locom_internState.locomLeftWheel, locom_internState.locomRightWheel);
 
@@ -97,141 +94,6 @@ void locom_stop(){
 
 //private functions
 
-void locom_subModeTransition(locom_comConfStruct* p_locom_comConf){
-	//carry out the state transitions and change the output
-	//depending on the command, change output to motors and state appropriately
-
-	if (p_locom_comConf->newCommand){
-		switch(p_locom_comConf->command){
-
-			case LOCOM_COMMAND_STOP:
-				//stay in standby
-
-				locom_internState.locomSubMode = LOCOM_STATE_STOP;
-				locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
-				locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
-				break;
-
-			case LOCOM_COMMAND_STRAIGHT_FORWARD:
-				//drive straight command
-
-				//set to drive all wheels forward
-				locom_internState.locomSubMode = LOCOM_STATE_STRAIGHT_FORWARD;
-				locom_internState.locomLeftWheel = LOCOM_WHEEL_FORWARD;
-				locom_internState.locomRightWheel = LOCOM_WHEEL_FORWARD;
-				break;
-
-			case LOCOM_COMMAND_STRAIGHT_BACKWARD:
-				//go in a straight line backwards
-
-				//set to drive all wheels backward
-				locom_internState.locomSubMode = LOCOM_STATE_STRAIGHT_BACKWARD;
-				locom_internState.locomLeftWheel = LOCOM_WHEEL_BACKWARD;
-				locom_internState.locomRightWheel = LOCOM_WHEEL_BACKWARD;
-				break;
-
-			case LOCOM_COMMAND_TURN_LEFT:
-				//turn left command
-
-				//set to drive left wheels back and right forward
-				locom_internState.locomSubMode = LOCOM_STATE_TURN_LEFT;
-				locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
-				locom_internState.locomRightWheel = LOCOM_WHEEL_FORWARD;
-				break;
-			case LOCOM_COMMAND_TURN_RIGHT:
-				//turn right command
-
-				//set to drive left wheels forward and right backward
-				locom_internState.locomSubMode = LOCOM_STATE_TURN_RIGHT;
-				locom_internState.locomLeftWheel = LOCOM_WHEEL_FORWARD;
-				locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
-				break;
-
-			default:
-				//invalid command
-
-				break;
-
-		}
-
-		//set the time at which the command started
-		locom_internState.comStartTimems = utils_getTimems();
-		locom_internState.comElapsedTimems = 0;
-		p_locom_comConf->newCommand = 0;	//set to 0 as new command has been processed
-
-	}else{
-
-		//no new command so need to check time elapsed
-		locom_internState.comElapsedTimems = (utils_getTimems() - locom_internState.comStartTimems);
-		if(locom_internState.comElapsedTimems >= p_locom_comConf->msecDur){
-			//the command has ended so turn of motors and set appropriate
-
-			locom_internState.locomSubMode = LOCOM_STATE_STOP;
-			locom_internState.locomLeftWheel = LOCOM_WHEEL_STOP;
-			locom_internState.locomRightWheel = LOCOM_WHEEL_STOP;
-			locom_internState.comElapsedTimems = 0;
-
-		}
-
-	}
-
-}
-
-void locom_genStatRep(locom_statRepStruct* p_locom_statRep){
-
-	//generate the latest state report
-	p_locom_statRep->locomSubMode = locom_internState.locomSubMode;
-	p_locom_statRep->comElapsedTimems = locom_internState.comElapsedTimems;
-
-}
-
-void locom_subModeAction(){
-
-	switch (locom_internState.locomLeftWheel){
-
-		case LOCOM_WHEEL_FORWARD:
-
-			bcm2835_gpio_write(IN1, HIGH);
-			bcm2835_gpio_write(IN2, LOW);
-			break;
-
-		case LOCOM_WHEEL_BACKWARD:
-
-			bcm2835_gpio_write(IN1, LOW);
-			bcm2835_gpio_write(IN2, HIGH);
-			break;
-
-		case LOCOM_WHEEL_STOP:
-
-			bcm2835_gpio_write(IN1, LOW);
-			bcm2835_gpio_write(IN2, LOW);
-			break;
-
-	}
-
-	switch (locom_internState.locomRightWheel){
-
-		case LOCOM_WHEEL_FORWARD:
-
-			bcm2835_gpio_write(IN3, HIGH);
-			bcm2835_gpio_write(IN4, LOW);
-			break;
-
-		case LOCOM_WHEEL_BACKWARD:
-
-			bcm2835_gpio_write(IN3, LOW);
-			bcm2835_gpio_write(IN4, HIGH);
-			break;
-
-		case LOCOM_WHEEL_STOP:
-
-			bcm2835_gpio_write(IN3, LOW);
-			bcm2835_gpio_write(IN4, LOW);
-			break;
-
-	}
-
-}
 
 
 

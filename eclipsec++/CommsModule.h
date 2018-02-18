@@ -26,8 +26,6 @@
 class CommsModule
 {
 public:
-	/* PUBLIC DATA MEMBERS */
-
 	/* MAVLINK INPUT DATA */
 	//mav messages which can then be accessed as the output of the module (i.e heartBeat.mavLink_version)
 	struct
@@ -43,16 +41,17 @@ public:
 	struct
 	{
 		uint8_t newSendCommand;
-		uint8_t messageid;	//message id to specify which packet is goin is going to be sent
-		mavlink_message_t standard;	//the base type used retrieve the data with payload not decoded
-		mavlink_heartbeat_t heartBeat;	//heartbeat message sent periodically
-		mavlink_locom_command_t  locomCommand;	//command for the locomotion module
+		uint8_t messageid;	// message id to specify which packet is goin is going to be sent
+		mavlink_message_t standard;	// the base type used to store the data from mavlink
+		mavlink_heartbeat_t heartBeat;	// members are accessed as input for TM to ground
+		mavlink_locom_command_t  locomCommand;	//members are accessed as input for TM to ground
 	} Command;
 	/* PUBLIC FUNCTION MEMBERS */
 
 	CommsModule();
 	~CommsModule();
 
+private:
 	/* PRIVATE DATA MEMBERS */
 	/* SOCKET DATA */
 	//structure containing the parameters for the socket configuration
@@ -86,7 +85,7 @@ public:
 		uint8_t compid;
 	} MavConfig;
 
-	mavlink_status_t mavlinkState;	//parameters used to
+	mavlink_status_t mavlinkState;	//parameters used to monitor mavlink
 
 	/* PRIVATE FUNCTION MEMBERS */
 	void SendPacket();

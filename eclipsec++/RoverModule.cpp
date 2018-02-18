@@ -8,38 +8,53 @@
 
 void RoverModule::Start()
 {
-	Motor1.Start(0);
-	Motor2.Start(1);
-	Locom.Start(&Motor1, &Motor2);
-	Comms.Start();
-	Timer.Start();
+    /* START THE COMMS MODULE */
+    Comms.Start();
+
+    /* START THE TIMER MODULE */
+    Timer.Start();
+
+    /* START MOTOR WITH ID=0 */
+    Motor1.Start(0);
+
+    /* START MOTOR WITH ID=1 */
+    Motor2.Start(1);
+
+    /* START LOCOM WITH MOTORS 1 & 2 */
+    Locom.Start(&Motor1, &Motor2);
+
 }
 
 void RoverModule::Execute()
 {
-	while (1){
-		Timer.Execute();
+    while (1)
+    {
+	/* EXECUTE TIMER TO UPDATE FLAGS */
+	Timer.Execute();
 
-		if (Timer.Report.onehzFlag)
-		{
+	/* EXECUTE MODULES AT 1HZ */
+	if (Timer.Report.onehzFlag)
+	{
 
-		}
+	}
 
-		if (Timer.Report.tenhzFlag)
-		{
-			/* Call comms to check on any new commands and pass telemetry */
-			Comms.Execute();
+	/* EXECUTE MODULES AT 10HZ */
+	if (Timer.Report.tenhzFlag)
+	{
+	    /* EXECUTE THE COMMS MODULE */
+	    Comms.Execute();
 
-			/* Call local to update state of the rover */
-			//Local.Execute();
+	    /* EXECUTE THE LOCALISATION MODULE */
+	    //Local.Execute();
 
-			/* Call Locom to implement the new commands */
-			Locom.Execute();
+	    /* EXECUTE THE LOCOMOTION MODULE */
+	    Locom.Execute();
 
-			/* Call motors to execute any new commands from locom */
-			Motor1.Execute();
-			Motor2.Execute();
+	    /* EXECUTE BOTH MOTOR MODULES */
+	    Motor1.Execute();
+	    Motor2.Execute();
 
-		}
+	}
 
+    }
 }

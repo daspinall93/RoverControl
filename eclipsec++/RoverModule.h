@@ -15,15 +15,16 @@
 class RoverModule
 {
 public:
-	//create the modules to be use and set as friends to access execute and start functions
-	LocomModule Locom;
-	CommsModule Comms;
-	MotorModule Motor1;
-	MotorModule Motor2;
-	TimerModule Timer;
+    //create the modules to be use and set as friends to access execute and start functions
+    LocomModule Locom;
+    CommsModule Comms;
+    MotorModule Motor1;
+    MotorModule Motor2;
+    TimerModule Timer;
 
-	void Start();
-	void Execute();
+
+    void Start();
+    void Execute();
 
 
 };
