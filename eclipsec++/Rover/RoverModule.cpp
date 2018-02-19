@@ -69,7 +69,6 @@ void RoverModule::Start()
 
 void RoverModule::Execute()
 {
-    Debug();
     while (1)
     {
 	/* UPDATE TIMER FLAGS */
@@ -78,13 +77,12 @@ void RoverModule::Execute()
 	/* EXECUTE MODULES AT 1HZ */
 	if (State.onehzFlag)
 	{
-	    //Debug();
+
 	}
 
 	/* EXECUTE MODULES AT 10HZ */
 	if (State.tenhzFlag)
 	{
-	    Debug();
 #if COMMS_ENABLED
 	    /* EXECUTE THE COMMS MODULE */
 	    p_Comms->Execute();
