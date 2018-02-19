@@ -5,157 +5,161 @@
  *      Author: dan
  */
 
+/* INCLUDE HEADER FILE */
 #include "MotorModule.h"
 
+/* INCLUDE EXTERNAL LIBRARIES */
 #include <stdio.h>
-#include "MotorContainer.h"
+#include <bcm2835.h>
 
-/* all enumerations are define in SoteriaRover header from Mavlink */
+/* INCLUDE ENUMERATIONS */
+#include "mavlink/v2.0/SoteriaRover/mavlink.h"
 
+/* PIN CONSTANTS */
 #define ENA 18	//PWM
 #define ENB 19	//PWM
-//M1=right motor
 #define IN1 4	//dig for M1
 #define IN2 17	//dig for M1
-//M2 = left motor
 #define IN3 27	//dig for M2
 #define IN4 22	//dig for M2
 
+MotorModule::MotorModule()
+{
+    /* INITIALISE ALL DATA TO 0 */
+    memset(&Report, 0, sizeof(Report));
+    memset(&Command, 0, sizeof(Report));
+    memset(&Config, 0, sizeof(Config));
+    memset(&State, 0, sizeof(State));
+}
+
 void MotorModule::Start(uint8_t motorid)
 {
-	//set configuration according to the motorid given
-	Config.motorid = motorid;
+    /* ASSIGNING PINS */
+    Config.motorid = motorid;
+    if (motorid==1)
+    {
+	Config.pwmPin = ENA;
+	Config.inPin1 = IN1;
+	Config.inPin2 = IN2;
+	Config.pwmChannel = 0;
+    }
+    else if (motorid==2)
+    {
+	Config.pwmPin = ENA;
+	Config.inPin1 = IN1;
+	Config.inPin2 = IN2;
+	Config.pwmChannel = 1;
+    }
 
-	if (motorid==1){
-		Config.pwmPin = ENA;
-		Config.inPin1 = IN1;
-		Config.inPin2 = IN2;
-		Config.pwmChannel = 0;
-	}
-	else if (motorid==2)
-	{
-		Config.pwmPin = ENA;
-		Config.inPin1 = IN1;
-		Config.inPin2 = IN2;
-		Config.pwmChannel = 1;
-	}
-	Config.pwmRange = PWM_RANGE;
+    /* SETTING PWM RANGE */
+    Config.pwmRange = PWM_RANGE;
 
-	//setup motor outputs
-	bcm2835_gpio_fsel(Config.inPin1 , BCM2835_GPIO_FSEL_OUTP);	//Basic out function
-	bcm2835_gpio_fsel(Config.inPin2, BCM2835_GPIO_FSEL_OUTP);
+    /* SETUP PIN FUNCTIONS */
+    bcm2835_gpio_fsel(Config.inPin1 , BCM2835_GPIO_FSEL_OUTP);	//Basic out function
+    bcm2835_gpio_fsel(Config.inPin2, BCM2835_GPIO_FSEL_OUTP);
 
-	//if pwm is enabled then need to configure the appropriate pin
 #if PWM_ENABLED
-	bcm2835_gpio_fsel(Config.pwmPin, BCM2835_GPIO_FSEL_ALT5);	//PWM functionality
+    bcm2835_gpio_fsel(Config.pwmPin, BCM2835_GPIO_FSEL_ALT5);	//PWM functionality
     bcm2835_pwm_set_clock(BCM2835_PWM_CLOCK_DIVIDER_16);
     bcm2835_pwm_set_mode(Config.pwmChannel, 1, 1);
     bcm2835_pwm_set_range(Config.pwmChannel, PWM_RANGE);
 #else
-	bcm2835_gpio_fsel(Config.pwmPin, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(Config.pwmPin, BCM2835_GPIO_FSEL_OUTP);
 #endif
 
-	//initialise motor output
-	bcm2835_gpio_write(Config.inPin1, LOW);
-	bcm2835_gpio_write(Config.inPin2, LOW);
+    /* SETTING INITIAL OUTPUT */
+    bcm2835_gpio_write(Config.inPin1, LOW);
+    bcm2835_gpio_write(Config.inPin2, LOW);
 
 #if PWM_ENABLED
-	bcm2835_pwm_set_data(Config.pwmChannel, 0);
+    bcm2835_pwm_set_data(Config.pwmChannel, 0);
 #else
-	bcm2835_gpio_write(Config.pwmPin, LOW);
-	State.mode = MOTOR_MODE_STOP;
+    bcm2835_gpio_write(Config.pwmPin, LOW);
+    State.mode = MOTOR_MODE_STOP;
 #endif
 
 }
 
 void MotorModule::Execute()
 {
-	if (Command.newCommand)
+    /* CHECK IF NEW COMMAND HAS BEEN ISSUED FROM LOCOM */
+    if (Command.newCommand)
+    {
+	switch(Command.commandid)
 	{
-		switch(Command.commandid)
-		{
 
-			case MOTOR_COMMAND_STOP:
-				//stay in standby
+	    case MOTOR_COMMAND_STOP:
 
-				ModeStop();
-				break;
+		    ModeStop();
+		    break;
 
-			case MOTOR_COMMAND_FORWARD:
-				//drive straight command
+	    case MOTOR_COMMAND_FORWARD:
 
-				ModeForward();
-				break;
+		    ModeForward();
+		    break;
 
-			case MOTOR_COMMAND_BACKWARD:
-				//go in a straight line backwards
+	    case MOTOR_COMMAND_BACKWARD:
 
-				//set to drive all wheels backward
-				ModeBackward();
-				break;
+		    ModeBackward();
+		    break;
 
 
-			default:
-				//invalid command
+	    default:
 
-				break;
-
-		}
-
-		//reset new command flag
-		Command.newCommand = 0;	//set to 0 as new command has been processed
+		break;
 
 	}
 
-	Debug();
+	/* RESET NEW COMMAND FLAG */
+	Command.newCommand = 0;	//set to 0 as new command has been processed
+
+    }
+
+    Debug();
 }
 
 void MotorModule::ModeStop()
 {
-	//the direction of the outputted voltage
-	bcm2835_gpio_write(Config.inPin1, LOW);
-	bcm2835_gpio_write(Config.inPin2, LOW);
+    /* SET THE DIRECTION OF MOTOR */
+    bcm2835_gpio_write(Config.inPin1, LOW);
+    bcm2835_gpio_write(Config.inPin2, LOW);
 
-	//set the magnitude of the average output voltage
+    /* SET THE OUTPUT AVERAGE VOLTAGE */
 #if PWM_ENABLED
-	//calculate the appropriate pwm value depending on the
-	bcm2835_pwm_set_data(Config.pwmChannel, 0);
+    //calculate the appropriate pwm value depending on the
+    bcm2835_pwm_set_data(Config.pwmChannel, 0);
 #else
-	bcm2835_gpio_write(Config.pwmPin, LOW);
+    bcm2835_gpio_write(Config.pwmPin, LOW);
 #endif
-	State.mode = MOTOR_MODE_STOP;
-	State.speed = Command.power;
+
+    /* UPDATE THE STATE */
+    State.mode = MOTOR_MODE_STOP;
+    State.speed = Command.power;
 }
 
 void MotorModule::ModeForward()
 {
-	//set direction of the outputted voltage
-	bcm2835_gpio_write(Config.inPin1, HIGH);
-	bcm2835_gpio_write(Config.inPin2, LOW);
+    bcm2835_gpio_write(Config.inPin1, HIGH);
+    bcm2835_gpio_write(Config.inPin2, LOW);
 
-	//set the magnitude of the average output voltage
 #if PWM_ENABLED
-	//calculate the appropriate pwm value depending on the
-	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
-	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
+    Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
+    bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else
 
-	bcm2835_gpio_write(Config.pwmPin, HIGH);
+    bcm2835_gpio_write(Config.pwmPin, HIGH);
 #endif
 
-	State.mode = MOTOR_MODE_FORWARD;
-	State.speed = Command.power;
+    State.mode = MOTOR_MODE_FORWARD;
+    State.speed = Command.power;
 }
 
 void MotorModule::ModeBackward()
 {
-	//set direction of the outputted voltage
 	bcm2835_gpio_write(Config.inPin1, LOW);
 	bcm2835_gpio_write(Config.inPin2, HIGH);
 
-	//set the magnitude of the average outputted voltage
 #if PWM_ENABLED
-	//calculate the appropriate pwm value depending on the
 	Command.pwmData = (int) (Command.power / 100) * Config.pwmRange;
 	bcm2835_pwm_set_data(Config.pwmChannel, Command.pwmData);
 #else

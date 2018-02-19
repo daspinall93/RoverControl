@@ -4,198 +4,180 @@
  *  Created on: 9 Feb 2018
  *      Author: dan
  */
+
 #include "LocomModule.h"
+#include "Utils.h"
 
-/* PUBLIC FUNCTIONS */
+/* INCLUDE ENUMERATIONS */
+#include "mavlink/v2.0/SoteriaRover/mavlink.h"
 
-/*
- * Function to start/setup the object by configuring the motors
- */
-
-void LocomModule::Start(MotorModule* M1, MotorModule* M2)
+LocomModule::LocomModule(MotorModule* p_M1, MotorModule* p_M2)
 {
-	//use the motor modules created outside of the locom module to send commands
-	Motor1 = *M1;
-	Motor2 = *M2;
+    /* ASSIGN POINTERS TO THE MOTORS FOR SENDING COMMANDS */
+    p_Motor1 = *p_M1;
+    p_Motor2 = *p_M2;
 
-	//initialise the state structure
-	State.mode = LOCOM_MODE_STOP;
-	State.modeElapsedTime = 0;
-	State.modeStartTime = 0;
+    /* INITIALISE ALL DATA TO 0 */
+    memset(&Report, 0, sizeof(Report));
+    memset(&Command, 0, sizeof(Report));
+    memset(&Config, 0, sizeof(Config));
+    memset(&State, 0, sizeof(State));
+
+}
+void LocomModule::Start()
+{
+
+    /* INITIALISE THE STATE STRUCTURE */
+    State.mode = LOCOM_MODE_STOP;
+    State.modeElapsedTime = 0;
+    State.modeStartTime = 0;
 }
 
 void LocomModule::Execute()
 {
-	Debug();
+    Debug();
 
-	//execute mode transitions for locom
-	if (Command.newCommand)
+    /* CHECK IF NEW COMMAND HAS BEEN ISSUED */
+    if (Command.newCommand)
+    {
+	/* SWITCH ON THE COMMAND ID */
+	switch(Command.commandid)
 	{
-		switch(Command.commandid)
-		{
-			case LOCOM_COMMAND_STOP:
-				//stay in standby
+	    case LOCOM_COMMAND_STOP:
 
-				ModeStop();
-				break;
+		ModeStop();
+		break;
 
-			case LOCOM_COMMAND_STRAIGHT_FORWARD:
-				//drive straight command
+	    case LOCOM_COMMAND_STRAIGHT_FORWARD:
 
-				ModeStraightForward();
-				break;
+		ModeStraightForward();
+		break;
 
-			case LOCOM_COMMAND_STRAIGHT_BACKWARD:
-				//go in a straight line backwards
+	    case LOCOM_COMMAND_STRAIGHT_BACKWARD:
 
-				//set to drive all wheels backward
-				ModeStraightBackward();
-				break;
+		ModeStraightBackward();
+		break;
 
-			case LOCOM_COMMAND_TURN_LEFT:
-				//turn left command
+	    case LOCOM_COMMAND_TURN_LEFT:
 
-				//set to drive left wheels back and right forward
-				ModeTurnLeft();
-				break;
+		ModeTurnLeft();
+		break;
 
-			case LOCOM_COMMAND_TURN_RIGHT:
-				//turn right command
+	    case LOCOM_COMMAND_TURN_RIGHT:
 
-				//set to drive left wheels forward and right backward
-				ModeTurnRight();
-				break;
+		ModeTurnRight();
+		break;
 
-			default:
-				//invalid command
+	    default:
 
-				break;
-
-		}
-
-		//set the time at which the command started
-		State.modeStartTime = utils_getTimems();
-		State.modeElapsedTime = 0;
-		Command.newCommand = 0;	//set to 0 as new command has been processed
-
-	}
-	else
-	{
-
-		//no new command so need to check time elapsed
-		State.modeElapsedTime = (utils_getTimems() - State.modeStartTime);
-		if(State.modeElapsedTime >= Command.durmsec)
-		{
-			//the command has ended so turn of motors and reset elapsed time
-
-			State.modeStartTime = utils_getTimems();;
-			State.modeElapsedTime = 0;
-			ModeStop();
-
-		}
+		break;
 
 	}
 
-	//execute the changes for the motors
-	Debug();
+	/* INITALISE THE TIMER FOR THE COMMAND */
+	State.modeStartTime = utils_getTimems();
+	State.modeElapsedTime = 0;
+	Command.newCommand = 0;
+
+    }
+    else
+    {
+
+	/* CHECK IF THE COMMAND HAS FINISHED */
+	State.modeElapsedTime = (utils_getTimems() - State.modeStartTime);
+	if(State.modeElapsedTime >= Command.durmsec)
+	{
+	    /* RESET TIMER AND SET MODE TO STOP */
+	    State.modeStartTime = utils_getTimems();;
+	    State.modeElapsedTime = 0;
+	    ModeStop();
+
+	}
+
+    }
+    //execute the changes for the motors
+    Debug();
 }
 
-/*
- * Private function to put the rover into the stop mode
- */
+/* MODE FUNCTIONS WITH CORRESPONDING DIRECTION COMMANDS TO MOTORS */
+
 void LocomModule::ModeStop()
 {
-	//currenty only need to set directions as not using PWM
-	Motor1.Command.commandid = MOTOR_COMMAND_STOP;
-	Motor1.Command.newCommand = 1;
-	Motor1.Command.power = Command.power;
 
-	Motor2.Command.commandid = MOTOR_COMMAND_STOP;
-	Motor2.Command.newCommand = 1;
-	Motor2.Command.power = Command.power;
+    p_Motor1->Command.commandid = MOTOR_COMMAND_STOP;
+    p_Motor1->Command.newCommand = 1;
+    p_Motor1->Command.power = Command.power;
 
-	//update to the new state
-	State.mode = LOCOM_MODE_STOP;
+    p_Motor2->Command.commandid = MOTOR_COMMAND_STOP;
+    p_Motor2->Command.newCommand = 1;
+    p_Motor2->Command.power = Command.power;
+
+    State.mode = LOCOM_MODE_STOP;
 }
 
-/*
- * Private function to put the rover into the drive straight forward mode
- */
 void LocomModule::ModeStraightForward()
 {
-	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
-	Motor1.Command.newCommand = 1;
-	Motor1.Command.power = Command.power;
+    p_Motor1->Command.commandid = MOTOR_COMMAND_FORWARD;
+    p_Motor1->Command.newCommand = 1;
+    p_Motor1->Command.power = Command.power;
 
-	Motor2.Command.commandid = MOTOR_COMMAND_FORWARD;
-	Motor2.Command.newCommand = 1;
-	Motor2.Command.power = Command.power;
+    p_Motor2->Command.commandid = MOTOR_COMMAND_FORWARD;
+    p_Motor2->Command.newCommand = 1;
+    p_Motor2->Command.power = Command.power;
 
-	//update to the new state
-	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
+    State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
 }
 
-/*
- * Private function to put the rover into the drive straight backward mode
- */
 void LocomModule::ModeStraightBackward()
 {
-	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
-	Motor1.Command.newCommand = 1;
-	Motor1.Command.power = Command.power;
-	Motor1.Execute();
+    p_Motor1->Command.commandid = MOTOR_COMMAND_BACKWARD;
+    p_Motor1->Command.newCommand = 1;
+    p_Motor1->Command.power = Command.power;
+    p_Motor1->Execute();
 
-	Motor2.Command.commandid = MOTOR_COMMAND_BACKWARD;
-	Motor2.Command.newCommand = 1;
-	Motor2.Command.power = Command.power;
-	Motor2.Execute();
+    p_Motor2->Command.commandid = MOTOR_COMMAND_BACKWARD;
+    p_Motor2->Command.newCommand = 1;
+    p_Motor2->Command.power = Command.power;
+    p_Motor2->Execute();
 
-	//update to the new state
-	State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
+    State.mode = LOCOM_MODE_STRAIGHT_BACKWARD;
 }
 
-/*
- * Private function to put the rover into the drive straight backward mode
- */
 void LocomModule::ModeTurnRight()
 {
-	Motor1.Command.commandid = MOTOR_COMMAND_FORWARD;
-	Motor1.Command.newCommand = 1;
-	Motor1.Command.power = Command.power;
+    p_Motor1->Command.commandid = MOTOR_COMMAND_FORWARD;
+    p_Motor1->Command.newCommand = 1;
+    p_Motor1->Command.power = Command.power;
 
-	Motor2.Command.commandid = MOTOR_COMMAND_BACKWARD;
-	Motor2.Command.newCommand = 1;
-	Motor2.Command.power = Command.power;
+    p_Motor2->Command.commandid = MOTOR_COMMAND_BACKWARD;
+    p_Motor2->Command.newCommand = 1;
+    p_Motor2->Command.power = Command.power;
 
-	//update to the new state
-	State.mode = LOCOM_MODE_TURN_RIGHT;
+    State.mode = LOCOM_MODE_TURN_RIGHT;
 }
 
-/*
- * Private function to put the rover into the drive straight backward mode
- */
 void LocomModule::ModeTurnLeft()
 {
-	Motor1.Command.commandid = MOTOR_COMMAND_BACKWARD;
-	Motor1.Command.newCommand = 1;
-	Motor1.Command.power = Command.power;
+    p_Motor1->Command.commandid = MOTOR_COMMAND_BACKWARD;
+    p_Motor1->Command.newCommand = 1;
+    p_Motor1->Command.power = Command.power;
 
-	Motor2.Command.commandid = MOTOR_COMMAND_FORWARD;
-	Motor2.Command.newCommand = 1;
-	Motor2.Command.power = Command.power;
-	//update to the new state
-	State.mode = LOCOM_MODE_TURN_LEFT;
+    p_Motor2->Command.commandid = MOTOR_COMMAND_FORWARD;
+    p_Motor2->Command.newCommand = 1;
+    p_Motor2->Command.power = Command.power;
+
+    State.mode = LOCOM_MODE_TURN_LEFT;
 }
 
 void LocomModule::UpdateReport()
 {
-	Report.mode = State.mode;
-	Report.modeElapsedTime = State.modeElapsedTime;
+    Report.mode = State.mode;
+    Report.modeElapsedTime = State.modeElapsedTime;
 }
 
 void LocomModule::Debug()
 {
-	printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
+    printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
 }
 
 

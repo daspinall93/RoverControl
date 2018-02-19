@@ -6,13 +6,22 @@
  */
 
 #include "RoverModule.h"
+#include "LocomModule.h"
+#include "CommsModule.h"
+#include "MotorModule.h"
 
 int main()
 {
+    /* CREATE THE MODULES (OBJECTS) */
+    //not currently dynamically allocated (new)
+    CommsModule Comms;
+    MotorModule Motor1;
+    MotorModule Motor2;
+    LocomModule Locom(&Motor1, &Motor2);
     RoverModule Rover;
 
-    /* START ROVER MODULE */
-    Rover.Start();
+    /* START ROVER MODULE AND PASS POINTERS TO EACH MODULE */
+    Rover.Start(&Locom, &Comms, &Motor1, &Motor2);
 
     /* EXECUTE ROVER MODULE   */
     Rover.Execute();
