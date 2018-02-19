@@ -1,0 +1,4 @@
+/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/edit_cache.dir
+/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/rebuild_cache.dir
+/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/SoteriaRover.dir
+/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir

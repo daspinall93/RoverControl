@@ -5,10 +5,10 @@
  *      Author: dan
  */
 
-#include "RoverModule.h"
-#include "LocomModule.h"
-#include "CommsModule.h"
-#include "MotorModule.h"
+#include "Rover/RoverModule.h"
+#include "Locom/LocomModule.h"
+#include "Comms/CommsModule.h"
+#include "Motor/MotorModule.h"
 
 int main()
 {
@@ -18,10 +18,10 @@ int main()
     MotorModule Motor1;
     MotorModule Motor2;
     LocomModule Locom(&Motor1, &Motor2);
-    RoverModule Rover;
+    RoverModule Rover(&Locom, &Comms, &Motor1, &Motor2);
 
     /* START ROVER MODULE AND PASS POINTERS TO EACH MODULE */
-    Rover.Start(&Locom, &Comms, &Motor1, &Motor2);
+    //Rover.Start(&Locom, &Comms, &Motor1, &Motor2);
 
     /* EXECUTE ROVER MODULE   */
     Rover.Execute();

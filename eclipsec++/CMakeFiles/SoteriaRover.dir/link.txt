@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/SoteriaRover.dir/main.cpp.o  -o SoteriaRover -rdynamic libLibsModule.a -lbcm2835 

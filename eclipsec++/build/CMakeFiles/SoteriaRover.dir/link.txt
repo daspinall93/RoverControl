@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/main.cpp.o  -o SoteriaRover -rdynamic libLibsModule.a -lbcm2835 
