@@ -12,6 +12,10 @@
 #include "../Locom/LocomModule.h"
 #include "../Comms/CommsModule.h"
 #include "../Motor/MotorModule.h"
+#include "../Local/LocalModule.h"
+#include "../MPU6050/MPU6050.h"
+
+#include <time.h>
 
 class RoverModule
 {
@@ -21,7 +25,8 @@ public:
   CommsModule* p_Comms;
   MotorModule* p_Motor1;
   MotorModule* p_Motor2;
-//  LocalModule* p_Local;
+  LocalModule* p_Local;
+  MPU6050* p_AccelGyro;
 
   struct
   {
@@ -33,7 +38,7 @@ public:
 
   } Config;
 
-  RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in, MotorModule* p_Motor1_in, MotorModule* p_Motor2_in);
+  RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in, MotorModule* p_Motor1_in, MotorModule* p_Motor2_in, );
   void Start();
   void Execute();
 

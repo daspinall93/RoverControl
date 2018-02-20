@@ -34,7 +34,8 @@ THE SOFTWARE.
 I2Cdev::I2Cdev() { }
 
 void I2Cdev::initialize() {
-  bcm2835_init();
+    /* GOT RID OF THE INIT AS THIS IS DONE ELSEWHERE IN THE PROGRAM */
+  //bcm2835_init();
   bcm2835_i2c_set_baudrate( i2c_baudrate  );
 }
 

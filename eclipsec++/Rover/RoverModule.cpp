@@ -7,7 +7,6 @@
 #include "RoverModule.h"
 
 /* INCLUDES FOR TIMING PURPOSES */
-#include <time.h>
 #include <math.h>
 #include <bcm2835.h>
 
@@ -19,14 +18,19 @@
 #define MOTORS_ENABLED 0
 #define LOCOM_ENABLED 0
 #define LOCAL_ENABLED 0
+#define MPU_ENABLED 0
 
-RoverModule::RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in, MotorModule* p_Motor1_in, MotorModule* p_Motor2_in)
+RoverModule::RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in,
+			 MotorModule* p_Motor1_in, MotorModule* p_Motor2_in,
+			 LocalModule* p_Local_in, MPU6050* p_AccelGyro_in)
 {
     /* GET POINTERS TO OTHER MODULES */
     p_Locom = p_Locom_in;
     p_Comms = p_Comms_in;
     p_Motor1 = p_Motor1_in;
     p_Motor2 = p_Motor2_in;
+    p_Local = p_Local_in;
+    p_AccelGyro = p_AccelGyro_in;
 
     memset(&Report, 0, sizeof(Report));
     memset(&Config, 0, sizeof(Report));
@@ -42,11 +46,15 @@ void RoverModule::Start()
     p_Comms->Start();
 #endif
     /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
-#if MOTORS_ENABLED || LOCAL_ENABLED
+#if MOTORS_ENABLED || LOCAL_ENABLED || MPU_ENABLED
     bcm2835_init();
 #endif
 
-#if LOCAL_ENABLED
+#if MPU_ENABLED
+    p_AccelGyro->Start();
+#endif
+
+#if LOCAL_ENABLED && MPU_ENABLED
     p_Local->Start();
 #endif
 
@@ -58,7 +66,7 @@ void RoverModule::Start()
     p_Motor2->Start(1);
 #endif
 
-#if LOCOM_ENABLED
+#if LOCOM_ENABLED && MOTORS_ENABLED
     /* START LOCOM WITH MOTORS 1 & 2 */
     p_Locom->Start();
 #endif
@@ -95,7 +103,12 @@ void RoverModule::Execute()
 	      }
 #endif
 
-#if LOCAL_ENABLED
+	      /* EXECUTE THE MPU MODULE */
+#if MPU_ENABLED
+	      p_AccelGyro->Execute();
+#endif
+
+#if LOCAL_ENABLED && MPU_ENABLED
 
 	    /* EXECUTE THE LOCALISATION MODULE */
 	    p_Local->Execute();
