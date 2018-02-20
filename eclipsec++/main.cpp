@@ -26,10 +26,10 @@ int main()
     /* CREATE MPU OBJECT AND ALLOW LOCAL MODULE TO ACCESS IT */
     MPU6050 AccelGyro;
     LocalModule Local(&AccelGyro);
-    RoverModule Rover(&Locom, &Comms, &Motor1, &Motor2);
+    RoverModule Rover(&Locom, &Comms, &Motor1, &Motor2, &Local, &AccelGyro);
 
     /* START ROVER MODULE AND PASS POINTERS TO EACH MODULE */
-    Rover.Start(&Locom, &Comms, &Motor1, &Motor2, &AccelGyro, &Local);
+    Rover.Start();
 
     /* EXECUTE ROVER MODULE   */
     Rover.Execute();

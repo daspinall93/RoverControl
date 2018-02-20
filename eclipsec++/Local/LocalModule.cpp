@@ -33,7 +33,7 @@ void LocalModule::Start()
 
     /* SET PREVIOUS CALL TIME TO CURRENT TIME */
     struct timespec tspec;
-    clock_gettime(CLOCK_MONOTONIC, tspec);
+    clock_gettime(CLOCK_MONOTONIC, &tspec);
 
     State.prevCall = round(tspec.tv_nsec / 1.0e6);
     State.prevCall = State.prevCall + (tspec.tv_sec * 1000);
@@ -68,13 +68,13 @@ void LocalModule::CalculateAnglesGyro()
 
     /* CALCULATE TIME SINCE LAST CALL */
     struct timespec tspec;
-    clock_gettime(CLOCK_MONOTONIC, tspec);
+    clock_gettime(CLOCK_MONOTONIC, &tspec);
 
     State.currentCall = round(tspec.tv_nsec / 1.0e6);
     State.currentCall = State.currentCall + (tspec.tv_sec * 1000);
 
     /* CALCULATE THE CHANGE IN TIME */
-    flaot32_t deltaTime = (float32_t)(State.currentCall - State.prevCall);
+    float deltaTime = (float)(State.currentCall - State.prevCall);
 
     /* CALCULATE THE CHANGE IN ANGLE */
     /* BE CAREFUL OF NUMERICAL ERRORS HERE */

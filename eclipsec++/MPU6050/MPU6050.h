@@ -449,14 +449,14 @@ class MPU6050 {
         struct
 	{
             /* ACCELEROMETER ADC VALUES */
-	    int32_t accX_dig;
-	    int32_t accY_dig;
-	    int32_t accZ_dig;
+	    short int accX_dig;
+	    short int accY_dig;
+	    short int accZ_dig;
 
 	    /* GYRO ADC VALUES */
-	    int32_t gyroX_dig;
-	    int32_t gyroY_dig;
-	    int32_t gyroZ_dig;
+	    short int gyroX_dig;
+	    short int gyroY_dig;
+	    short int gyroZ_dig;
 	} Report;
 
 	struct
@@ -470,14 +470,14 @@ class MPU6050 {
         struct
 	{
             /* ACCELEROMETER ADC VALUES */
-	    int32_t accX_dig;
-	    int32_t accY_dig;
-	    int32_t accZ_dig;
+            short int accX_dig;
+            short int accY_dig;
+            short int accZ_dig;
 
 	    /* GYRO ADC VALUES */
-	    int32_t gyroX_dig;
-	    int32_t gyroY_dig;
-	    int32_t gyroZ_dig;
+            short int gyroX_dig;
+            short int gyroY_dig;
+            short int gyroZ_dig;
 
 	    /* BUFFER TO HOLD I2C COMMS DATA */
             uint8_t buffer[14];

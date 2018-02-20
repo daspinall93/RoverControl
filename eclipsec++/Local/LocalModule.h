@@ -10,6 +10,7 @@
 
 #include "../MPU6050/MPU6050.h"
 #include <time.h>
+#include <stdint.h>
 
 class LocalModule
 {
@@ -21,11 +22,11 @@ public:
 
     struct
     {
-	float32_t roll_radAcc;
-	float32_t pitch_radAcc;
-	float32_t roll_radGyro;
-	float32_t pitch_radGyro;
-	float32_t yaw_radGyro;
+	float roll_radAcc;
+	float pitch_radAcc;
+	float roll_radGyro;
+	float pitch_radGyro;
+	float yaw_radGyro;
     } Report;
 
     LocalModule(MPU6050* p_MPU);
@@ -36,16 +37,16 @@ private:
     struct
     {
 	/* ANGLES */
-	float32_t roll_radAcc;
-	float32_t pitch_radAcc;
-	float32_t roll_radGyro;
-	float32_t pitch_radGyro;
-	float32_t yaw_radGyro;
+	float roll_radAcc;
+	float pitch_radAcc;
+	float roll_radGyro;
+	float pitch_radGyro;
+	float yaw_radGyro;
 
 	/* RATES */
-	float32_t gyroXRate;
-	float32_t gyroYRate;
-	float32_t gyroZRate;
+	float gyroXRate;
+	float gyroYRate;
+	float gyroZRate;
 
 	/* TIME */
 	long int prevCall;
@@ -63,6 +64,7 @@ private:
 
     void CalculateAnglesGyro();
     void CalculateAnglesAcc();
+    void UpdateReport();
 
 
 };

@@ -163,6 +163,33 @@ home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.s:
 	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.s
 .PHONY : home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.s
 
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.o: home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.o
+
+# target to build an object file
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o
+
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.i: home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.i
+
+# target to preprocess a source file
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i
+
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.s: home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.s
+
+# target to generate assembly for a file
+home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s
+
 home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.o: home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o
 
 .PHONY : home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.o
@@ -189,6 +216,63 @@ home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.s: home/dan/git/SoteriaRo
 home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.s:
 	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.s
 .PHONY : home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.s
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.o: home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.o
+
+# target to build an object file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o:
+	$(MAKE) -f CMakeFiles/SoteriaRover.dir/build.make CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.i: home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.i
+
+# target to preprocess a source file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i:
+	$(MAKE) -f CMakeFiles/SoteriaRover.dir/build.make CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.s: home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.s
+
+# target to generate assembly for a file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s:
+	$(MAKE) -f CMakeFiles/SoteriaRover.dir/build.make CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.o: home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.o
+
+# target to build an object file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.i: home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.i
+
+# target to preprocess a source file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i
+
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.s: home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s
+
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.s
+
+# target to generate assembly for a file
+home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s:
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s
+.PHONY : home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s
 
 home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.o: home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o
 
@@ -311,9 +395,18 @@ help:
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.o"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.i"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.s"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.o"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.i"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.s"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.o"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.i"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.s"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.o"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.i"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.s"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.o"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.i"
+	@echo "... home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.s"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.o"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.i"
 	@echo "... home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.s"

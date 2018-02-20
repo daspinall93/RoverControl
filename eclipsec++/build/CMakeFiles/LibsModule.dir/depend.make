@@ -17,6 +17,11 @@ CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/protocol.h
 
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
@@ -35,6 +40,13 @@ CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/protocol.h
 
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_heartbeat.h
@@ -52,7 +64,10 @@ CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/protocol.h
 
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.h

@@ -22,7 +22,7 @@ void CommsModule::Start()
 {
     /* CONFIGURE SOCKET PARAMETERS */
     SocketConfig.socketLength = sizeof(struct sockaddr_in);
-    SocketConfig.portNumber = 9006;
+    SocketConfig.portNumber = GROUND_SOCKETNO;
 
     strcpy(SocketConfig.groundipAddr, GROUND_IP_ADDRESS);
     SocketConfig.socketLength = sizeof(struct sockaddr_in);
@@ -156,11 +156,11 @@ void CommsModule::ReceivePacket()
 
 void CommsModule::Debug()
 {
-//	printf("[COMMS]bytes sent = %d \n", SocketState.bytesSent);
-//	printf("[COMMS]bytes received = %d \n", SocketState.bytesReceived);
-	printf("[COMMS]locom_commandid = %d \n", Report.locomCommand.command_id);
-	printf("[COMMS]locom_duration = %d \n", Report.locomCommand.duration_ms);
-	printf("[COMMS]locom_power = %d \n", Report.locomCommand.power);
+	printf("[COMMS]bytes sent = %d \n", SocketState.bytesSent);
+	printf("[COMMS]bytes received = %d \n", SocketState.bytesReceived);
+//	printf("[COMMS]locom_commandid = %d \n", Report.locomCommand.command_id);
+//	printf("[COMMS]locom_duration = %d \n", Report.locomCommand.duration_ms);
+//	printf("[COMMS]locom_power = %d \n", Report.locomCommand.power);
 }
 
 

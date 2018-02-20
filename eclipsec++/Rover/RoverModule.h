@@ -38,7 +38,9 @@ public:
 
   } Config;
 
-  RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in, MotorModule* p_Motor1_in, MotorModule* p_Motor2_in, );
+  RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in,
+              MotorModule* p_Motor1_in, MotorModule* p_Motor2_in,
+              LocalModule* p_Local_in, MPU6050* p_AccelGyro_in );
   void Start();
   void Execute();
 

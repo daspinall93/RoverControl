@@ -32,6 +32,22 @@ fcntl.h
 ../mavlink/v2.0/SoteriaRover/mavlink.h
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
 
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp
+LocalModule.h
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+math.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+time.h
+-
+stdint.h
+-
+
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp
 LocomModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
@@ -47,6 +63,32 @@ stdint.h
 -
 ../Motor/MotorModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
+../MPU6050/I2Cdev.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+stdio.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+bcm2835.h
+-
+math.h
+-
+stdlib.h
+-
+string.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+../MPU6050/I2Cdev.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+avr/pgmspace.h
+-
 
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp
 MotorModule.h
@@ -65,8 +107,6 @@ stdint.h
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp
 RoverModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.h
-time.h
--
 math.h
 -
 bcm2835.h
@@ -81,6 +121,12 @@ bcm2835.h
 /home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.h
 ../Motor/MotorModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
+../Local/LocalModule.h
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+time.h
+-
 
 /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp
 Utils.h

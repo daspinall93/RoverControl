@@ -22,6 +22,7 @@
 
 #define BUFFER_LENGTH 2041
 #define GROUND_IP_ADDRESS "127.0.0.1"
+#define GROUND_SOCKETNO 14554
 
 class CommsModule
 {

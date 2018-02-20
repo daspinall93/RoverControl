@@ -14,7 +14,7 @@
 #include "../mavlink/v2.0/SoteriaRover/mavlink.h"
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
-#define COMMS_ENABLED 0
+#define COMMS_ENABLED 1
 #define MOTORS_ENABLED 0
 #define LOCOM_ENABLED 0
 #define LOCAL_ENABLED 0
@@ -85,24 +85,26 @@ void RoverModule::Execute()
 	/* EXECUTE MODULES AT 1HZ */
 	if (State.onehzFlag)
 	{
-
-	}
-
-	/* EXECUTE MODULES AT 10HZ */
-	if (State.tenhzFlag)
-	{
 #if COMMS_ENABLED
+//	    p_Comms->Command.newSendCommand = 1;
+//	    p_Comms->Command.messageid = MAVLINK_MSG_ID_HEARTBEAT;
+//	    p_Comms->Command.heartBeat.Locom_mode = LOCOM_MODE_TURN_LEFT;
 	    /* EXECUTE THE COMMS MODULE */
 	    p_Comms->Execute();
 
 
 	    /* TAKE THE COMMANDS RECEIVED AND DISTRIBUTE TO OTHER MODULES INPUTS */
-	      if (p_Comms->Report.newPacketReceived)
-	      {
-	    DistributeCommands();
-	      }
-#endif
+	    if (p_Comms->Report.newPacketReceived)
+	    {
+		DistributeCommands();
+	    }
+    #endif
+	    Debug();
+	}
 
+	/* EXECUTE MODULES AT 10HZ */
+	if (State.tenhzFlag)
+	{
 	      /* EXECUTE THE MPU MODULE */
 #if MPU_ENABLED
 	      p_AccelGyro->Execute();

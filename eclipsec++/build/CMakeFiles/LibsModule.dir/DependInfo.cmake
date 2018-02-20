@@ -5,7 +5,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.o"
+  "/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o"
   "/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o"
+  "/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o"
+  "/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o"
   "/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o"
   "/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o"
   "/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o"
