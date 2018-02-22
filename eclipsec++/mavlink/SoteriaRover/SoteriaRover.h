@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 5, 2, 0, 0, 0}, {1, 133, 9, 0, 0, 0}, {2, 162, 3, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 60, 10, 0, 0, 0}, {4, 213, 9, 0, 0, 0}, {5, 42, 17, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -48,18 +48,6 @@ typedef enum LOCOM_COMAMND_ID
 } LOCOM_COMAMND_ID;
 #endif
 
-/** @brief Mode of each motor (i.e m1 and m2) */
-#ifndef HAVE_ENUM_MOTOR_COMMAND_ID
-#define HAVE_ENUM_MOTOR_COMMAND_ID
-typedef enum MOTOR_COMMAND_ID
-{
-   MOTOR_COMMAND_STOP=0, /* Command to stop motor | */
-   MOTOR_COMMAND_FORWARD=1, /* Command for motor to travel forward | */
-   MOTOR_COMMAND_BACKWARD=2, /* Command for motor to go backward | */
-   MOTOR_COMMAND_ID_ENUM_END=3, /*  | */
-} MOTOR_COMMAND_ID;
-#endif
-
 /** @brief Commands for the locomotion module */
 #ifndef HAVE_ENUM_LOCOM_MODE
 #define HAVE_ENUM_LOCOM_MODE
@@ -72,6 +60,18 @@ typedef enum LOCOM_MODE
    LOCOM_MODE_TURN_LEFT=4, /* Command the rover to turn left | */
    LOCOM_MODE_ENUM_END=5, /*  | */
 } LOCOM_MODE;
+#endif
+
+/** @brief Mode of each motor (i.e m1 and m2) */
+#ifndef HAVE_ENUM_MOTOR_COMMAND_ID
+#define HAVE_ENUM_MOTOR_COMMAND_ID
+typedef enum MOTOR_COMMAND_ID
+{
+   MOTOR_COMMAND_STOP=0, /* Command to stop motor | */
+   MOTOR_COMMAND_FORWARD=1, /* Command for motor to travel forward | */
+   MOTOR_COMMAND_BACKWARD=2, /* Command for motor to go backward | */
+   MOTOR_COMMAND_ID_ENUM_END=3, /*  | */
+} MOTOR_COMMAND_ID;
 #endif
 
 /** @brief Mode of each motor (i.e m1 and m2) */
@@ -100,7 +100,8 @@ typedef enum MOTOR_MODE
 // MESSAGE DEFINITIONS
 #include "./mavlink_msg_heartbeat.h"
 #include "./mavlink_msg_locom_command.h"
-#include "./mavlink_msg_rover_status.h"
+#include "./mavlink_msg_locom_report.h"
+#include "./mavlink_msg_locom_state.h"
 
 // base include
 
@@ -109,8 +110,8 @@ typedef enum MOTOR_MODE
 #define MAVLINK_THIS_XML_IDX 0
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
-# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_LOCOM_COMMAND, MAVLINK_MESSAGE_INFO_ROVER_STATUS}
-# define MAVLINK_MESSAGE_NAMES {{ "HEARTBEAT", 0 }, { "LOCOM_COMMAND", 1 }, { "ROVER_STATUS", 2 }}
+# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_LOCOM_COMMAND, MAVLINK_MESSAGE_INFO_LOCOM_REPORT, MAVLINK_MESSAGE_INFO_LOCOM_STATE}
+# define MAVLINK_MESSAGE_NAMES {{ "HEARTBEAT", 0 }, { "LOCOM_COMMAND", 3 }, { "LOCOM_REPORT", 4 }, { "LOCOM_STATE", 5 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

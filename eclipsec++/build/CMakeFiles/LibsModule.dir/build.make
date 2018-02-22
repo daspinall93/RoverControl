@@ -153,9 +153,57 @@ CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o.provides.build: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o
 
 
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: CMakeFiles/LibsModule.dir/flags.make
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o -c /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp > CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.i
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.s
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.requires:
+
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.requires
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.provides: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.requires
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.provides.build
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.provides
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.provides.build: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o
+
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o: CMakeFiles/LibsModule.dir/flags.make
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o -c /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp > CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.i
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.s
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.requires:
+
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.requires
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.provides: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.requires
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.provides.build
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.provides
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.provides.build: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o
+
+
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o: CMakeFiles/LibsModule.dir/flags.make
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o -c /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp
 
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.i: cmake_force
@@ -177,13 +225,40 @@ CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o
 CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o.provides.build: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o
 
 
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o: CMakeFiles/LibsModule.dir/flags.make
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o: /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o -c /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp > CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.i
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp -o CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.s
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.requires:
+
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.requires
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.provides: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.requires
+	$(MAKE) -f CMakeFiles/LibsModule.dir/build.make CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.provides.build
+.PHONY : CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.provides
+
+CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.provides.build: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
+
+
 # Object files for target LibsModule
 LibsModule_OBJECTS = \
 "CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.cpp.o" \
 "CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o" \
 "CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o" \
 "CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o" \
-"CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o"
+"CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o" \
+"CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o" \
+"CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o" \
+"CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o"
 
 # External object files for target LibsModule
 LibsModule_EXTERNAL_OBJECTS =
@@ -192,10 +267,13 @@ libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/
 libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o
 libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o
 libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o
+libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o
+libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o
 libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o
+libLibsModule.a: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o
 libLibsModule.a: CMakeFiles/LibsModule.dir/build.make
 libLibsModule.a: CMakeFiles/LibsModule.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libLibsModule.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libLibsModule.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/LibsModule.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/LibsModule.dir/link.txt --verbose=$(VERBOSE)
 
@@ -208,7 +286,10 @@ CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/Soter
 CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp.o.requires
 CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp.o.requires
 CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp.o.requires
+CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp.o.requires
+CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp.o.requires
 CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp.o.requires
+CMakeFiles/LibsModule.dir/requires: CMakeFiles/LibsModule.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o.requires
 
 .PHONY : CMakeFiles/LibsModule.dir/requires
 

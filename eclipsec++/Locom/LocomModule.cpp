@@ -9,7 +9,7 @@
 #include "../Utils/Utils.h"
 
 /* INCLUDE ENUMERATIONS */
-#include "../mavlink/v2.0/SoteriaRover/mavlink.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 
 LocomModule::LocomModule(MotorModule* p_M1, MotorModule* p_M2)
 {
@@ -24,6 +24,7 @@ LocomModule::LocomModule(MotorModule* p_M1, MotorModule* p_M2)
     memset(&State, 0, sizeof(State));
 
 }
+
 void LocomModule::Start()
 {
 
@@ -75,7 +76,7 @@ void LocomModule::Execute()
 	}
 
 	/* INITALISE THE TIMER FOR THE COMMAND */
-	State.modeStartTime = utils_getTimems();
+	State.modeStartTime = Utils::GetTimems();
 	State.modeElapsedTime = 0;
 	Command.newCommand = 0;
 
@@ -84,11 +85,11 @@ void LocomModule::Execute()
     {
 
 	/* CHECK IF THE COMMAND HAS FINISHED */
-	State.modeElapsedTime = (utils_getTimems() - State.modeStartTime);
+	State.modeElapsedTime = (Utils::GetTimems() - State.modeStartTime);
 	if(State.modeElapsedTime >= Command.durmsec)
 	{
 	    /* RESET TIMER AND SET MODE TO STOP */
-	    State.modeStartTime = utils_getTimems();;
+	    State.modeStartTime = Utils::GetTimems();
 	    State.modeElapsedTime = 0;
 	    ModeStop();
 

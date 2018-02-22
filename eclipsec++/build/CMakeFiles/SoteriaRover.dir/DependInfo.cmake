@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o"
   "/home/dan/git/SoteriaRover/eclipsec++/main.cpp" "/home/dan/git/SoteriaRover/eclipsec++/build/CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

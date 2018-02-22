@@ -431,6 +431,14 @@ THE SOFTWARE.
 #define MPU6050_DMP_MEMORY_BANK_SIZE    256
 #define MPU6050_DMP_MEMORY_CHUNK_SIZE   16
 
+/* OFFSET VALUES */
+#define MPU6050_ACCX_OFFSET 0
+#define MPU6050_ACCY_OFFSET 0
+#define	MPU6050_ACCZ_OFFSET 0
+#define	MPU6050_GYROX_OFFSET 0
+#define MPU6050_GYROY_OFFSET 0
+#define MPU6050_GYROZ_OFFSET 0
+
 // note: DMP code memory blocks defined at end of header file
 
 class MPU6050 {
@@ -438,7 +446,49 @@ class MPU6050 {
         MPU6050();
         MPU6050(uint8_t address);
 
-        void initialize();
+        struct
+	{
+            /* ACCELEROMETER ADC VALUES */
+	    short int accX_dig;
+	    short int accY_dig;
+	    short int accZ_dig;
+
+	    /* GYRO ADC VALUES */
+	    short int gyroX_dig;
+	    short int gyroY_dig;
+	    short int gyroZ_dig;
+	} Report;
+
+	struct
+	{
+
+	} Command;
+        void Start();
+        void Execute();
+    private:
+
+        struct
+	{
+            /* ACCELEROMETER ADC VALUES */
+            short int accX_dig;
+            short int accY_dig;
+            short int accZ_dig;
+
+	    /* GYRO ADC VALUES */
+            short int gyroX_dig;
+            short int gyroY_dig;
+            short int gyroZ_dig;
+
+	    /* BUFFER TO HOLD I2C COMMS DATA */
+            uint8_t buffer[14];
+
+	} State;
+
+	struct
+	{
+	    uint8_t devAddr;
+	} Config;
+
         bool testConnection();
 
         // AUX_VDDIO register
@@ -459,14 +509,14 @@ class MPU6050 {
         uint8_t getFullScaleGyroRange();
         void setFullScaleGyroRange(uint8_t range);
 
-		// SELF_TEST registers
-		uint8_t getAccelXSelfTestFactoryTrim();
-		uint8_t getAccelYSelfTestFactoryTrim();
-		uint8_t getAccelZSelfTestFactoryTrim();
+	// SELF_TEST registers
+	uint8_t getAccelXSelfTestFactoryTrim();
+	uint8_t getAccelYSelfTestFactoryTrim();
+	uint8_t getAccelZSelfTestFactoryTrim();
 
-		uint8_t getGyroXSelfTestFactoryTrim();
-		uint8_t getGyroYSelfTestFactoryTrim();
-		uint8_t getGyroZSelfTestFactoryTrim();
+	uint8_t getGyroXSelfTestFactoryTrim();
+	uint8_t getGyroYSelfTestFactoryTrim();
+	uint8_t getGyroZSelfTestFactoryTrim();
 		
         // ACCEL_CONFIG register
         bool getAccelXSelfTest();
@@ -1024,9 +1074,6 @@ class MPU6050 {
             uint16_t dmpGetFIFOPacketSize();
         #endif
 
-    private:
-        uint8_t devAddr;
-        uint8_t buffer[14];
 };
 
 #endif /* _MPU6050_H_ */

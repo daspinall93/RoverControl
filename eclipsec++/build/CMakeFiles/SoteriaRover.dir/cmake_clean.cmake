@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/main.cpp.o"
+  "CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o"
   "SoteriaRover.pdb"
   "SoteriaRover"
 )

@@ -29,16 +29,32 @@ arpa/inet.h
 -
 fcntl.h
 -
-../mavlink/v2.0/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
+
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.cpp
+LocalModule.h
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+math.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+time.h
+-
+stdint.h
+-
 
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.cpp
 LocomModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
 ../Utils/Utils.h
 /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.h
-../mavlink/v2.0/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
 stdio.h
@@ -47,6 +63,32 @@ stdint.h
 -
 ../Motor/MotorModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
+../MPU6050/I2Cdev.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+stdio.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+bcm2835.h
+-
+math.h
+-
+stdlib.h
+-
+string.h
+-
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.cpp
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+../MPU6050/I2Cdev.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.h
+avr/pgmspace.h
+-
 
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.cpp
 MotorModule.h
@@ -55,8 +97,8 @@ stdio.h
 -
 bcm2835.h
 -
-../mavlink/v2.0/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
 stdint.h
@@ -65,14 +107,12 @@ stdint.h
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp
 RoverModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.h
-time.h
--
 math.h
 -
 bcm2835.h
 -
-../mavlink/v2.0/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.h
 ../Locom/LocomModule.h
@@ -81,82 +121,92 @@ bcm2835.h
 /home/dan/git/SoteriaRover/eclipsec++/Comms/CommsModule.h
 ../Motor/MotorModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
+../Local/LocalModule.h
+/home/dan/git/SoteriaRover/eclipsec++/Local/LocalModule.h
+../MPU6050/MPU6050.h
+/home/dan/git/SoteriaRover/eclipsec++/MPU6050/MPU6050.h
+time.h
+-
 
 /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.cpp
 Utils.h
-/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.h
-
 /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.h
 time.h
 -
 math.h
 -
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_heartbeat.h
+/home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_locom_command.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_heartbeat.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_rover_status.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_command.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/SoteriaRover.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_report.h
+
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_state.h
+
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/SoteriaRover.h
 ../protocol.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/protocol.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/protocol.h
 ./mavlink_msg_heartbeat.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_heartbeat.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_heartbeat.h
 ./mavlink_msg_locom_command.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_locom_command.h
-./mavlink_msg_rover_status.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/./mavlink_msg_rover_status.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_command.h
+./mavlink_msg_locom_report.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_report.h
+./mavlink_msg_locom_state.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_state.h
 ../mavlink_get_info.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_get_info.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_get_info.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 version.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/version.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/version.h
 SoteriaRover.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/SoteriaRover.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/SoteriaRover.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/SoteriaRover/version.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/version.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/checksum.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/checksum.h
 stdint.h
 -
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_conversions.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_conversions.h
 math.h
 -
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_get_info.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_get_info.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_helpers.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_helpers.h
 string.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/string.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/string.h
 checksum.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/checksum.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/checksum.h
 mavlink_types.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_types.h
 mavlink_conversions.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_conversions.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_conversions.h
 stdio.h
 -
 mavlink_sha256.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_sha256.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_sha256.h
 mavlink_types.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_types.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_sha256.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_sha256.h
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_types.h
 stdbool.h
 -
 stdint.h
 -
 
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/protocol.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/protocol.h
 string.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/string.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/string.h
 mavlink_types.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_types.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_types.h
 mavlink_helpers.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/v2.0/mavlink_helpers.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_helpers.h
 
