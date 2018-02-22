@@ -6,8 +6,10 @@
  */
 
 #include "Utils.h"
+#include <time.h>
+#include <math.h>
 
-long int utils_getTimems(){
+long int Utils::GetTimems(){
 
 	struct timespec tspec;	//used to retrieve the current time
 	long int timems = 0;
@@ -18,7 +20,7 @@ long int utils_getTimems(){
 
 }
 
-long int utils_getTimeus(){
+long int Utils::GetTimeus(){
 
 	struct timespec tspec;	//used to retrieve the current time
 	long int timeus = 0;
@@ -28,6 +30,4 @@ long int utils_getTimeus(){
 	return timeus;
 
 }
-
-
 

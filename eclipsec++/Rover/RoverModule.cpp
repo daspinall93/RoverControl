@@ -11,10 +11,10 @@
 #include <bcm2835.h>
 
 /* INCLUDED FOR THE COMMAND INTERPRITATION FUNCTION */
-#include "../mavlink/v2.0/SoteriaRover/mavlink.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
-#define COMMS_ENABLED 1
+#define COMMS_ENABLED 0
 #define MOTORS_ENABLED 0
 #define LOCOM_ENABLED 0
 #define LOCAL_ENABLED 0

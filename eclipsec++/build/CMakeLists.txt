@@ -24,7 +24,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/Comms/CommsModule.h 
     ${PROJECT_SOURCE_DIR}/Locom/LocomModule.h 
     ${PROJECT_SOURCE_DIR}/Motor/MotorModule.h 
-    ${PROJECT_SOURCE_DIR}/mavlink/v2.0/SoteriaRover/mavlink.h
+    ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
     ${PROJECT_SOURCE_DIR}/Local/LocalModule.h
     ${PROJECT_SOURCE_DIR}/MPU6050/MPU6050.h
     ${PROJECT_SOURCE_DIR}/Utils/Utils.h

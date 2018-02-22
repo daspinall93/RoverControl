@@ -5,17 +5,19 @@
 
 MAVPACKED(
 typedef struct __mavlink_heartbeat_t {
- uint8_t Locom_mode; /*< mode of the locomotion module, see LOCOM_MODE enum*/
+ uint8_t locom_mode; /*< Mode of the locomotion module*/
+ uint8_t motor1_mode; /*< Mode of motor 1*/
+ uint8_t motor2_mode; /*< Mode of motor 2*/
  uint8_t mavlink_version; /*< MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version*/
 }) mavlink_heartbeat_t;
 
-#define MAVLINK_MSG_ID_HEARTBEAT_LEN 2
-#define MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN 2
-#define MAVLINK_MSG_ID_0_LEN 2
-#define MAVLINK_MSG_ID_0_MIN_LEN 2
+#define MAVLINK_MSG_ID_HEARTBEAT_LEN 4
+#define MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN 4
+#define MAVLINK_MSG_ID_0_LEN 4
+#define MAVLINK_MSG_ID_0_MIN_LEN 4
 
-#define MAVLINK_MSG_ID_HEARTBEAT_CRC 5
-#define MAVLINK_MSG_ID_0_CRC 5
+#define MAVLINK_MSG_ID_HEARTBEAT_CRC 176
+#define MAVLINK_MSG_ID_0_CRC 176
 
 
 
@@ -23,17 +25,21 @@ typedef struct __mavlink_heartbeat_t {
 #define MAVLINK_MESSAGE_INFO_HEARTBEAT { \
     0, \
     "HEARTBEAT", \
-    2, \
-    {  { "Locom_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_heartbeat_t, Locom_mode) }, \
-         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
+    4, \
+    {  { "locom_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_heartbeat_t, locom_mode) }, \
+         { "motor1_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_heartbeat_t, motor1_mode) }, \
+         { "motor2_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 2, offsetof(mavlink_heartbeat_t, motor2_mode) }, \
+         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 3, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_HEARTBEAT { \
     "HEARTBEAT", \
-    2, \
-    {  { "Locom_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_heartbeat_t, Locom_mode) }, \
-         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
+    4, \
+    {  { "locom_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 0, offsetof(mavlink_heartbeat_t, locom_mode) }, \
+         { "motor1_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 1, offsetof(mavlink_heartbeat_t, motor1_mode) }, \
+         { "motor2_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 2, offsetof(mavlink_heartbeat_t, motor2_mode) }, \
+         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 3, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
          } \
 }
 #endif
@@ -44,21 +50,27 @@ typedef struct __mavlink_heartbeat_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param Locom_mode mode of the locomotion module, see LOCOM_MODE enum
+ * @param locom_mode Mode of the locomotion module
+ * @param motor1_mode Mode of motor 1
+ * @param motor2_mode Mode of motor 2
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t Locom_mode)
+                               uint8_t locom_mode, uint8_t motor1_mode, uint8_t motor2_mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_uint8_t(buf, 0, Locom_mode);
-    _mav_put_uint8_t(buf, 1, 3);
+    _mav_put_uint8_t(buf, 0, locom_mode);
+    _mav_put_uint8_t(buf, 1, motor1_mode);
+    _mav_put_uint8_t(buf, 2, motor2_mode);
+    _mav_put_uint8_t(buf, 3, 3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
 #else
     mavlink_heartbeat_t packet;
-    packet.Locom_mode = Locom_mode;
+    packet.locom_mode = locom_mode;
+    packet.motor1_mode = motor1_mode;
+    packet.motor2_mode = motor2_mode;
     packet.mavlink_version = 3;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -74,22 +86,28 @@ static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t com
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param Locom_mode mode of the locomotion module, see LOCOM_MODE enum
+ * @param locom_mode Mode of the locomotion module
+ * @param motor1_mode Mode of motor 1
+ * @param motor2_mode Mode of motor 2
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t Locom_mode)
+                                   uint8_t locom_mode,uint8_t motor1_mode,uint8_t motor2_mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_uint8_t(buf, 0, Locom_mode);
-    _mav_put_uint8_t(buf, 1, 3);
+    _mav_put_uint8_t(buf, 0, locom_mode);
+    _mav_put_uint8_t(buf, 1, motor1_mode);
+    _mav_put_uint8_t(buf, 2, motor2_mode);
+    _mav_put_uint8_t(buf, 3, 3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
 #else
     mavlink_heartbeat_t packet;
-    packet.Locom_mode = Locom_mode;
+    packet.locom_mode = locom_mode;
+    packet.motor1_mode = motor1_mode;
+    packet.motor2_mode = motor2_mode;
     packet.mavlink_version = 3;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -109,7 +127,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_heartbeat_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_heartbeat_t* heartbeat)
 {
-    return mavlink_msg_heartbeat_pack(system_id, component_id, msg, heartbeat->Locom_mode);
+    return mavlink_msg_heartbeat_pack(system_id, component_id, msg, heartbeat->locom_mode, heartbeat->motor1_mode, heartbeat->motor2_mode);
 }
 
 /**
@@ -123,28 +141,34 @@ static inline uint16_t mavlink_msg_heartbeat_encode(uint8_t system_id, uint8_t c
  */
 static inline uint16_t mavlink_msg_heartbeat_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_heartbeat_t* heartbeat)
 {
-    return mavlink_msg_heartbeat_pack_chan(system_id, component_id, chan, msg, heartbeat->Locom_mode);
+    return mavlink_msg_heartbeat_pack_chan(system_id, component_id, chan, msg, heartbeat->locom_mode, heartbeat->motor1_mode, heartbeat->motor2_mode);
 }
 
 /**
  * @brief Send a heartbeat message
  * @param chan MAVLink channel to send the message
  *
- * @param Locom_mode mode of the locomotion module, see LOCOM_MODE enum
+ * @param locom_mode Mode of the locomotion module
+ * @param motor1_mode Mode of motor 1
+ * @param motor2_mode Mode of motor 2
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t Locom_mode)
+static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t locom_mode, uint8_t motor1_mode, uint8_t motor2_mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_uint8_t(buf, 0, Locom_mode);
-    _mav_put_uint8_t(buf, 1, 3);
+    _mav_put_uint8_t(buf, 0, locom_mode);
+    _mav_put_uint8_t(buf, 1, motor1_mode);
+    _mav_put_uint8_t(buf, 2, motor2_mode);
+    _mav_put_uint8_t(buf, 3, 3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #else
     mavlink_heartbeat_t packet;
-    packet.Locom_mode = Locom_mode;
+    packet.locom_mode = locom_mode;
+    packet.motor1_mode = motor1_mode;
+    packet.motor2_mode = motor2_mode;
     packet.mavlink_version = 3;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)&packet, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -159,7 +183,7 @@ static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t Lo
 static inline void mavlink_msg_heartbeat_send_struct(mavlink_channel_t chan, const mavlink_heartbeat_t* heartbeat)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_heartbeat_send(chan, heartbeat->Locom_mode);
+    mavlink_msg_heartbeat_send(chan, heartbeat->locom_mode, heartbeat->motor1_mode, heartbeat->motor2_mode);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)heartbeat, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #endif
@@ -173,17 +197,21 @@ static inline void mavlink_msg_heartbeat_send_struct(mavlink_channel_t chan, con
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t Locom_mode)
+static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t locom_mode, uint8_t motor1_mode, uint8_t motor2_mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_uint8_t(buf, 0, Locom_mode);
-    _mav_put_uint8_t(buf, 1, 3);
+    _mav_put_uint8_t(buf, 0, locom_mode);
+    _mav_put_uint8_t(buf, 1, motor1_mode);
+    _mav_put_uint8_t(buf, 2, motor2_mode);
+    _mav_put_uint8_t(buf, 3, 3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #else
     mavlink_heartbeat_t *packet = (mavlink_heartbeat_t *)msgbuf;
-    packet->Locom_mode = Locom_mode;
+    packet->locom_mode = locom_mode;
+    packet->motor1_mode = motor1_mode;
+    packet->motor2_mode = motor2_mode;
     packet->mavlink_version = 3;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)packet, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -197,13 +225,33 @@ static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mav
 
 
 /**
- * @brief Get field Locom_mode from heartbeat message
+ * @brief Get field locom_mode from heartbeat message
  *
- * @return mode of the locomotion module, see LOCOM_MODE enum
+ * @return Mode of the locomotion module
  */
-static inline uint8_t mavlink_msg_heartbeat_get_Locom_mode(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_heartbeat_get_locom_mode(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_uint8_t(msg,  0);
+}
+
+/**
+ * @brief Get field motor1_mode from heartbeat message
+ *
+ * @return Mode of motor 1
+ */
+static inline uint8_t mavlink_msg_heartbeat_get_motor1_mode(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint8_t(msg,  1);
+}
+
+/**
+ * @brief Get field motor2_mode from heartbeat message
+ *
+ * @return Mode of motor 2
+ */
+static inline uint8_t mavlink_msg_heartbeat_get_motor2_mode(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint8_t(msg,  2);
 }
 
 /**
@@ -213,7 +261,7 @@ static inline uint8_t mavlink_msg_heartbeat_get_Locom_mode(const mavlink_message
  */
 static inline uint8_t mavlink_msg_heartbeat_get_mavlink_version(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  1);
+    return _MAV_RETURN_uint8_t(msg,  3);
 }
 
 /**
@@ -225,7 +273,9 @@ static inline uint8_t mavlink_msg_heartbeat_get_mavlink_version(const mavlink_me
 static inline void mavlink_msg_heartbeat_decode(const mavlink_message_t* msg, mavlink_heartbeat_t* heartbeat)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    heartbeat->Locom_mode = mavlink_msg_heartbeat_get_Locom_mode(msg);
+    heartbeat->locom_mode = mavlink_msg_heartbeat_get_locom_mode(msg);
+    heartbeat->motor1_mode = mavlink_msg_heartbeat_get_motor1_mode(msg);
+    heartbeat->motor2_mode = mavlink_msg_heartbeat_get_motor2_mode(msg);
     heartbeat->mavlink_version = mavlink_msg_heartbeat_get_mavlink_version(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_HEARTBEAT_LEN? msg->len : MAVLINK_MSG_ID_HEARTBEAT_LEN;

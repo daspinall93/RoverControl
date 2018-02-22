@@ -7,10 +7,11 @@
 
 #ifndef RVUTILS_H_
 #define RVUTILS_H_
-#include <time.h>
-#include <math.h>
 
-long int utils_getTimems();
-long int utils_getTimeus();
-
+class Utils
+{
+public:
+    static long int GetTimems();
+    static long int GetTimeus();
+};
 #endif /* RVUTILS_H_ */

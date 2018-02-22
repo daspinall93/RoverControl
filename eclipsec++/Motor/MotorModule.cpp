@@ -13,7 +13,7 @@
 #include <bcm2835.h>
 
 /* INCLUDE ENUMERATIONS */
-#include "../mavlink/v2.0/SoteriaRover/mavlink.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 
 /* PIN CONSTANTS */
 #define ENA 18	//PWM

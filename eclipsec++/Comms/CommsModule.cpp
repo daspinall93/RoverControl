@@ -6,6 +6,7 @@
  */
 
 #include "CommsModule.h"
+
 CommsModule::CommsModule()
 {
   /* SET ALL DATA MEMBERS TO 0 */
@@ -82,9 +83,11 @@ void CommsModule::SendPacket()
 	/* PRODUCE THE MESSAGE IN MAVLINK FORMAT */
 	switch(Command.messageid)
 	{
+
 	case MAVLINK_MSG_ID_HEARTBEAT:
 
-	    mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Command.standard, Command.heartBeat.Locom_mode);
+	    mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Command.standard, Command.heartBeat.locom_mode, Command.heartBeat.motor1_mode, Command.heartBeat.motor2_mode);
+
 	    break;
 
 	default:
