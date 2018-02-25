@@ -75,28 +75,55 @@
             <field type="uint8_t" name="motor2_mode" enum="MOTOR_MODE">Mode of motor 2</field>
             <field type="uint8_t_mavlink_version" name="mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
         </message>
+        
         <!-- Locomotion module commands, reports, state and config -->
         <message id="3" name="LOCOM_COMMAND">
             <description>A command to the locomotion module</description>
-            <field type="uint8_t" name="command_id" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
-            <field type="uint32_t" name="duration_ms">duration of the locomotion command</field>
-            <field type="uint32_t" name="power">Power (0-100%) of the commanded locomotion manoeuvre</field>
-            <field type="uint8_t" name="new_command">new command boolean</field>
+            <field type="uint8_t" name="commandid" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
+            <field type="uint64_t" name="duration_ms">duration of the locomotion command</field>
+            <field type="uint32_t" name="power_per">Power (0-100%) of the commanded locomotion manoeuvre</field>
+            <field type="uint8_t" name="newCommand">new command boolean</field>
         </message>
         <message id="4" name="LOCOM_REPORT">
             <description>The report structure from the locomotion module</description>
-            <field type="uint64_t" name="mode_elapsed_time_ms">The ID of the locomotion module command</field>
+            <field type="uint64_t" name="modeElapsedTime_ms">The ID of the locomotion module command</field>
             <field type="uint8_t" name="mode" enum="LOCOM_MODE">duration of the locomotion command</field>        
         </message>
         <message id="5" name="LOCOM_STATE">
             <description>The state structure of the locomotion module</description>
-            <field type="uint64_t" name="mode_start_time_ms">The ID of the locomotion module command</field>
-            <field type="uint64_t" name="mode_elapsed_time_ms">The ID of the locomotion module command</field>
+            <field type="uint64_t" name="modeStartTime_ms">The ID of the locomotion module command</field>
+            <field type="uint64_t" name="modeElapsedTime_ms">The ID of the locomotion module command</field>
             <field type="uint8_t" name="mode" enum="LOCOM_MODE">duration of the locomotion command</field>
-        </message>
-        <!-- <message id="6" name="LOCOM_CONFIGURATION">
+        </message>       
+         <!-- <message id="6" name="LOCOM_CONFIGURATION">
             <description>A strcuture defining the configuration/settings of the locomotion module</description>
         </message> -->
+
         <!-- Motor module commands, reports, state and config-->
+        <message id="10" name="MOTOR_COMMAND">
+            <field type="uint8_t" name="m1_commandid" enum="MOTOR_COMMAND_ID"></field>
+            <field type="uint8_t" name="m1_newCommand"></field>
+            <field type="uint32_t" name="m1_power_per"></field>
+            <field type="uint8_t" name="m2_commandid" enum="MOTOR_COMMAND_ID"></field>
+            <field type="uint8_t" name="m2_newCommand"></field>
+            <field type="uint32_t" name="m2_power_per"></field>
+        </message>
+        <message id="11" name="MOTOR_REPORT">
+            <field type="uint8_t" name="m1_mode" enum="MOTOR_MODE"></field>
+            <field type="uint32_t" name="m1_pwmInput"></field>
+            <field type="uint8_t" name="m2_mode" enum="MOTOR_MODE"></field>
+            <field type="uint32_t" name="m2_pwmInput"></field>
+        </message>
+        
+        <!-- Comms modile commands, reports, state and config -->
+        <!-- <message id="15" name="COMMS_COMMAND">
+            <field type="uint8_t[2041]" name="msgSentBuffer"></field>
+            <field type="uint32_t" name="BufferLength"></field>
+        </message>
+        <message id="16" name="COMMS_REPORT">
+            <field type="uint32_t" name="numBytesRec"></field>
+            <field type="uint32_t" name="numBytesSent"></field>
+            <field type="uint8_t[2041]" name="msgRecBuffer"></field>
+        </message> -->
     </messages>
 </mavlink>

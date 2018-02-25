@@ -7,163 +7,124 @@
 
 #include "CommsModule.h"
 
-CommsModule::CommsModule()
-{
-  /* SET ALL DATA MEMBERS TO 0 */
-  memset(&Report, 0, sizeof(Report));
-  memset(&Command, 0, sizeof(Report));
-  memset(&SocketConfig, 0, sizeof(Report));
-  memset(&SocketState, 0, sizeof(Report));
-  memset(&MavConfig, 0, sizeof(Report));
-  memset(&MavState, 0, sizeof(Report));
-
-}
-
 void CommsModule::Start()
 {
-    /* CONFIGURE SOCKET PARAMETERS */
-    SocketConfig.socketLength = sizeof(struct sockaddr_in);
-    SocketConfig.portNumber = GROUND_SOCKETNO;
+	/* CONFIGURE SOCKET PARAMETERS */
+	socketLength = sizeof(struct sockaddr_in);
+	roverPortNum = ROVER_SOCKETNO;
 
-    strcpy(SocketConfig.groundipAddr, GROUND_IP_ADDRESS);
-    SocketConfig.socketLength = sizeof(struct sockaddr_in);
+	/* SETUP THE ROVER SOCKET */
+	//TODO Add error checking to the socket set up process
+	socketNum = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	memset((char *) &socketidRover, 0, sizeof(socketidRover));
 
-    /* SETUP THE SOCKET */
-    //TODO Add error checking to the socket set up process
-    SocketConfig.socketNum = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    memset((char *) &SocketConfig.socketidRover, 0, sizeof(SocketConfig.socketidRover));
+	//configure the socket for use
+	socketidRover.sin_family = AF_INET;
+	socketidRover.sin_port = htons(roverPortNum);
+	socketidRover.sin_addr.s_addr = INADDR_ANY;
 
-    //configure the socket for use
-    SocketConfig.socketidRover.sin_family = AF_INET;
-    SocketConfig.socketidRover.sin_port = htons(SocketConfig.portNumber);
-    SocketConfig.socketidRover.sin_addr.s_addr = INADDR_ANY;
+	if (bind(socketNum, (struct sockaddr*) &socketidRover,
+			sizeof(struct sockaddr)) == -1)
+	{
+		printf("Error on binding");
+	}
 
-    bind(SocketConfig.socketNum, (struct sockaddr*) &SocketConfig.socketidRover, sizeof(struct sockaddr));
+	/* ATTEMPT TO MAKE NON-BLOCKING */
+#if (defined __QNX__) | (defined __QNXNTO__)
+	if (fcntl(sock, F_SETFL, O_NONBLOCK | FASYNC) < 0)
+#else
+	if (fcntl(socketNum, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
+#endif
 
-    /* Attempt to make it non blocking */
-    #if (defined __QNX__) | (defined __QNXNTO__)
-    if (fcntl(sock, F_SETFL, O_NONBLOCK | FASYNC) < 0)
-    #else
-    if (fcntl(SocketConfig.socketNum, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
-    #endif
+	memset((char *) &socketidGround, 0, sizeof(struct sockaddr));
 
-    memset((char *) &SocketConfig.socketidGround, 0, sizeof(struct sockaddr));
+	/* GROUND SOCKET CONFIG */
+	groundPortNum = GROUND_SOCKETNO;
+	strcpy(groundipAddr, GROUND_IP_ADDRESS);
+	socketLength = sizeof(struct sockaddr_in);
 
-    //configure the port to be sending messages to
-    SocketConfig.socketidGround.sin_family = AF_INET;
-    SocketConfig.socketidGround.sin_addr.s_addr = inet_addr(SocketConfig.groundipAddr);
-    SocketConfig.socketidGround.sin_port = htons(SocketConfig.portNumber);
+	socketidGround.sin_family = AF_INET;
+	socketidGround.sin_addr.s_addr = inet_addr(groundipAddr);
+	socketidGround.sin_port = htons(groundPortNum);
 }
 
 void CommsModule::Stop()
 {
-    //close the socket
-    close(SocketConfig.socketNum);
+	/* CLOSE SOCKET */
+	close(socketNum);
 }
 
-void CommsModule::Execute()
+void CommsModule::Execute(const mavlink_comms_command_t* p_CommsCommand_in,
+		mavlink_comms_report_t* p_CommsReport_out)
 {
-
-    /* SEND A NEW PACKET */
-    SendPacket();
-
-    /* CHECK FOR ANY RECEIVED PACKETS */
-    ReceivePacket();
-
-    Debug();
-}
-
-void CommsModule::SendPacket()
-{
-    /* CHECK IF NEW SEND COMMAND HAS BEEN ISSUED */
-    if (Command.newSendCommand == 1)
-    {
-	memset(&SocketState.bufferArray, 0, sizeof(SocketState.bufferArray));
-
-	/* PRODUCE THE MESSAGE IN MAVLINK FORMAT */
-	switch(Command.messageid)
+	/* CHECK IF SEND BUFFER HAS ANYTHING IN IT */
+	if (p_CommsCommand_in->BufferLength > 0)
 	{
-
-	case MAVLINK_MSG_ID_HEARTBEAT:
-
-	    mavlink_msg_heartbeat_pack(MavConfig.sysid, MavConfig.compid, &Command.standard, Command.heartBeat.locom_mode, Command.heartBeat.motor1_mode, Command.heartBeat.motor2_mode);
-
-	    break;
-
-	default:
-
-	    break;
+		/* SEND CONTENTS OF THE BUFFER TO GS */
+		TransmitData(p_CommsCommand_in);
+	}
+	else
+	{
+		/* NO BYTES HAVE BEEN SENT */
+		bytesSent = 0;
 	}
 
-	/* STORE THE MESSAGE IN THE SOCKET BUFFER */
-	SocketState.bufferLength = mavlink_msg_to_send_buffer(SocketState.bufferArray, &Command.standard);
-	SocketState.bytesSent = sendto(SocketConfig.socketNum, SocketState.bufferArray,
-			SocketState.bufferLength, 0, (struct sockaddr*) &SocketConfig.socketidGround, sizeof(struct sockaddr_in));
+	/* CHECK IF ANY DATA HAS BEEN RECEIVED */
+	ReceiveData();
 
-	/* UPDATE RELEVANT SOCKET STATE ENTRIES */
-	SocketState.messagesSent += 1;
-	Command.newSendCommand = 0;
+	UpdateReport(p_CommsReport_out);
 
-    }
-    else
-    {
-	/* SET BYTES SENT TO 0 TO SIGNIFY NO MESSAGE SENT */
-	SocketState.bytesSent = 0;
-	return;
-    }
+	Debug();
 }
 
-void CommsModule::ReceivePacket()
+void CommsModule::TransmitData(const mavlink_comms_command_t* p_CommsCommand_in)
 {
-    memset(&SocketState.bufferArray, 0, sizeof(SocketState.bufferArray));
+	/* COPY CONTENTS OF COMMAND BUFFER TO THE SOCKET BUFFER */
+	memset(bufferArray, 0, sizeof(bufferArray));
+	memcpy(bufferArray, &p_CommsCommand_in->msgSentBuffer,
+			p_CommsCommand_in->BufferLength);
 
-    /* CHECK ON NUMBER OF BYTES RECEIVED AND STORED IN THE BUFFER */
-    SocketState.bytesReceived = recvfrom(SocketConfig.socketNum, SocketState.bufferArray,
-	sizeof(SocketState.bufferArray), 0, (struct sockaddr*) &SocketConfig.socketidGround, (socklen_t*)&SocketConfig.socketLength);
+	bufferLength = p_CommsCommand_in->BufferLength;
 
-    if (SocketState.bytesReceived != -1)
-    {
-	/* PARSE THE MESSAGE INTO GENERIC (PAYLOAD NOT PARSED) MAVLINK FORMAT */
-	for (int i = 0; i < SocketState.bytesReceived; i++)
+	bytesSent = sendto(socketNum, bufferArray, bufferLength, 0,
+			(struct sockaddr*) &socketidGround, sizeof(struct sockaddr_in));
+
+}
+
+void CommsModule::ReceiveData()
+{
+	memset(bufferArray, 0, sizeof(bufferArray));
+
+	/* CHECK ON NUMBER OF BYTES RECEIVED AND STORED IN THE BUFFER */
+	bytesReceived = recvfrom(socketNum, bufferArray, sizeof(bufferArray), 0,
+			(struct sockaddr*) &socketidGround, (socklen_t*) &socketLength);
+
+	bufferLength = bytesReceived;
+
+}
+
+void CommsModule::UpdateReport(mavlink_comms_report_t* p_CommsReport_out)
+{
+	if (bytesReceived == -1)
 	{
-		//printf("current byte: 0x%02x \n", SocketState.bufferArray[i]);
-		if(mavlink_parse_char(MAVLINK_COMM_0, SocketState.bufferArray[i], &Report.standard, &MavState))
-		{
-			//printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
-		}
+		/* SET BUFFER TO 0 WHEN NO BYTES WERE RECEIVED */
+		memset(p_CommsReport_out->msgRecBuffer, 0, BUFFER_LENGTH);
 	}
-
-	Report.newPacketReceived = 1;
-
-	/* CONVERT FROM GENERIC MAVLINK TO SPECIFIC MAVLINK (WITH PAYLOAD DECODED) */
-	switch (Report.standard.msgid){
-
-	case MAVLINK_MSG_ID_HEARTBEAT:
-
-		break;
-
-	case MAVLINK_MSG_ID_LOCOM_COMMAND:
-		mavlink_msg_locom_command_decode(&Report.standard, &Report.locomCommand);
-		break;
-
+	else
+	{
+		/* COPY CONTENTS OF BUFFER TO THE REPORT */
+		memcpy(p_CommsReport_out->msgRecBuffer, &bufferArray, bytesReceived);
 	}
-
-    }
-    else
-    {
-	/* NO NEW PACKETS RECEIVED */
-	Report.newPacketReceived = 0;
-	return;
-    }
+	p_CommsReport_out->numBytesRec = bytesReceived;
+	p_CommsReport_out->numBytesSent = bytesSent;
 }
 
 void CommsModule::Debug()
 {
-	printf("[COMMS]bytes sent = %d \n", SocketState.bytesSent);
-	printf("[COMMS]bytes received = %d \n", SocketState.bytesReceived);
+	printf("[COMMS]bytes sent = %d \n", bytesSent);
+	printf("[COMMS]bytes received = %d \n", bytesReceived);
 //	printf("[COMMS]locom_commandid = %d \n", Report.locomCommand.command_id);
 //	printf("[COMMS]locom_duration = %d \n", Report.locomCommand.duration_ms);
 //	printf("[COMMS]locom_power = %d \n", Report.locomCommand.power);
 }
-
 

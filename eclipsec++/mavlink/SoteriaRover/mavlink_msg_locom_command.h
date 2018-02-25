@@ -5,19 +5,19 @@
 
 MAVPACKED(
 typedef struct __mavlink_locom_command_t {
- uint32_t duration_ms; /*< duration of the locomotion command*/
- uint32_t power; /*< Power (0-100%) of the commanded locomotion manoeuvre*/
- uint8_t command_id; /*< The ID of the locomotion module command*/
- uint8_t new_command; /*< new command boolean*/
+ uint64_t duration_ms; /*< duration of the locomotion command*/
+ uint32_t power_per; /*< Power (0-100%) of the commanded locomotion manoeuvre*/
+ uint8_t commandid; /*< The ID of the locomotion module command*/
+ uint8_t newCommand; /*< new command boolean*/
 }) mavlink_locom_command_t;
 
-#define MAVLINK_MSG_ID_LOCOM_COMMAND_LEN 10
-#define MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN 10
-#define MAVLINK_MSG_ID_3_LEN 10
-#define MAVLINK_MSG_ID_3_MIN_LEN 10
+#define MAVLINK_MSG_ID_LOCOM_COMMAND_LEN 14
+#define MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN 14
+#define MAVLINK_MSG_ID_3_LEN 14
+#define MAVLINK_MSG_ID_3_MIN_LEN 14
 
-#define MAVLINK_MSG_ID_LOCOM_COMMAND_CRC 60
-#define MAVLINK_MSG_ID_3_CRC 60
+#define MAVLINK_MSG_ID_LOCOM_COMMAND_CRC 231
+#define MAVLINK_MSG_ID_3_CRC 231
 
 
 
@@ -26,20 +26,20 @@ typedef struct __mavlink_locom_command_t {
     3, \
     "LOCOM_COMMAND", \
     4, \
-    {  { "command_id", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_locom_command_t, command_id) }, \
-         { "duration_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_locom_command_t, duration_ms) }, \
-         { "power", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_locom_command_t, power) }, \
-         { "new_command", NULL, MAVLINK_TYPE_UINT8_T, 0, 9, offsetof(mavlink_locom_command_t, new_command) }, \
+    {  { "commandid", NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(mavlink_locom_command_t, commandid) }, \
+         { "duration_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_command_t, duration_ms) }, \
+         { "power_per", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_locom_command_t, power_per) }, \
+         { "newCommand", NULL, MAVLINK_TYPE_UINT8_T, 0, 13, offsetof(mavlink_locom_command_t, newCommand) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_LOCOM_COMMAND { \
     "LOCOM_COMMAND", \
     4, \
-    {  { "command_id", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_locom_command_t, command_id) }, \
-         { "duration_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_locom_command_t, duration_ms) }, \
-         { "power", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_locom_command_t, power) }, \
-         { "new_command", NULL, MAVLINK_TYPE_UINT8_T, 0, 9, offsetof(mavlink_locom_command_t, new_command) }, \
+    {  { "commandid", NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(mavlink_locom_command_t, commandid) }, \
+         { "duration_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_command_t, duration_ms) }, \
+         { "power_per", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_locom_command_t, power_per) }, \
+         { "newCommand", NULL, MAVLINK_TYPE_UINT8_T, 0, 13, offsetof(mavlink_locom_command_t, newCommand) }, \
          } \
 }
 #endif
@@ -50,29 +50,29 @@ typedef struct __mavlink_locom_command_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param command_id The ID of the locomotion module command
+ * @param commandid The ID of the locomotion module command
  * @param duration_ms duration of the locomotion command
- * @param power Power (0-100%) of the commanded locomotion manoeuvre
- * @param new_command new command boolean
+ * @param power_per Power (0-100%) of the commanded locomotion manoeuvre
+ * @param newCommand new command boolean
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_locom_command_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t command_id, uint32_t duration_ms, uint32_t power, uint8_t new_command)
+                               uint8_t commandid, uint64_t duration_ms, uint32_t power_per, uint8_t newCommand)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_COMMAND_LEN];
-    _mav_put_uint32_t(buf, 0, duration_ms);
-    _mav_put_uint32_t(buf, 4, power);
-    _mav_put_uint8_t(buf, 8, command_id);
-    _mav_put_uint8_t(buf, 9, new_command);
+    _mav_put_uint64_t(buf, 0, duration_ms);
+    _mav_put_uint32_t(buf, 8, power_per);
+    _mav_put_uint8_t(buf, 12, commandid);
+    _mav_put_uint8_t(buf, 13, newCommand);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN);
 #else
     mavlink_locom_command_t packet;
     packet.duration_ms = duration_ms;
-    packet.power = power;
-    packet.command_id = command_id;
-    packet.new_command = new_command;
+    packet.power_per = power_per;
+    packet.commandid = commandid;
+    packet.newCommand = newCommand;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN);
 #endif
@@ -87,30 +87,30 @@ static inline uint16_t mavlink_msg_locom_command_pack(uint8_t system_id, uint8_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param command_id The ID of the locomotion module command
+ * @param commandid The ID of the locomotion module command
  * @param duration_ms duration of the locomotion command
- * @param power Power (0-100%) of the commanded locomotion manoeuvre
- * @param new_command new command boolean
+ * @param power_per Power (0-100%) of the commanded locomotion manoeuvre
+ * @param newCommand new command boolean
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_locom_command_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t command_id,uint32_t duration_ms,uint32_t power,uint8_t new_command)
+                                   uint8_t commandid,uint64_t duration_ms,uint32_t power_per,uint8_t newCommand)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_COMMAND_LEN];
-    _mav_put_uint32_t(buf, 0, duration_ms);
-    _mav_put_uint32_t(buf, 4, power);
-    _mav_put_uint8_t(buf, 8, command_id);
-    _mav_put_uint8_t(buf, 9, new_command);
+    _mav_put_uint64_t(buf, 0, duration_ms);
+    _mav_put_uint32_t(buf, 8, power_per);
+    _mav_put_uint8_t(buf, 12, commandid);
+    _mav_put_uint8_t(buf, 13, newCommand);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN);
 #else
     mavlink_locom_command_t packet;
     packet.duration_ms = duration_ms;
-    packet.power = power;
-    packet.command_id = command_id;
-    packet.new_command = new_command;
+    packet.power_per = power_per;
+    packet.commandid = commandid;
+    packet.newCommand = newCommand;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN);
 #endif
@@ -129,7 +129,7 @@ static inline uint16_t mavlink_msg_locom_command_pack_chan(uint8_t system_id, ui
  */
 static inline uint16_t mavlink_msg_locom_command_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_locom_command_t* locom_command)
 {
-    return mavlink_msg_locom_command_pack(system_id, component_id, msg, locom_command->command_id, locom_command->duration_ms, locom_command->power, locom_command->new_command);
+    return mavlink_msg_locom_command_pack(system_id, component_id, msg, locom_command->commandid, locom_command->duration_ms, locom_command->power_per, locom_command->newCommand);
 }
 
 /**
@@ -143,36 +143,36 @@ static inline uint16_t mavlink_msg_locom_command_encode(uint8_t system_id, uint8
  */
 static inline uint16_t mavlink_msg_locom_command_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_locom_command_t* locom_command)
 {
-    return mavlink_msg_locom_command_pack_chan(system_id, component_id, chan, msg, locom_command->command_id, locom_command->duration_ms, locom_command->power, locom_command->new_command);
+    return mavlink_msg_locom_command_pack_chan(system_id, component_id, chan, msg, locom_command->commandid, locom_command->duration_ms, locom_command->power_per, locom_command->newCommand);
 }
 
 /**
  * @brief Send a locom_command message
  * @param chan MAVLink channel to send the message
  *
- * @param command_id The ID of the locomotion module command
+ * @param commandid The ID of the locomotion module command
  * @param duration_ms duration of the locomotion command
- * @param power Power (0-100%) of the commanded locomotion manoeuvre
- * @param new_command new command boolean
+ * @param power_per Power (0-100%) of the commanded locomotion manoeuvre
+ * @param newCommand new command boolean
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_locom_command_send(mavlink_channel_t chan, uint8_t command_id, uint32_t duration_ms, uint32_t power, uint8_t new_command)
+static inline void mavlink_msg_locom_command_send(mavlink_channel_t chan, uint8_t commandid, uint64_t duration_ms, uint32_t power_per, uint8_t newCommand)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_COMMAND_LEN];
-    _mav_put_uint32_t(buf, 0, duration_ms);
-    _mav_put_uint32_t(buf, 4, power);
-    _mav_put_uint8_t(buf, 8, command_id);
-    _mav_put_uint8_t(buf, 9, new_command);
+    _mav_put_uint64_t(buf, 0, duration_ms);
+    _mav_put_uint32_t(buf, 8, power_per);
+    _mav_put_uint8_t(buf, 12, commandid);
+    _mav_put_uint8_t(buf, 13, newCommand);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_COMMAND, buf, MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_CRC);
 #else
     mavlink_locom_command_t packet;
     packet.duration_ms = duration_ms;
-    packet.power = power;
-    packet.command_id = command_id;
-    packet.new_command = new_command;
+    packet.power_per = power_per;
+    packet.commandid = commandid;
+    packet.newCommand = newCommand;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_COMMAND, (const char *)&packet, MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_CRC);
 #endif
@@ -186,7 +186,7 @@ static inline void mavlink_msg_locom_command_send(mavlink_channel_t chan, uint8_
 static inline void mavlink_msg_locom_command_send_struct(mavlink_channel_t chan, const mavlink_locom_command_t* locom_command)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_locom_command_send(chan, locom_command->command_id, locom_command->duration_ms, locom_command->power, locom_command->new_command);
+    mavlink_msg_locom_command_send(chan, locom_command->commandid, locom_command->duration_ms, locom_command->power_per, locom_command->newCommand);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_COMMAND, (const char *)locom_command, MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_CRC);
 #endif
@@ -200,22 +200,22 @@ static inline void mavlink_msg_locom_command_send_struct(mavlink_channel_t chan,
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_locom_command_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t command_id, uint32_t duration_ms, uint32_t power, uint8_t new_command)
+static inline void mavlink_msg_locom_command_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t commandid, uint64_t duration_ms, uint32_t power_per, uint8_t newCommand)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_uint32_t(buf, 0, duration_ms);
-    _mav_put_uint32_t(buf, 4, power);
-    _mav_put_uint8_t(buf, 8, command_id);
-    _mav_put_uint8_t(buf, 9, new_command);
+    _mav_put_uint64_t(buf, 0, duration_ms);
+    _mav_put_uint32_t(buf, 8, power_per);
+    _mav_put_uint8_t(buf, 12, commandid);
+    _mav_put_uint8_t(buf, 13, newCommand);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_COMMAND, buf, MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_CRC);
 #else
     mavlink_locom_command_t *packet = (mavlink_locom_command_t *)msgbuf;
     packet->duration_ms = duration_ms;
-    packet->power = power;
-    packet->command_id = command_id;
-    packet->new_command = new_command;
+    packet->power_per = power_per;
+    packet->commandid = commandid;
+    packet->newCommand = newCommand;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_COMMAND, (const char *)packet, MAVLINK_MSG_ID_LOCOM_COMMAND_MIN_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN, MAVLINK_MSG_ID_LOCOM_COMMAND_CRC);
 #endif
@@ -228,13 +228,13 @@ static inline void mavlink_msg_locom_command_send_buf(mavlink_message_t *msgbuf,
 
 
 /**
- * @brief Get field command_id from locom_command message
+ * @brief Get field commandid from locom_command message
  *
  * @return The ID of the locomotion module command
  */
-static inline uint8_t mavlink_msg_locom_command_get_command_id(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_locom_command_get_commandid(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  8);
+    return _MAV_RETURN_uint8_t(msg,  12);
 }
 
 /**
@@ -242,29 +242,29 @@ static inline uint8_t mavlink_msg_locom_command_get_command_id(const mavlink_mes
  *
  * @return duration of the locomotion command
  */
-static inline uint32_t mavlink_msg_locom_command_get_duration_ms(const mavlink_message_t* msg)
+static inline uint64_t mavlink_msg_locom_command_get_duration_ms(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  0);
+    return _MAV_RETURN_uint64_t(msg,  0);
 }
 
 /**
- * @brief Get field power from locom_command message
+ * @brief Get field power_per from locom_command message
  *
  * @return Power (0-100%) of the commanded locomotion manoeuvre
  */
-static inline uint32_t mavlink_msg_locom_command_get_power(const mavlink_message_t* msg)
+static inline uint32_t mavlink_msg_locom_command_get_power_per(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  4);
+    return _MAV_RETURN_uint32_t(msg,  8);
 }
 
 /**
- * @brief Get field new_command from locom_command message
+ * @brief Get field newCommand from locom_command message
  *
  * @return new command boolean
  */
-static inline uint8_t mavlink_msg_locom_command_get_new_command(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_locom_command_get_newCommand(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  9);
+    return _MAV_RETURN_uint8_t(msg,  13);
 }
 
 /**
@@ -277,9 +277,9 @@ static inline void mavlink_msg_locom_command_decode(const mavlink_message_t* msg
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     locom_command->duration_ms = mavlink_msg_locom_command_get_duration_ms(msg);
-    locom_command->power = mavlink_msg_locom_command_get_power(msg);
-    locom_command->command_id = mavlink_msg_locom_command_get_command_id(msg);
-    locom_command->new_command = mavlink_msg_locom_command_get_new_command(msg);
+    locom_command->power_per = mavlink_msg_locom_command_get_power_per(msg);
+    locom_command->commandid = mavlink_msg_locom_command_get_commandid(msg);
+    locom_command->newCommand = mavlink_msg_locom_command_get_newCommand(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_LOCOM_COMMAND_LEN? msg->len : MAVLINK_MSG_ID_LOCOM_COMMAND_LEN;
         memset(locom_command, 0, MAVLINK_MSG_ID_LOCOM_COMMAND_LEN);

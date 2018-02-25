@@ -14,54 +14,41 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "../Motor/MotorModule.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 
-class LocomModule
-{
+class LocomModule {
 public:
-    struct
-    {
-	long int modeElapsedTime;
-	uint8_t mode;	//a valid submode using LOCOM_STATE_x
-    } Report;
-
-    struct
-    {
-	int power;	//power (0 to 100%)
-	int durmsec;	//duration in msec
-	uint8_t commandid;	//command using valid LOCOM_COMMAND_x
-	bool newCommand;	//boolean for if a new command has been produced
-    } Command;
-
-    LocomModule(MotorModule* p_M1, MotorModule* p_M2);	//replace locom_start()
-    void Start();
-    void Execute();
+	/* PUBLIC INTERFACE FOR OTHER OBJECTS TO INTERACT WITH */
+	void Start();
+	void Execute(mavlink_locom_report_t* p_LocomReport_out,
+			mavlink_locom_command_t* p_LocomCommand_in,
+			mavlink_motor_command_t* p_MotorCommand_out);
 
 private:
-    MotorModule* p_Motor1;
-    MotorModule* p_Motor2;
 
-    struct
-    {
-	//struct containing to keep track of internal state of the object
-	long int modeStartTime;
-	long int modeElapsedTime;
-	uint8_t mode;
-    } State;
+	uint64_t modeStartTime_ms; /*< The ID of the locomotion module command*/
+	uint64_t modeElapsedTime_ms; /*< The ID of the locomotion module command*/
+	uint8_t mode; /*< duration of the locomotion command*/
 
-    struct
-    {
+	void ModeStop(mavlink_motor_command_t* p_MotorCommand_out,
+			const mavlink_locom_command_t* p_LocomCommand_in);
 
-    } Config;
+	void ModeStraightForward(mavlink_motor_command_t* p_MotorCommand_out,
+			const mavlink_locom_command_t* p_LocomCommand_in);
 
-    void ModeStop();
-    void ModeStraightForward();
-    void ModeStraightBackward();
-    void ModeTurnRight();
-    void ModeTurnLeft();
+	void ModeStraightBackward(mavlink_motor_command_t* p_MotorCommand_out,
+			const mavlink_locom_command_t* p_LocomCommand_in);
 
-    void UpdateReport();
-    void Debug();
+	void ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_out,
+			const mavlink_locom_command_t* p_LocomCommand_in);
+
+	void ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_out,
+			const mavlink_locom_command_t* p_LocomCommand_in);
+
+	void UpdateReport(mavlink_locom_report_t* p_LocomReport_out);
+
+	void
+	Debug();
 
 };
 
