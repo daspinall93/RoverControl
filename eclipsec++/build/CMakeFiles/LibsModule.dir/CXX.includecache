@@ -53,16 +53,14 @@ LocomModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
 ../Utils/Utils.h
 /home/dan/git/SoteriaRover/eclipsec++/Utils/Utils.h
-../mavlink/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Locom/LocomModule.h
 stdio.h
 -
 stdint.h
 -
-../Motor/MotorModule.h
-/home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp
 ../MPU6050/I2Cdev.h
@@ -95,14 +93,12 @@ MotorModule.h
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
 stdio.h
 -
-bcm2835.h
--
-../mavlink/SoteriaRover/mavlink.h
-/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Motor/MotorModule.h
 stdint.h
 -
+../mavlink/SoteriaRover/mavlink.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/mavlink.h
 
 /home/dan/git/SoteriaRover/eclipsec++/Rover/RoverModule.cpp
 RoverModule.h
@@ -146,6 +142,10 @@ math.h
 
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_state.h
 
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_motor_command.h
+
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_motor_report.h
+
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/SoteriaRover.h
 ../protocol.h
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/protocol.h
@@ -157,6 +157,10 @@ math.h
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_report.h
 ./mavlink_msg_locom_state.h
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_locom_state.h
+./mavlink_msg_motor_command.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_motor_command.h
+./mavlink_msg_motor_report.h
+/home/dan/git/SoteriaRover/eclipsec++/mavlink/SoteriaRover/./mavlink_msg_motor_report.h
 ../mavlink_get_info.h
 /home/dan/git/SoteriaRover/eclipsec++/mavlink/mavlink_get_info.h
 

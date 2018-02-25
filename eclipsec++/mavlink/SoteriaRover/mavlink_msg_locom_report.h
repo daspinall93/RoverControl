@@ -5,7 +5,7 @@
 
 MAVPACKED(
 typedef struct __mavlink_locom_report_t {
- uint64_t mode_elapsed_time_ms; /*< The ID of the locomotion module command*/
+ uint64_t modeElapsedTime_ms; /*< The ID of the locomotion module command*/
  uint8_t mode; /*< duration of the locomotion command*/
 }) mavlink_locom_report_t;
 
@@ -14,8 +14,8 @@ typedef struct __mavlink_locom_report_t {
 #define MAVLINK_MSG_ID_4_LEN 9
 #define MAVLINK_MSG_ID_4_MIN_LEN 9
 
-#define MAVLINK_MSG_ID_LOCOM_REPORT_CRC 213
-#define MAVLINK_MSG_ID_4_CRC 213
+#define MAVLINK_MSG_ID_LOCOM_REPORT_CRC 194
+#define MAVLINK_MSG_ID_4_CRC 194
 
 
 
@@ -24,7 +24,7 @@ typedef struct __mavlink_locom_report_t {
     4, \
     "LOCOM_REPORT", \
     2, \
-    {  { "mode_elapsed_time_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_report_t, mode_elapsed_time_ms) }, \
+    {  { "modeElapsedTime_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_report_t, modeElapsedTime_ms) }, \
          { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_locom_report_t, mode) }, \
          } \
 }
@@ -32,7 +32,7 @@ typedef struct __mavlink_locom_report_t {
 #define MAVLINK_MESSAGE_INFO_LOCOM_REPORT { \
     "LOCOM_REPORT", \
     2, \
-    {  { "mode_elapsed_time_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_report_t, mode_elapsed_time_ms) }, \
+    {  { "modeElapsedTime_ms", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_locom_report_t, modeElapsedTime_ms) }, \
          { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 8, offsetof(mavlink_locom_report_t, mode) }, \
          } \
 }
@@ -44,22 +44,22 @@ typedef struct __mavlink_locom_report_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param mode_elapsed_time_ms The ID of the locomotion module command
+ * @param modeElapsedTime_ms The ID of the locomotion module command
  * @param mode duration of the locomotion command
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_locom_report_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint64_t mode_elapsed_time_ms, uint8_t mode)
+                               uint64_t modeElapsedTime_ms, uint8_t mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_REPORT_LEN];
-    _mav_put_uint64_t(buf, 0, mode_elapsed_time_ms);
+    _mav_put_uint64_t(buf, 0, modeElapsedTime_ms);
     _mav_put_uint8_t(buf, 8, mode);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LOCOM_REPORT_LEN);
 #else
     mavlink_locom_report_t packet;
-    packet.mode_elapsed_time_ms = mode_elapsed_time_ms;
+    packet.modeElapsedTime_ms = modeElapsedTime_ms;
     packet.mode = mode;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LOCOM_REPORT_LEN);
@@ -75,23 +75,23 @@ static inline uint16_t mavlink_msg_locom_report_pack(uint8_t system_id, uint8_t 
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param mode_elapsed_time_ms The ID of the locomotion module command
+ * @param modeElapsedTime_ms The ID of the locomotion module command
  * @param mode duration of the locomotion command
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_locom_report_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint64_t mode_elapsed_time_ms,uint8_t mode)
+                                   uint64_t modeElapsedTime_ms,uint8_t mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_REPORT_LEN];
-    _mav_put_uint64_t(buf, 0, mode_elapsed_time_ms);
+    _mav_put_uint64_t(buf, 0, modeElapsedTime_ms);
     _mav_put_uint8_t(buf, 8, mode);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_LOCOM_REPORT_LEN);
 #else
     mavlink_locom_report_t packet;
-    packet.mode_elapsed_time_ms = mode_elapsed_time_ms;
+    packet.modeElapsedTime_ms = modeElapsedTime_ms;
     packet.mode = mode;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_LOCOM_REPORT_LEN);
@@ -111,7 +111,7 @@ static inline uint16_t mavlink_msg_locom_report_pack_chan(uint8_t system_id, uin
  */
 static inline uint16_t mavlink_msg_locom_report_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_locom_report_t* locom_report)
 {
-    return mavlink_msg_locom_report_pack(system_id, component_id, msg, locom_report->mode_elapsed_time_ms, locom_report->mode);
+    return mavlink_msg_locom_report_pack(system_id, component_id, msg, locom_report->modeElapsedTime_ms, locom_report->mode);
 }
 
 /**
@@ -125,29 +125,29 @@ static inline uint16_t mavlink_msg_locom_report_encode(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_locom_report_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_locom_report_t* locom_report)
 {
-    return mavlink_msg_locom_report_pack_chan(system_id, component_id, chan, msg, locom_report->mode_elapsed_time_ms, locom_report->mode);
+    return mavlink_msg_locom_report_pack_chan(system_id, component_id, chan, msg, locom_report->modeElapsedTime_ms, locom_report->mode);
 }
 
 /**
  * @brief Send a locom_report message
  * @param chan MAVLink channel to send the message
  *
- * @param mode_elapsed_time_ms The ID of the locomotion module command
+ * @param modeElapsedTime_ms The ID of the locomotion module command
  * @param mode duration of the locomotion command
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_locom_report_send(mavlink_channel_t chan, uint64_t mode_elapsed_time_ms, uint8_t mode)
+static inline void mavlink_msg_locom_report_send(mavlink_channel_t chan, uint64_t modeElapsedTime_ms, uint8_t mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_LOCOM_REPORT_LEN];
-    _mav_put_uint64_t(buf, 0, mode_elapsed_time_ms);
+    _mav_put_uint64_t(buf, 0, modeElapsedTime_ms);
     _mav_put_uint8_t(buf, 8, mode);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_REPORT, buf, MAVLINK_MSG_ID_LOCOM_REPORT_MIN_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_CRC);
 #else
     mavlink_locom_report_t packet;
-    packet.mode_elapsed_time_ms = mode_elapsed_time_ms;
+    packet.modeElapsedTime_ms = modeElapsedTime_ms;
     packet.mode = mode;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_REPORT, (const char *)&packet, MAVLINK_MSG_ID_LOCOM_REPORT_MIN_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_CRC);
@@ -162,7 +162,7 @@ static inline void mavlink_msg_locom_report_send(mavlink_channel_t chan, uint64_
 static inline void mavlink_msg_locom_report_send_struct(mavlink_channel_t chan, const mavlink_locom_report_t* locom_report)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_locom_report_send(chan, locom_report->mode_elapsed_time_ms, locom_report->mode);
+    mavlink_msg_locom_report_send(chan, locom_report->modeElapsedTime_ms, locom_report->mode);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_REPORT, (const char *)locom_report, MAVLINK_MSG_ID_LOCOM_REPORT_MIN_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_CRC);
 #endif
@@ -176,17 +176,17 @@ static inline void mavlink_msg_locom_report_send_struct(mavlink_channel_t chan, 
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_locom_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint64_t mode_elapsed_time_ms, uint8_t mode)
+static inline void mavlink_msg_locom_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint64_t modeElapsedTime_ms, uint8_t mode)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_uint64_t(buf, 0, mode_elapsed_time_ms);
+    _mav_put_uint64_t(buf, 0, modeElapsedTime_ms);
     _mav_put_uint8_t(buf, 8, mode);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_REPORT, buf, MAVLINK_MSG_ID_LOCOM_REPORT_MIN_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_CRC);
 #else
     mavlink_locom_report_t *packet = (mavlink_locom_report_t *)msgbuf;
-    packet->mode_elapsed_time_ms = mode_elapsed_time_ms;
+    packet->modeElapsedTime_ms = modeElapsedTime_ms;
     packet->mode = mode;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_LOCOM_REPORT, (const char *)packet, MAVLINK_MSG_ID_LOCOM_REPORT_MIN_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_LEN, MAVLINK_MSG_ID_LOCOM_REPORT_CRC);
@@ -200,11 +200,11 @@ static inline void mavlink_msg_locom_report_send_buf(mavlink_message_t *msgbuf, 
 
 
 /**
- * @brief Get field mode_elapsed_time_ms from locom_report message
+ * @brief Get field modeElapsedTime_ms from locom_report message
  *
  * @return The ID of the locomotion module command
  */
-static inline uint64_t mavlink_msg_locom_report_get_mode_elapsed_time_ms(const mavlink_message_t* msg)
+static inline uint64_t mavlink_msg_locom_report_get_modeElapsedTime_ms(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_uint64_t(msg,  0);
 }
@@ -228,7 +228,7 @@ static inline uint8_t mavlink_msg_locom_report_get_mode(const mavlink_message_t*
 static inline void mavlink_msg_locom_report_decode(const mavlink_message_t* msg, mavlink_locom_report_t* locom_report)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    locom_report->mode_elapsed_time_ms = mavlink_msg_locom_report_get_mode_elapsed_time_ms(msg);
+    locom_report->modeElapsedTime_ms = mavlink_msg_locom_report_get_modeElapsedTime_ms(msg);
     locom_report->mode = mavlink_msg_locom_report_get_mode(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_LOCOM_REPORT_LEN? msg->len : MAVLINK_MSG_ID_LOCOM_REPORT_LEN;

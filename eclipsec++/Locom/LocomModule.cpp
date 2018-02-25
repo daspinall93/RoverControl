@@ -8,178 +8,173 @@
 #include "LocomModule.h"
 #include "../Utils/Utils.h"
 
-/* INCLUDE ENUMERATIONS */
-#include "../mavlink/SoteriaRover/mavlink.h"
-
-LocomModule::LocomModule(MotorModule* p_M1, MotorModule* p_M2)
-{
-    /* ASSIGN POINTERS TO THE MOTORS FOR SENDING COMMANDS */
-    p_Motor1 = p_M1;
-    p_Motor2 = p_M2;
-
-    /* INITIALISE ALL DATA TO 0 */
-    memset(&Report, 0, sizeof(Report));
-    memset(&Command, 0, sizeof(Report));
-    memset(&Config, 0, sizeof(Config));
-    memset(&State, 0, sizeof(State));
-
-}
-
 void LocomModule::Start()
 {
 
-    /* INITIALISE THE STATE STRUCTURE */
-    State.mode = LOCOM_MODE_STOP;
-    State.modeElapsedTime = 0;
-    State.modeStartTime = 0;
+	/* INITIALISE THE STATE STRUCTURE */
+	mode = LOCOM_MODE_STOP;
+	modeElapsedTime_ms = 0;
+	modeStartTime_ms = 0;
 }
 
-void LocomModule::Execute()
+void LocomModule::Execute(mavlink_locom_report_t* p_LocomReport_out,
+		mavlink_locom_command_t* p_LocomCommand_in,
+		mavlink_motor_command_t* p_MotorCommand_out)
 {
-    Debug();
+	//Debug();
 
-    /* CHECK IF NEW COMMAND HAS BEEN ISSUED */
-    if (Command.newCommand)
-    {
-	/* SWITCH ON THE COMMAND ID */
-	switch(Command.commandid)
+	/* CHECK IF NEW COMMAND HAS BEEN ISSUED */
+	if (p_LocomCommand_in->newCommand)
 	{
-	    case LOCOM_COMMAND_STOP:
+		/* SWITCH ON THE COMMAND ID */
+		switch (p_LocomCommand_in->commandid)
+		{
+		case LOCOM_COMMAND_STOP:
 
-		ModeStop();
-		break;
+			ModeStop(p_MotorCommand_out, p_LocomCommand_in);
+			break;
 
-	    case LOCOM_COMMAND_STRAIGHT_FORWARD:
+		case LOCOM_COMMAND_STRAIGHT_FORWARD:
 
-		ModeStraightForward();
-		break;
+			ModeStraightForward(p_MotorCommand_out, p_LocomCommand_in);
+			break;
 
-	    case LOCOM_COMMAND_STRAIGHT_BACKWARD:
+		case LOCOM_COMMAND_STRAIGHT_BACKWARD:
 
-		ModeStraightBackward();
-		break;
+			ModeStraightBackward(p_MotorCommand_out, p_LocomCommand_in);
+			break;
 
-	    case LOCOM_COMMAND_TURN_LEFT:
+		case LOCOM_COMMAND_TURN_LEFT:
 
-		ModeTurnLeft();
-		break;
+			ModeTurnLeft(p_MotorCommand_out, p_LocomCommand_in);
+			break;
 
-	    case LOCOM_COMMAND_TURN_RIGHT:
+		case LOCOM_COMMAND_TURN_RIGHT:
 
-		ModeTurnRight();
-		break;
+			ModeTurnRight(p_MotorCommand_out, p_LocomCommand_in);
+			break;
 
-	    default:
+		default:
 
-		break;
+			break;
+
+		}
+
+		/* INITALISE THE TIMER FOR THE COMMAND */
+		modeStartTime_ms = Utils::GetTimems();
+		modeElapsedTime_ms = 0;
+		p_LocomCommand_in->newCommand = 0;
 
 	}
-
-	/* INITALISE THE TIMER FOR THE COMMAND */
-	State.modeStartTime = Utils::GetTimems();
-	State.modeElapsedTime = 0;
-	Command.newCommand = 0;
-
-    }
-    else
-    {
-
-	/* CHECK IF THE COMMAND HAS FINISHED */
-	State.modeElapsedTime = (Utils::GetTimems() - State.modeStartTime);
-	if(State.modeElapsedTime >= Command.durmsec)
+	else
 	{
-	    /* RESET TIMER AND SET MODE TO STOP */
-	    State.modeStartTime = Utils::GetTimems();
-	    State.modeElapsedTime = 0;
-	    ModeStop();
+
+		/* UPDATE ELAPSED TIME */
+		modeElapsedTime_ms = (Utils::GetTimems() - modeStartTime_ms);
+
+		/* CHECK IF THE COMMAND HAS FINISHED */
+		if (modeElapsedTime_ms >= p_LocomCommand_in->duration_ms)
+		{
+			/* RESET TIMER AND SET MODE TO STOP */
+			modeStartTime_ms = Utils::GetTimems();
+			modeElapsedTime_ms = 0;
+			ModeStop(p_MotorCommand_out, p_LocomCommand_in);
+
+		}
 
 	}
-
-    }
-    //execute the changes for the motors
-    Debug();
+	//execute the changes for the motors
+	Debug();
 }
 
-/* MODE FUNCTIONS WITH CORRESPONDING DIRECTION COMMANDS TO MOTORS */
-
-void LocomModule::ModeStop()
+void LocomModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_out,
+		const mavlink_locom_command_t* p_LocomCommand_in)
 {
 
-    p_Motor1->Command.commandid = MOTOR_COMMAND_STOP;
-    p_Motor1->Command.newCommand = 1;
-    p_Motor1->Command.power = Command.power;
+	p_MotorCommand_out->m1_commandid = MOTOR_COMMAND_STOP;
+	p_MotorCommand_out->m1_newCommand = 1;
+	p_MotorCommand_out->m1_power_per = p_LocomCommand_in->power_per;
 
-    p_Motor2->Command.commandid = MOTOR_COMMAND_STOP;
-    p_Motor2->Command.newCommand = 1;
-    p_Motor2->Command.power = Command.power;
+	p_MotorCommand_out->m2_commandid = MOTOR_COMMAND_STOP;
+	p_MotorCommand_out->m2_newCommand = 1;
+	p_MotorCommand_out->m2_power_per = p_LocomCommand_in->power_per;
 
-    State.mode = LOCOM_MODE_STOP;
+	mode = LOCOM_MODE_STOP;
 }
 
-void LocomModule::ModeStraightForward()
+void LocomModule::ModeStraightForward(
+		mavlink_motor_command_t* p_MotorCommand_out,
+		const mavlink_locom_command_t* p_LocomCommand_in)
 {
-    p_Motor1->Command.commandid = MOTOR_COMMAND_FORWARD;
-    p_Motor1->Command.newCommand = 1;
-    p_Motor1->Command.power = Command.power;
 
-    p_Motor2->Command.commandid = MOTOR_COMMAND_FORWARD;
-    p_Motor2->Command.newCommand = 1;
-    p_Motor2->Command.power = Command.power;
+	p_MotorCommand_out->m1_commandid = MOTOR_COMMAND_FORWARD;
+	p_MotorCommand_out->m1_newCommand = 1;
+	p_MotorCommand_out->m1_power_per = p_LocomCommand_in->power_per;
 
-    State.mode = LOCOM_MODE_STRAIGHT_FORWARD;
+	p_MotorCommand_out->m2_commandid = MOTOR_COMMAND_FORWARD;
+	p_MotorCommand_out->m2_newCommand = 1;
+	p_MotorCommand_out->m2_power_per = p_LocomCommand_in->power_per;
+
+	mode = LOCOM_MODE_STRAIGHT_FORWARD;
 }
 
-void LocomModule::ModeStraightBackward()
+void LocomModule::ModeStraightBackward(
+		mavlink_motor_command_t* p_MotorCommand_out,
+		const mavlink_locom_command_t* p_LocomCommand_in)
 {
-    p_Motor1->Command.commandid = MOTOR_COMMAND_BACKWARD;
-    p_Motor1->Command.newCommand = 1;
-    p_Motor1->Command.power = Command.power;
-    p_Motor1->Execute();
 
-    p_Motor2->Command.commandid = MOTOR_COMMAND_BACKWARD;
-    p_Motor2->Command.newCommand = 1;
-    p_Motor2->Command.power = Command.power;
-    p_Motor2->Execute();
+	p_MotorCommand_out->m1_commandid = MOTOR_COMMAND_BACKWARD;
+	p_MotorCommand_out->m1_newCommand = 1;
+	p_MotorCommand_out->m1_power_per = p_LocomCommand_in->power_per;
 
-    State.mode = LOCOM_MODE_STRAIGHT_BACKWARD;
+	p_MotorCommand_out->m2_commandid = MOTOR_COMMAND_BACKWARD;
+	p_MotorCommand_out->m2_newCommand = 1;
+	p_MotorCommand_out->m2_power_per = p_LocomCommand_in->power_per;
+
+	mode = LOCOM_MODE_STRAIGHT_BACKWARD;
 }
 
-void LocomModule::ModeTurnRight()
+void LocomModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_out,
+		const mavlink_locom_command_t* p_LocomCommand_in)
 {
-    p_Motor1->Command.commandid = MOTOR_COMMAND_FORWARD;
-    p_Motor1->Command.newCommand = 1;
-    p_Motor1->Command.power = Command.power;
 
-    p_Motor2->Command.commandid = MOTOR_COMMAND_BACKWARD;
-    p_Motor2->Command.newCommand = 1;
-    p_Motor2->Command.power = Command.power;
+	p_MotorCommand_out->m1_commandid = MOTOR_COMMAND_FORWARD;
+	p_MotorCommand_out->m1_newCommand = 1;
+	p_MotorCommand_out->m1_power_per = p_LocomCommand_in->power_per;
 
-    State.mode = LOCOM_MODE_TURN_RIGHT;
+	p_MotorCommand_out->m2_commandid = MOTOR_COMMAND_BACKWARD;
+	p_MotorCommand_out->m2_newCommand = 1;
+	p_MotorCommand_out->m2_power_per = p_LocomCommand_in->power_per;
+
+	mode = LOCOM_MODE_TURN_RIGHT;
 }
 
-void LocomModule::ModeTurnLeft()
+void LocomModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_out,
+		const mavlink_locom_command_t* p_LocomCommand_in)
 {
-    p_Motor1->Command.commandid = MOTOR_COMMAND_BACKWARD;
-    p_Motor1->Command.newCommand = 1;
-    p_Motor1->Command.power = Command.power;
 
-    p_Motor2->Command.commandid = MOTOR_COMMAND_FORWARD;
-    p_Motor2->Command.newCommand = 1;
-    p_Motor2->Command.power = Command.power;
+	p_MotorCommand_out->m1_commandid = MOTOR_COMMAND_BACKWARD;
+	p_MotorCommand_out->m1_newCommand = 1;
+	p_MotorCommand_out->m1_power_per = p_LocomCommand_in->power_per;
 
-    State.mode = LOCOM_MODE_TURN_LEFT;
+	p_MotorCommand_out->m2_commandid = MOTOR_COMMAND_FORWARD;
+	p_MotorCommand_out->m2_newCommand = 1;
+	p_MotorCommand_out->m2_power_per = p_LocomCommand_in->power_per;
+
+	mode = LOCOM_MODE_TURN_LEFT;
 }
 
-void LocomModule::UpdateReport()
+void LocomModule::UpdateReport(mavlink_locom_report_t* p_LocomReport_out)
 {
-    Report.mode = State.mode;
-    Report.modeElapsedTime = State.modeElapsedTime;
+
+	p_LocomReport_out->mode = mode;
+	p_LocomReport_out->modeElapsedTime_ms = modeElapsedTime_ms;
 }
 
 void LocomModule::Debug()
 {
-    printf("[LOCOM]Mode = %d \t T elapsed = %ld \n", State.mode, State.modeElapsedTime);
+	printf("[LOCOM]Mode = %d \t Time elapsed = %ld \n", mode,
+			modeElapsedTime_ms);
+
 }
-
-
 

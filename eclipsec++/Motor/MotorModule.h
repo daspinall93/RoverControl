@@ -15,64 +15,40 @@
 
 #include <stdint.h>
 
-#define PWM_ENABLED 0
-#define PWM_RANGE 1024
+#include "../mavlink/SoteriaRover/mavlink.h"
 
 class MotorModule{
 public:
-
-    struct
-    {
-	uint8_t commandid;	//forward, backard or stop
-	uint8_t newCommand;	//flag for new command
-	int power;	//power for the pwm
-	int pwmData;	//the corresponding pwm output for the power provided
-    } Command;
-
-    //the report interface for caller to see
-    struct
-    {
-	uint8_t mode;	//flag specifying if the motor currently has a voltage applied
-    } Report;
-
-    //public function members
-    MotorModule();
-    void Start(uint8_t motorid);
-    void Execute();
+    void Start();
+    void Execute(mavlink_motor_command_t* p_MotorCommand_in, mavlink_motor_report_t* p_MotorReport_out);
 
 private:
-    struct
-    {
-	uint8_t mode;
-	uint8_t speed;
-    } State;
 
-    void ModeStop();
-    void ModeForward();
-    void ModeBackward();
-    void calculatepwmData();
+	uint8_t m1_mode;
+	uint32_t m1_pwmInput;
+	uint8_t m2_mode;
+	uint32_t m2_pwmInput;
 
-    void UpdateReport();
+	uint8_t m1_pwmPin;
+	uint8_t m1_inPin1;	//if high and pin2 low then wheel goes forward
+	uint8_t m1_inPin2;
+	uint8_t m1_pwmChannel;	//the channel on t
+	uint8_t m2_pwmPin;
+	uint8_t m2_inPin1;	//if high and pin2 low then wheel goes forward
+	uint8_t m2_inPin2;
+	uint8_t m2_pwmChannel;	//the channel on t
+
+
+	uint32_t pwmRange;
+
+    void ModeStop(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
+    void ModeForward(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
+    void ModeBackward(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
+    void UpdateReport(mavlink_motor_report_t* p_MotorReport_out);
     void Debug();
-
-    struct
-    {
-	uint8_t motorid;
-
-	uint8_t pwmPin;
-	uint8_t inPin1;	//if high and pin2 low then wheel goes forward
-	uint8_t inPin2;
-
-	uint8_t pwmChannel;	//the channel on t
-	uint8_t pwmRange;
-    } Config;
-
-
-
-
+    uint32_t CalculatepwmData(uint32_t power_per);
 
 
 };
-
 
 #endif /* MOTORCONTAINER_H_ */

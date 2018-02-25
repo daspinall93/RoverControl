@@ -13,5 +13,7 @@ class Utils
 public:
     static long int GetTimems();
     static long int GetTimeus();
+
+
 };
 #endif /* RVUTILS_H_ */
