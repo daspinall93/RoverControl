@@ -38,7 +38,7 @@ THE SOFTWARE.
 #define _MPU6050_H_
 
 #include "../Inert/I2Cdev.h"
-#include "InertInterfaceStructs.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 // supporting link:  http://forum.arduino.cc/index.php?&topic=143444.msg1079517#msg1079517
 // also: http://forum.arduino.cc/index.php?&topic=141571.msg1062899#msg1062899s
 
@@ -441,7 +441,7 @@ THE SOFTWARE.
 #define MPU6050_GYROZ_OFFSET 0
 
 /* MPU6050 CONFIG PARAMS */
-#define MPU6050_MA_ENABLED 0
+#define MPU6050_MA_ENABLED 1
 #define MPU6050_MA_WINDOW_SIZE 10
 
 // note: DMP code memory blocks defined at end of header file

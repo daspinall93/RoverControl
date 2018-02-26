@@ -6,7 +6,7 @@
  */
 
 #include <bcm2835.h>
-#include "InertInterfaceStructs.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 #include "InertModule.h"
 
 #include <unistd.h>
