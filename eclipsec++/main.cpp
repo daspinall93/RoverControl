@@ -8,9 +8,9 @@
 #include "Rover/RoverModule.h"
 #include "Locom/LocomModule.h"
 #include "Comms/CommsModule.h"
+#include "Inert/InertModule.h"
 #include "Motor/MotorModule.h"
 #include "Local/LocalModule.h"
-#include "MPU6050/MPU6050.h"
 
 int main()
 {

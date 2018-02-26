@@ -27,7 +27,7 @@ THE SOFTWARE.
 ===============================================
 */
 
-#include "../MPU6050/I2Cdev.h"
+#include "../Inert/I2Cdev.h"
 
 #include <stdio.h>
 

@@ -13,9 +13,9 @@
 #include "../Comms/CommsModule.h"
 #include "../Motor/MotorModule.h"
 #include "../Local/LocalModule.h"
-#include "../MPU6050/MPU6050.h"
-
 #include <time.h>
+
+#include "../Inert/InertModule.h"
 
 class RoverModule
 {

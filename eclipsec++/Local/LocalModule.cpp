@@ -6,8 +6,9 @@
  */
 #include "LocalModule.h"
 
-#include "../MPU6050/MPU6050.h"
 #include <math.h>
+
+#include "../Inert/InertModule.h"
 
 //MPU6050 object for calling MPU functions
 //not a pointer as only contains functions

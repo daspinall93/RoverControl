@@ -31,3 +31,13 @@ long int Utils::GetTimeus(){
 
 }
 
+int16_t Utils::ArrayAverage(int16_t* p_array, int arraySize)
+{
+	int sum =0 ;
+	for (int i = 0; i < arraySize; i++)
+	{
+		sum += *(p_array+i);
+	}
+
+	return (int16_t) ((float) sum / (float) arraySize);
+}

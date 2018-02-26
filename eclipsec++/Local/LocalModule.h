@@ -8,9 +8,10 @@
 #ifndef LOCALMODULE_H_
 #define LOCALMODULE_H_
 
-#include "../MPU6050/MPU6050.h"
 #include <time.h>
 #include <stdint.h>
+
+#include "../Inert/InertModule.h"
 
 class LocalModule
 {

@@ -125,5 +125,15 @@
             <field type="uint32_t" name="numBytesSent"></field>
             <field type="uint8_t[2041]" name="msgRecBuffer"></field>
         </message> -->
+        
+        <message id="20" name="INERT_REPORT">
+            <field type="int32_t" name="accX_dig"></field>
+            <field type="int32_t" name="accY_dig"></field>
+            <field type="int32_t" name="accZ_dig"></field>
+            <field type="int32_t" name="gyroX_dig"></field>
+            <field type="int32_t" name="gyroY_dig"></field>
+            <field type="int32_t" name="gyroZ_dig"></field>
+        </message>
+        
     </messages>
 </mavlink>
