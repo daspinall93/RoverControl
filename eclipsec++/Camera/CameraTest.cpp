@@ -7,8 +7,9 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
-#include <unistd>
-#include <raspicam/raspicam.h>
+#include <unistd.h>
+//#include <stdlib.h>
+#include "raspicam.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ int main ( int argc,char **argv ) {
     Camera.grab();
     //allocate memory
     unsigned char *data=new unsigned char[  Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB )];
+    cout << Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB ) << endl;
     //extract the image in rgb format
     Camera.retrieve ( data,raspicam::RASPICAM_FORMAT_RGB );//get camera image
     //save
@@ -32,6 +34,20 @@ int main ( int argc,char **argv ) {
     outFile.write ( ( char* ) data, Camera.getImageTypeSize ( raspicam::RASPICAM_FORMAT_RGB ) );
     cout<<"Image saved at raspicam_image.ppm"<<endl;
     //free resrources
+
+    /* RESET THE BUFFER */
+    sleep(2);
+    Camera.grab();
+    //memset(data, 0, Camera.retrieve(data,raspicam::RASPICAM_FORMAT_RGB));
+
+    Camera.retrieve(data, raspicam::RASPICAM_FORMAT_RGB );
+
+    std::ofstream outFile2 ( "raspicam_image2.ppm",std::ios::binary );
+    outFile2<<"P6\n"<<Camera.getWidth() <<" "<<Camera.getHeight() <<" 255\n";
+
+    outFile2.write((char*) data, Camera.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB));
+    cout<<"Image saved at raspicam_image2.ppm"<<endl;
+
     delete data;
     return 0;
 }
