@@ -266,7 +266,8 @@ namespace raspicam {
 
 
             //Color conversion
-	    void convertBGR2RGB(unsigned char *  in_bgr,unsigned char *  out_rgb,int size);
+            void convertBGR2RGB(unsigned char *  in_bgr,unsigned char *  out_rgb,int size);
+
             float VIDEO_FRAME_RATE_NUM;
             RASPIVID_STATE State;
             MMAL_STATUS_T status;

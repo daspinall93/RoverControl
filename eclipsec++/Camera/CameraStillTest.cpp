@@ -5,38 +5,30 @@
  *      Author: dan
  */
 
-#include "raspicam.h"
+#include  "CameraModule.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
 
 int main()
 {
-	raspicam::RaspiCam Camera;
+	CameraModule Camera = CameraModule();
 
-	/* OPEN CAMERA */
-	if (!Camera.open())
-	{
-		printf("Error opening camera");
-	}
+	/* START THE CAMERA */
+	Camera.Start();
+
+	/* WAIT FOR CAMERA TO STABILISE */
 	sleep(5);
 
-	Camera.grab();
+	/* CAPTURE IMAGE */
+	Camera.Execute();
 
-	/* CREATE A DYNAMIC ARRAY TO HOLD DATA */
-	unsigned char* data = new unsigned char[Camera.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB)];
-	Camera.retrieve(data,raspicam::RASPICAM_FORMAT_RGB);
+	sleep(10);
 
-	FILE *fp;
+	Camera.Execute();
 
-	fp = fopen("Image1.ppm", "wb");
-	fprintf(fp, "P6\n%d %d 255\n", Camera.getWidth(), Camera.getHeight());
-	fwrite(data, sizeof(char), Camera.getImageBufferSize(), fp);
-	fclose(fp);
-	delete data;
-
-	return 0;
-
+	/* RELEASE THE CAMERA */
+	Camera.Stop();
 
 }
 
