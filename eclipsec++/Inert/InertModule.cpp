@@ -38,6 +38,11 @@ THE SOFTWARE.
 #include "../Utils/Utils.h"
 #include <stdio.h>
 
+/* USED FOR INCLUDING A DELAY */
+#include <bcm2835.h>
+
+/* USED FOR CALIBRATIONS */
+
 /** Specific address constructor.
  * @param address I2C address
  * @see MPU6050_DEFAULT_ADDRESS
@@ -136,6 +141,84 @@ void InertModule::UpdateAverages()
 #endif
 
 }
+
+void InertModule::Calibrate()
+{
+	/* INITIALISE THE VARIABLES */
+	int32_t accXOff = 0, accYOff = 0, accZOff = 0, gyroXOff = 0, gyroYOff = 0, gyroZOff = 0;
+	int32_t accXMean = 0, accYMean = 0, accZMean = 0, gyroXMean = 0, gyroYMean = 0, gyroZMean = 0;
+
+	/* LOOP UNTIL ALL AXIS FOR BOTH GYRO AND ACCEL ARE CALIBRATED */
+	while (calibratedFlag != 6)
+	{
+		/* WILL ONLY BE SET TO 6 ONCE ALL MEASURES ARE CALIBRATED */
+		uint8_t calibratedFlag = 0;
+
+		/* SET THE OFFSETS */
+		setXAccelOffset((int16_t) accXOff);
+		setYAccelOffset((int16_t) accYOff);
+		setZAccelOffset((int16_t) accZOff);
+		setXGyroOffset((int16_t) gyroXOff);
+		setYGyroOffset((int16_t) gyroYOff);
+		setZGyroOffset((int16_t) gyroZOff);
+
+		/* ACQUIRE MPU6050_CAL_SAMPLES NUMBER OF SAMPLES */
+		for (int i = 0; i < MPU6050_CAL_SAMPLES; i++)
+		{
+			getMotion6(&accXAv_dig, &accYAv_dig, &accZAv_dig, &gyroXAv_dig, &gyroYAv_dig, &gyroZAv_dig);
+			accXMean += accXAv_dig;
+			accYMean += accYAv_dig;
+			accZMean += accZAv_dig;
+			gyroXMean += gyroXAv_dig;
+			gyroYMean += gyroYAv_dig;
+			gyroZMean += gyroZAv_dig;
+
+			/* INCLUDE A DELAY TO ENSURE A NEW SAMPLE IS READY */
+			bcm2835_delay(1);
+		}
+
+		/* DIVIDE BY THE NUMBER OF SAMPLES TO GET THE MEAN */
+		accXMean /=  MPU6050_CAL_SAMPLES;
+		accYMean /= MPU6050_CAL_SAMPLES;
+		accZMean /= MPU6050_CAL_SAMPLES;
+		gyroXMean /= MPU6050_CAL_SAMPLES;
+		gyroYMean /= MPU6050_CAL_SAMPLES;
+		gyroZMean /= MPU6050_CAL_SAMPLES;
+
+		/* EVALUATE TO SEE IF THE CALIBRATED VALUES ARE WITHIN THE DEADZONE */
+		/* IF THE VALUE ISN'T WITHIN THE DEADZONE THEN NEED TO CHANGE THE OFFSET */
+		if (std::abs(accXMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++;
+		else accXOff -= accXMean/8;
+
+		if (std::abs(accYMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++;
+		else accYOff -= accYMean/8;
+
+		if (std::abs(16384 - accZMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++; //offset of 16384 to account for g
+		else accXOff += (16384 - accZMean)/8;
+
+		if (std::abs(accXMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++;
+		else accXOff -= accXMean/2;
+
+		if (std::abs(accXMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++;
+		else accXOff -= accXMean/2;
+
+		if (std::abs(accXMean)<=MPU6050_CAL_ACC_DEADZONE) calibratedFlag++;
+		else accXOff -= accXMean/2;
+
+
+	}
+	/* PRINT OUT THE CALIBRATION VALUES */
+	printf("accX = %d, accY = %d, accZ = %d \n", accXOff, accYOff, accZOff);
+	printf("gyroX = %d, gyroY = %d, gyroZ = %d \n", gyroXOff, gyroYOff, gyroZOff);
+
+}
+
+void InertModule::calculateMean(int32_t* p_meanArray, )
+{
+
+
+}
+
 void InertModule::Stop()
 {
 	/* PUT THE IMU BACK INTO SLEEP MODE */

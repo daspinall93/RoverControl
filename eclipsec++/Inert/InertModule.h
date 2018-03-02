@@ -444,12 +444,18 @@ THE SOFTWARE.
 #define MPU6050_MA_ENABLED 1
 #define MPU6050_MA_WINDOW_SIZE 10
 
+/* MPU6050 CALIBRATION PARAMS */
+#define MPU6050_CAL_SAMPLES 100
+#define MPU6050_CAL_ACC_DEADZONE 8
+#define MPU6050_CAL_GYRO_DEADZONE 1
+
 // note: DMP code memory blocks defined at end of header file
 
 class InertModule {
 public:
 	void Start();
 	void Execute(mavlink_inert_report_t* p_InertReport_out);
+	void Calibrate();
 	void Stop();
 
 private:
