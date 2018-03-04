@@ -16,7 +16,8 @@
 #include <stdint.h>
 #include "../mavlink/SoteriaRover/mavlink.h"
 
-class LocomModule {
+class LocomModule
+{
 public:
 	/* PUBLIC INTERFACE FOR OTHER OBJECTS TO INTERACT WITH */
 	void Start();

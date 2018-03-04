@@ -1,9 +1,10 @@
 /*
- * RoverModule.cpp
+ * ManagerModule.cpp
  *
- *  Created on: 14 Feb 2018
+ *  Created on: 4 Mar 2018
  *      Author: dan
  */
+
 #include "RoverModule.h"
 
 /* INCLUDES FOR TIMING PURPOSES */
@@ -14,32 +15,14 @@
 #include "../mavlink/SoteriaRover/mavlink.h"
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
-#define COMMS_ENABLED 0
-#define MOTORS_ENABLED 0
-#define LOCOM_ENABLED 0
-#define LOCAL_ENABLED 0
-#define MPU_ENABLED 0
+#define COMMS_ENABLED 1
+#define MOTORS_ENABLED 1
+#define LOCOM_ENABLED 1
+#define LOCAL_ENABLED 1
+#define MPU_ENABLED 1
 
-RoverModule::RoverModule(LocomModule* p_Locom_in, CommsModule* p_Comms_in,
-			 MotorModule* p_Motor1_in, MotorModule* p_Motor2_in,
-			 LocalModule* p_Local_in, MPU6050* p_AccelGyro_in)
-{
-    /* GET POINTERS TO OTHER MODULES */
-    p_Locom = p_Locom_in;
-    p_Comms = p_Comms_in;
-    p_Motor1 = p_Motor1_in;
-    p_Motor2 = p_Motor2_in;
-    p_Local = p_Local_in;
-    p_AccelGyro = p_AccelGyro_in;
 
-    memset(&Report, 0, sizeof(Report));
-    memset(&Config, 0, sizeof(Report));
-    memset(&State, 0, sizeof(Report));
-    memset(&State.tenhzHighMilSec, 0, sizeof(State.tenhzHighMilSec));
-
-}
-
-void RoverModule::Start()
+void ManagerModule::Start()
 {
     /* START THE COMMS MODULE */
 #if COMMS_ENABLED
@@ -75,7 +58,7 @@ void RoverModule::Start()
     StartTimer();
 }
 
-void RoverModule::Execute()
+void ManagerModule::Execute()
 {
     while (1)
     {
@@ -83,7 +66,7 @@ void RoverModule::Execute()
 	UpdateState();
 
 	/* EXECUTE MODULES AT 1HZ */
-	if (State.onehzFlag)
+	if (onehzFlag)
 	{
 #if COMMS_ENABLED
 //	    p_Comms->Command.newSendCommand = 1;
@@ -103,7 +86,7 @@ void RoverModule::Execute()
 	}
 
 	/* EXECUTE MODULES AT 10HZ */
-	if (State.tenhzFlag)
+	if (tenhzFlag)
 	{
 	      /* EXECUTE THE MPU MODULE */
 #if MPU_ENABLED
@@ -114,7 +97,7 @@ void RoverModule::Execute()
 
 	    /* EXECUTE THE LOCALISATION MODULE */
 	    p_Local->Execute();
-#endif
+#endifint
 
 #if LOCOM_ENABLED
 	    /* EXECUTE THE LOCOMOTION MODULE */
@@ -130,64 +113,64 @@ void RoverModule::Execute()
     }
 }
 
-void RoverModule::StartTimer()
+void ManagerModule::StartTimer()
 {
     /* SET TIME AT WHICH THE ROVER STARTED */
-    clock_gettime(CLOCK_MONOTONIC, &State.tspec);
+    clock_gettime(CLOCK_MONOTONIC, &tspec);
 
-    State.milSec = round(State.tspec.tv_nsec / 1.0e6);
-    State.milSec = State.milSec + (State.tspec.tv_sec * 1000);
+    milSec = round(tspec.tv_nsec / 1.0e6);
+    milSec = milSec + (tspec.tv_sec * 1000);
 
     /* SET THE REFERENCE TIMES */
-    State.tenhzHighMilSec = State.milSec;
-    State.onehzHighMilSec = State.milSec;
+    tenhzHighMilSec = milSec;
+    onehzHighMilSec = milSec;
 
     /* START FLAGS HIGH */
-    State.onehzFlag = 1;
-    State.tenhzFlag = 1;
+    onehzFlag = 1;
+    tenhzFlag = 1;
 
 }
 
-void RoverModule::UpdateState()
+void ManagerModule::UpdateState()
 {
     /* IF HIGH RESET */
-    if (State.onehzFlag)
+    if (onehzFlag)
     {
-	State.onehzFlag = 0;
+	onehzFlag = 0;
     }
 
-    if (State.tenhzFlag)
+    if (tenhzFlag)
     {
-	State.tenhzFlag = 0;
+	tenhzFlag = 0;
     }
 
     /* UPDATE THE TIME */
-    clock_gettime(CLOCK_MONOTONIC, &State.tspec);
+    clock_gettime(CLOCK_MONOTONIC, &tspec);
 
-    State.milSec = round(State.tspec.tv_nsec / 1.0e6);
-    State.milSec = State.milSec + (State.tspec.tv_sec * 1000);
+    milSec = round(tspec.tv_nsec / 1.0e6);
+    milSec = milSec + (tspec.tv_sec * 1000);
 
     /* SEE IF 10MS HAS PASSED SINCE LAST TIME TENHZ FLAG WAS HIGH */
-    long int delta = State.milSec - State.tenhzHighMilSec;
+    long int delta = milSec - tenhzHighMilSec;
     if (delta > 100)
     {
 	/* SET FLAG HIGH AND SET TIME AT WHICH FLAG WENT HIGH */
-	State.tenhzFlag = 1;
-	State.tenhzHighMilSec = State.milSec;
+	tenhzFlag = 1;
+	tenhzHighMilSec = milSec;
     }
 
     /* SEE IF 100MS HAS PASSED SINCE LAST TIME ONEHZ FLAG WAS HIGH */
-    delta = State.milSec - State.onehzHighMilSec;
+    delta = milSec - onehzHighMilSec;
     if (delta > 1000)
     {
 	/* SET FLAG HIGH AND SET TIME AT WHICH FLAG WENT HIGH */
-	State.onehzFlag = 1;
-	State.onehzHighMilSec = State.milSec;
+	onehzFlag = 1;
+	onehzHighMilSec = milSec;
     }
 
 }
 
-void RoverModule::DistributeCommands()
+void ManagerModule::DistributeCommands()
 {
     /* IF NEW COMMAND IS RECEIVED TRANSFER INFORMATION TO THE MODULE COMMAND INPUT */
     switch (p_Comms->Report.standard.msgid)
@@ -201,10 +184,13 @@ void RoverModule::DistributeCommands()
     }
 }
 
-void RoverModule::Debug()
+void ManagerModule::Debug()
 {
-    printf("[ROVER] milSec = %ld \n", State.milSec);
-    printf("[ROVER] onehzHigh = %ld \n", State.onehzHighMilSec);
-    printf("[ROVER] tenhzHigh = %ld \n", State.tenhzHighMilSec);
+    printf("[ROVER] milSec = %ld \n", milSec);
+    printf("[ROVER] onehzHigh = %ld \n", onehzHighMilSec);
+    printf("[ROVER] tenhzHigh = %ld \n", tenhzHighMilSec);
 
 }
+
+
+

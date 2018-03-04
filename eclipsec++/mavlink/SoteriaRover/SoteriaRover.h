@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 231, 14, 0, 0, 0}, {4, 194, 9, 0, 0, 0}, {5, 181, 17, 0, 0, 0}, {10, 47, 12, 0, 0, 0}, {11, 43, 10, 0, 0, 0}, {20, 241, 24, 0, 0, 0}, {21, 68, 2, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 119, 14, 0, 0, 0}, {11, 87, 19, 0, 0, 0}, {20, 88, 12, 0, 0, 0}, {26, 142, 1, 0, 0, 0}, {27, 91, 5, 0, 0, 0}, {28, 25, 1, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -35,55 +35,55 @@ extern "C" {
 
 
 /** @brief Commands for the locomotion module */
-#ifndef HAVE_ENUM_LOCOM_COMAMND_ID
-#define HAVE_ENUM_LOCOM_COMAMND_ID
-typedef enum LOCOM_COMAMND_ID
+#ifndef HAVE_ENUM_MOTOR_COMAMND_ID
+#define HAVE_ENUM_MOTOR_COMAMND_ID
+typedef enum MOTOR_COMAMND_ID
 {
-   LOCOM_COMMAND_STOP=0, /* Command the locom module to stop the rover | */
-   LOCOM_COMMAND_STRAIGHT_FORWARD=1, /* Command the rover to drive straight forward | */
-   LOCOM_COMMAND_STRAIGHT_BACKWARD=2, /* Command the rover to drive straight backward | */
-   LOCOM_COMMAND_TURN_RIGHT=3, /* Command the rover to turn right | */
-   LOCOM_COMMAND_TURN_LEFT=4, /* Command the rover to turn left | */
-   LOCOM_COMAMND_ID_ENUM_END=5, /*  | */
-} LOCOM_COMAMND_ID;
+   MOTOR_COMMAND_STOP=0, /* Command the locom module to stop the rover | */
+   MOTOR_COMMAND_STRAIGHT_FORWARD=1, /* Command the rover to drive straight forward | */
+   MOTOR_COMMAND_STRAIGHT_BACKWARD=2, /* Command the rover to drive straight backward | */
+   MOTOR_COMMAND_TURN_RIGHT=3, /* Command the rover to turn right | */
+   MOTOR_COMMAND_TURN_LEFT=4, /* Command the rover to turn left | */
+   MOTOR_COMAMND_ID_ENUM_END=5, /*  | */
+} MOTOR_COMAMND_ID;
 #endif
 
 /** @brief Commands for the locomotion module */
-#ifndef HAVE_ENUM_LOCOM_MODE
-#define HAVE_ENUM_LOCOM_MODE
-typedef enum LOCOM_MODE
-{
-   LOCOM_MODE_STOP=0, /* Command the locom module to stop the rover | */
-   LOCOM_MODE_STRAIGHT_FORWARD=1, /* Command the rover to drive straight forward | */
-   LOCOM_MODE_STRAIGHT_BACKWARD=2, /* Command the rover to drive straight backward | */
-   LOCOM_MODE_TURN_RIGHT=3, /* Command the rover to turn right | */
-   LOCOM_MODE_TURN_LEFT=4, /* Command the rover to turn left | */
-   LOCOM_MODE_ENUM_END=5, /*  | */
-} LOCOM_MODE;
-#endif
-
-/** @brief Mode of each motor (i.e m1 and m2) */
-#ifndef HAVE_ENUM_MOTOR_COMMAND_ID
-#define HAVE_ENUM_MOTOR_COMMAND_ID
-typedef enum MOTOR_COMMAND_ID
-{
-   MOTOR_COMMAND_STOP=0, /* Command to stop motor | */
-   MOTOR_COMMAND_FORWARD=1, /* Command for motor to travel forward | */
-   MOTOR_COMMAND_BACKWARD=2, /* Command for motor to go backward | */
-   MOTOR_COMMAND_ID_ENUM_END=3, /*  | */
-} MOTOR_COMMAND_ID;
-#endif
-
-/** @brief Mode of each motor (i.e m1 and m2) */
 #ifndef HAVE_ENUM_MOTOR_MODE
 #define HAVE_ENUM_MOTOR_MODE
 typedef enum MOTOR_MODE
 {
+   MOTOR_MODE_STOP=0, /* Command the locom module to stop the rover | */
+   MOTOR_MODE_STRAIGHT_FORWARD=1, /* Command the rover to drive straight forward | */
+   MOTOR_MODE_STRAIGHT_BACKWARD=2, /* Command the rover to drive straight backward | */
+   MOTOR_MODE_TURN_RIGHT=3, /* Command the rover to turn right | */
+   MOTOR_MODE_TURN_LEFT=4, /* Command the rover to turn left | */
+   MOTOR_MODE_ENUM_END=5, /*  | */
+} MOTOR_MODE;
+#endif
+
+/** @brief Mode of each motor (i.e m1 and m2) */
+#ifndef HAVE_ENUM_MOTOR_SUB_COMMAND_ID
+#define HAVE_ENUM_MOTOR_SUB_COMMAND_ID
+typedef enum MOTOR_SUB_COMMAND_ID
+{
+   MOTOR_COMMAND_STOP=0, /* Command to stop motor | */
+   MOTOR_COMMAND_FORWARD=1, /* Command for motor to travel forward | */
+   MOTOR_COMMAND_BACKWARD=2, /* Command for motor to go backward | */
+   MOTOR_SUB_COMMAND_ID_ENUM_END=3, /*  | */
+} MOTOR_SUB_COMMAND_ID;
+#endif
+
+/** @brief Mode of each motor (i.e m1 and m2) */
+#ifndef HAVE_ENUM_MOTOR_SUB_MODE
+#define HAVE_ENUM_MOTOR_SUB_MODE
+typedef enum MOTOR_SUB_MODE
+{
    MOTOR_MODE_STOP=0, /* The motor is in stopped mode | */
    MOTOR_MODE_FORWARD=1, /* The motor is in forward mode | */
    MOTOR_MODE_BACKWARD=2, /* The motor is in backward mode | */
-   MOTOR_MODE_ENUM_END=3, /*  | */
-} MOTOR_MODE;
+   MOTOR_SUB_MODE_ENUM_END=3, /*  | */
+} MOTOR_SUB_MODE;
 #endif
 
 // MAVLINK VERSION
@@ -99,13 +99,12 @@ typedef enum MOTOR_MODE
 
 // MESSAGE DEFINITIONS
 #include "./mavlink_msg_heartbeat.h"
-#include "./mavlink_msg_locom_command.h"
-#include "./mavlink_msg_locom_report.h"
-#include "./mavlink_msg_locom_state.h"
 #include "./mavlink_msg_motor_command.h"
 #include "./mavlink_msg_motor_report.h"
 #include "./mavlink_msg_inert_report.h"
-#include "./mavlink_msg_inert_command.h"
+#include "./mavlink_msg_sonar_command.h"
+#include "./mavlink_msg_sonar_report.h"
+#include "./mavlink_msg_camera_command.h"
 
 // base include
 
@@ -114,8 +113,8 @@ typedef enum MOTOR_MODE
 #define MAVLINK_THIS_XML_IDX 0
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
-# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_LOCOM_COMMAND, MAVLINK_MESSAGE_INFO_LOCOM_REPORT, MAVLINK_MESSAGE_INFO_LOCOM_STATE, MAVLINK_MESSAGE_INFO_MOTOR_COMMAND, MAVLINK_MESSAGE_INFO_MOTOR_REPORT, MAVLINK_MESSAGE_INFO_INERT_REPORT, MAVLINK_MESSAGE_INFO_INERT_COMMAND}
-# define MAVLINK_MESSAGE_NAMES {{ "HEARTBEAT", 0 }, { "INERT_COMMAND", 21 }, { "INERT_REPORT", 20 }, { "LOCOM_COMMAND", 3 }, { "LOCOM_REPORT", 4 }, { "LOCOM_STATE", 5 }, { "MOTOR_COMMAND", 10 }, { "MOTOR_REPORT", 11 }}
+# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_MOTOR_COMMAND, MAVLINK_MESSAGE_INFO_MOTOR_REPORT, MAVLINK_MESSAGE_INFO_INERT_REPORT, MAVLINK_MESSAGE_INFO_SONAR_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_REPORT, MAVLINK_MESSAGE_INFO_CAMERA_COMMAND}
+# define MAVLINK_MESSAGE_NAMES {{ "CAMERA_COMMAND", 28 }, { "HEARTBEAT", 0 }, { "INERT_REPORT", 20 }, { "MOTOR_COMMAND", 3 }, { "MOTOR_REPORT", 11 }, { "SONAR_COMMAND", 26 }, { "SONAR_REPORT", 27 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

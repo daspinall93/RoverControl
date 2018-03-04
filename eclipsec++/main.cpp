@@ -5,12 +5,12 @@
  *      Author: dan
  */
 
-#include "Rover/RoverModule.h"
 #include "Locom/LocomModule.h"
 #include "Comms/CommsModule.h"
 #include "Inert/InertModule.h"
 #include "Motor/MotorModule.h"
 #include "Local/LocalModule.h"
+#include "Manager/RoverModule.h"
 
 int main()
 {

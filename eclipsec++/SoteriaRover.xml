@@ -1,67 +1,67 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <mavlink>
-    <version>3</version>  
+    <version>3</version>
     <dialect>0</dialect>
     <enums>
         <!--Locomotion Module enumertions-->
-        <enum name="LOCOM_COMAMND_ID">
+        <enum name="MOTOR_COMAMND_ID">
             <description>Commands for the locomotion module</description>
-            <entry value="0" name="LOCOM_COMMAND_STOP">
+            <entry name="MOTOR_COMMAND_STOP" value="0">
                 <description>Command the locom module to stop the rover</description>
             </entry>
-            <entry value="1" name="LOCOM_COMMAND_STRAIGHT_FORWARD">
+            <entry name="MOTOR_COMMAND_STRAIGHT_FORWARD" value="1">
                 <description>Command the rover to drive straight forward</description>
             </entry>
-            <entry value="2" name="LOCOM_COMMAND_STRAIGHT_BACKWARD">
+            <entry name="MOTOR_COMMAND_STRAIGHT_BACKWARD" value="2">
                 <description>Command the rover to drive straight backward</description>
             </entry>
-            <entry value="3" name="LOCOM_COMMAND_TURN_RIGHT">
+            <entry name="MOTOR_COMMAND_TURN_RIGHT" value="3">
                 <description>Command the rover to turn right</description>
             </entry>
-            <entry value="4" name="LOCOM_COMMAND_TURN_LEFT">
+            <entry name="MOTOR_COMMAND_TURN_LEFT" value="4">
                 <description>Command the rover to turn left</description>
-            </entry>
-        </enum>
-        <enum name="LOCOM_MODE">
-            <description>Commands for the locomotion module</description>
-            <entry value="0" name="LOCOM_MODE_STOP">
-                <description>Command the locom module to stop the rover</description>
-            </entry>
-            <entry value="1" name="LOCOM_MODE_STRAIGHT_FORWARD">
-                <description>Command the rover to drive straight forward</description>
-            </entry>
-            <entry value="2" name="LOCOM_MODE_STRAIGHT_BACKWARD">
-                <description>Command the rover to drive straight backward</description>
-            </entry>
-            <entry value="3" name="LOCOM_MODE_TURN_RIGHT">
-                <description>Command the rover to turn right</description>
-            </entry>
-            <entry value="4" name="LOCOM_MODE_TURN_LEFT">
-                <description>Command the rover to turn left</description>
-            </entry>
-        </enum> 
-        <!-- Motor Module enumerations -->
-        <enum name="MOTOR_COMMAND_ID">
-            <description>Mode of each motor (i.e m1 and m2)</description>
-            <entry value="0" name="MOTOR_COMMAND_STOP">
-                <description>Command to stop motor</description>
-            </entry>
-            <entry value="1" name="MOTOR_COMMAND_FORWARD">
-                <description>Command for motor to travel forward</description>
-            </entry>
-            <entry value="2" name="MOTOR_COMMAND_BACKWARD">
-                <description>Command for motor to go backward</description>
             </entry>
         </enum>
         <enum name="MOTOR_MODE">
+            <description>Commands for the locomotion module</description>
+            <entry name="MOTOR_MODE_STOP" value="0">
+                <description>Command the locom module to stop the rover</description>
+            </entry>
+            <entry name="MOTOR_MODE_STRAIGHT_FORWARD" value="1">
+                <description>Command the rover to drive straight forward</description>
+            </entry>
+            <entry name="MOTOR_MODE_STRAIGHT_BACKWARD" value="2">
+                <description>Command the rover to drive straight backward</description>
+            </entry>
+            <entry name="MOTOR_MODE_TURN_RIGHT" value="3">
+                <description>Command the rover to turn right</description>
+            </entry>
+            <entry name="MOTOR_MODE_TURN_LEFT" value="4">
+                <description>Command the rover to turn left</description>
+            </entry>
+        </enum>
+        <!-- Motor Module enumerations -->
+        <enum name="MOTOR_SUB_COMMAND_ID">
             <description>Mode of each motor (i.e m1 and m2)</description>
-            <entry value="0" name="MOTOR_MODE_STOP">
+            <entry name="MOTOR_COMMAND_STOP" value="0">
+                <description>Command to stop motor</description>
+            </entry>
+            <entry name="MOTOR_COMMAND_FORWARD" value="1">
+                <description>Command for motor to travel forward</description>
+            </entry>
+            <entry name="MOTOR_COMMAND_BACKWARD" value="2">
+                <description>Command for motor to go backward</description>
+            </entry>
+        </enum>
+        <enum name="MOTOR_SUB_MODE">
+            <description>Mode of each motor (i.e m1 and m2)</description>
+            <entry name="MOTOR_MODE_STOP" value="0">
                 <description>The motor is in stopped mode</description>
             </entry>
-            <entry value="1" name="MOTOR_MODE_FORWARD">
+            <entry name="MOTOR_MODE_FORWARD" value="1">
                 <description>The motor is in forward mode</description>
             </entry>
-            <entry value="2" name="MOTOR_MODE_BACKWARD">
+            <entry name="MOTOR_MODE_BACKWARD" value="2">
                 <description>The motor is in backward mode</description>
             </entry>
         </enum>
@@ -70,51 +70,28 @@
         <!-- HKTM packets -->
         <message id="0" name="HEARTBEAT">
             <description>The heartbeat message shows that a system is present and responding. Currently contains the locomotion module mode and mavlink version</description>
-            <field type="uint8_t" name="locom_mode" enum="LOCOM_MODE">Mode of the locomotion module</field>
-            <field type="uint8_t" name="motor1_mode" enum="MOTOR_MODE">Mode of motor 1</field>
-            <field type="uint8_t" name="motor2_mode" enum="MOTOR_MODE">Mode of motor 2</field>
-            <field type="uint8_t_mavlink_version" name="mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
+            <field enum="MOTOR_MODE" name="locom_mode" type="uint8_t">Mode of the locomotion module</field>
+            <field enum="roll_deg" name="motor1_mode" type="uint8_t">Mode of motor 1</field>
+            <field enum="pitch_deg" name="motor2_mode" type="uint8_t">Mode of motor 2</field>
+            <field name="mavlink_version" type="uint8_t_mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
         </message>
-        
         <!-- Locomotion module commands, reports, state and config -->
-        <message id="3" name="LOCOM_COMMAND">
+        <message id="3" name="MOTOR_COMMAND">
             <description>A command to the locomotion module</description>
-            <field type="uint8_t" name="commandid" enum="LOCOM_COMMAND_ID">The ID of the locomotion module command</field>
-            <field type="uint64_t" name="duration_ms">duration of the locomotion command</field>
-            <field type="uint32_t" name="power_per">Power (0-100%) of the commanded locomotion manoeuvre</field>
-            <field type="uint8_t" name="newCommand">new command boolean</field>
-        </message>
-        <message id="4" name="LOCOM_REPORT">
-            <description>The report structure from the locomotion module</description>
-            <field type="uint64_t" name="modeElapsedTime_ms">The ID of the locomotion module command</field>
-            <field type="uint8_t" name="mode" enum="LOCOM_MODE">duration of the locomotion command</field>        
-        </message>
-        <message id="5" name="LOCOM_STATE">
-            <description>The state structure of the locomotion module</description>
-            <field type="uint64_t" name="modeStartTime_ms">The ID of the locomotion module command</field>
-            <field type="uint64_t" name="modeElapsedTime_ms">The ID of the locomotion module command</field>
-            <field type="uint8_t" name="mode" enum="LOCOM_MODE">duration of the locomotion command</field>
-        </message>       
-         <!-- <message id="6" name="LOCOM_CONFIGURATION">
-            <description>A strcuture defining the configuration/settings of the locomotion module</description>
-        </message> -->
-
-        <!-- Motor module commands, reports, state and config-->
-        <message id="10" name="MOTOR_COMMAND">
-            <field type="uint8_t" name="m1_commandid" enum="MOTOR_COMMAND_ID"></field>
-            <field type="uint8_t" name="m1_newCommand"></field>
-            <field type="uint32_t" name="m1_power_per"></field>
-            <field type="uint8_t" name="m2_commandid" enum="MOTOR_COMMAND_ID"></field>
-            <field type="uint8_t" name="m2_newCommand"></field>
-            <field type="uint32_t" name="m2_power_per"></field>
+            <field enum="MOTOR_COMMAND_ID" name="commandid" type="uint8_t">The ID of the locomotion module command</field>
+            <field name="duration_ms" type="uint64_t">duration of the locomotion command</field>
+            <field name="power_per" type="uint32_t">Power (0-100%) of the commanded locomotion manoeuvre</field>
+            <field name="newCommand" type="uint8_t">new command boolean</field>
         </message>
         <message id="11" name="MOTOR_REPORT">
-            <field type="uint8_t" name="m1_mode" enum="MOTOR_MODE"></field>
-            <field type="uint32_t" name="m1_pwmInput"></field>
-            <field type="uint8_t" name="m2_mode" enum="MOTOR_MODE"></field>
-            <field type="uint32_t" name="m2_pwmInput"></field>
+            <field enum="MOTOR_SUB_MODE" name="m1_sub_mode" type="uint8_t"/>
+            <field name="m1_pwmInput" type="uint32_t"/>
+            <field enum="MOTOR_SUB_MODE" name="m2_sub_mode" type="uint8_t"/>
+            <field name="m2_pwmInput" type="uint32_t"/>
+            <field name="modeElapsedTime_ms" type="uint64_t">The ID of the locomotion module command</field>
+            <field enum="MOTOR_MODE" name="mode" type="uint8_t">duration of the locomotion command</field>
         </message>
-        
+
         <!-- Comms modile commands, reports, state and config -->
         <!-- <message id="15" name="COMMS_COMMAND">
             <field type="uint8_t[2041]" name="msgSentBuffer"></field>
@@ -125,18 +102,20 @@
             <field type="uint32_t" name="numBytesSent"></field>
             <field type="uint8_t[2041]" name="msgRecBuffer"></field>
         </message> -->
-        
         <message id="20" name="INERT_REPORT">
-            <field type="int32_t" name="accX_dig"></field>
-            <field type="int32_t" name="accY_dig"></field>
-            <field type="int32_t" name="accZ_dig"></field>
-            <field type="int32_t" name="gyroX_dig"></field>
-            <field type="int32_t" name="gyroY_dig"></field>
-            <field type="int32_t" name="gyroZ_dig"></field>
+            <field name="roll_deg" type="float"/>
+            <field name="pitch_deg" type="float"/>
+            <field name="yaw_deg" type="float"/>
         </message>
-        <message id="21" name="INERT_COMMAND">
-            <field type="uint8_t" name="new_command"></field>
-            <field type="uint8_t" name="calibrate_flag"></field>
+        <message id="26" name="SONAR_COMMAND">
+            <field name="new_command" type="uint8_t"/>
         </message>
+        <message id="27" name="SONAR_REPORT">
+            <field name="object_detected_flag" type="uint8_t"/>
+            <field name="object_distance_cm" type="float"/>
+        </message>
+        <message id="28" name="CAMERA_COMMAND">
+            <field name="new_command" type="uint8_t"/>
+        </message>               
     </messages>
 </mavlink>
