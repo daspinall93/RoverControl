@@ -450,6 +450,9 @@ THE SOFTWARE.
 #define MPU6050_CAL_GYRO_DEADZONE 8
 
 #define RAD_TO_DEG 57.2958
+#define PITCH_LIMIT_DEG 20
+#define ROLL_LIMIT_DEG 20
+
 // note: DMP code memory blocks defined at end of header file
 
 class InertModule {
@@ -494,6 +497,9 @@ private:
 	float gyroXRate_degs;
 	float gyroYRate_degs;
 	float gyroZRate_degs;
+
+	/* TILT FLAG FOR FDIR */
+	uint8_t tiltFlag;
 
 	/* TIME */
 	long int prevCall;

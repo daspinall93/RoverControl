@@ -310,6 +310,21 @@ void InertModule::UpdateReport(mavlink_inert_report_t* p_InertReport_out)
 	p_InertReport_out->pitch_deg = accPitch_deg;
 	p_InertReport_out->roll_deg = accRoll_deg;
 	p_InertReport_out->yaw_deg = gyroYaw_deg;
+
+	/* DETERMINE IF COARSE TILT FLAG SHOULD BE SET HIGH */
+	if (p_InertReport_out->pitch_deg > PITCH_LIMIT_DEG)
+	{
+		tiltFlag = 1;
+	}
+	else if (p_InertReport_out->roll_deg > ROLL_LIMIT_DEG)
+	{
+		tiltFlag = 1;
+	}
+	else
+	{
+		tiltFlag = 0;
+	}
+
 }
 
 void InertModule::Debug()

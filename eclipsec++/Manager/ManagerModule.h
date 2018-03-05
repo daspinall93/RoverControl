@@ -9,18 +9,13 @@
 #define MANAGER_MANAGERMODULE_H_
 
 /* INCLUDES FOR INTERACTING WITH MODULES */
-#include "../Locom/LocomModule.h"
-#include "../Comms/CommsModule.h"
 #include "../Motor/MotorModule.h"
-#include "../Local/LocalModule.h"
 #include "../Inert/InertModule.h"
 #include "../Camera/CameraModule.h"
 #include "../Sonar/SonarModule.h"
 #include "../mavlink/SoteriaRover/mavlink.h"
 
-#include <time.h>
-
-
+#include <string.h>
 
 class ManagerModule
 {
@@ -31,16 +26,13 @@ public:
 
 private:
 	/* OBJECTS TO CALL */
-	LocomModule Locom;
-//	CommsModule Comms;
 	MotorModule Motor;
-	LocalModule Local;
 	InertModule Inert;
 	SonarModule Sonar;
 	CameraModule Camera;
 
 	/* TIMING COMPONENTS */
-	struct timespec tspec;	//used to retrieve the current time
+
 
 	long int milSec;
 
@@ -51,20 +43,22 @@ private:
 	uint8_t tenhzFlag;
 
 	/* Structures for passing info between modules*/
-	mavlink_locom_command_t LocomCommand;
-	mavlink_locom_report_t LocomReport;
-
 	mavlink_motor_command_t MotorCommand;
 	mavlink_motor_report_t MotorReport;
 
-	mavlink_local_command_t LocalCommand;
-	mavlink_local_
+	mavlink_inert_report_t InertReport;
 
+	mavlink_sonar_command_t SonarCommand;
+	mavlink_sonar_report_t SonarReport;
+
+	mavlink_camera_command_t CameraCommand;
+
+	std::string cmdLineInput;
 
 
 	void StartTimer();
-	void UpdateState();
-	void DistributeCommands();
+	void UpdateTimer();
+	void GetCmdLineInput();
 	void Debug();
 
 };

@@ -8,15 +8,16 @@ typedef struct __mavlink_inert_report_t {
  float roll_deg; /*< */
  float pitch_deg; /*< */
  float yaw_deg; /*< */
+ uint8_t tiltFlag; /*< */
 }) mavlink_inert_report_t;
 
-#define MAVLINK_MSG_ID_INERT_REPORT_LEN 12
-#define MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN 12
-#define MAVLINK_MSG_ID_20_LEN 12
-#define MAVLINK_MSG_ID_20_MIN_LEN 12
+#define MAVLINK_MSG_ID_INERT_REPORT_LEN 13
+#define MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN 13
+#define MAVLINK_MSG_ID_20_LEN 13
+#define MAVLINK_MSG_ID_20_MIN_LEN 13
 
-#define MAVLINK_MSG_ID_INERT_REPORT_CRC 88
-#define MAVLINK_MSG_ID_20_CRC 88
+#define MAVLINK_MSG_ID_INERT_REPORT_CRC 173
+#define MAVLINK_MSG_ID_20_CRC 173
 
 
 
@@ -24,19 +25,21 @@ typedef struct __mavlink_inert_report_t {
 #define MAVLINK_MESSAGE_INFO_INERT_REPORT { \
     20, \
     "INERT_REPORT", \
-    3, \
+    4, \
     {  { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_inert_report_t, roll_deg) }, \
          { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_inert_report_t, pitch_deg) }, \
          { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_inert_report_t, yaw_deg) }, \
+         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(mavlink_inert_report_t, tiltFlag) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_INERT_REPORT { \
     "INERT_REPORT", \
-    3, \
+    4, \
     {  { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_inert_report_t, roll_deg) }, \
          { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_inert_report_t, pitch_deg) }, \
          { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_inert_report_t, yaw_deg) }, \
+         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 12, offsetof(mavlink_inert_report_t, tiltFlag) }, \
          } \
 }
 #endif
@@ -50,16 +53,18 @@ typedef struct __mavlink_inert_report_t {
  * @param roll_deg 
  * @param pitch_deg 
  * @param yaw_deg 
+ * @param tiltFlag 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_inert_report_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               float roll_deg, float pitch_deg, float yaw_deg)
+                               float roll_deg, float pitch_deg, float yaw_deg, uint8_t tiltFlag)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_INERT_REPORT_LEN];
     _mav_put_float(buf, 0, roll_deg);
     _mav_put_float(buf, 4, pitch_deg);
     _mav_put_float(buf, 8, yaw_deg);
+    _mav_put_uint8_t(buf, 12, tiltFlag);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_INERT_REPORT_LEN);
 #else
@@ -67,6 +72,7 @@ static inline uint16_t mavlink_msg_inert_report_pack(uint8_t system_id, uint8_t 
     packet.roll_deg = roll_deg;
     packet.pitch_deg = pitch_deg;
     packet.yaw_deg = yaw_deg;
+    packet.tiltFlag = tiltFlag;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_INERT_REPORT_LEN);
 #endif
@@ -84,17 +90,19 @@ static inline uint16_t mavlink_msg_inert_report_pack(uint8_t system_id, uint8_t 
  * @param roll_deg 
  * @param pitch_deg 
  * @param yaw_deg 
+ * @param tiltFlag 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_inert_report_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   float roll_deg,float pitch_deg,float yaw_deg)
+                                   float roll_deg,float pitch_deg,float yaw_deg,uint8_t tiltFlag)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_INERT_REPORT_LEN];
     _mav_put_float(buf, 0, roll_deg);
     _mav_put_float(buf, 4, pitch_deg);
     _mav_put_float(buf, 8, yaw_deg);
+    _mav_put_uint8_t(buf, 12, tiltFlag);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_INERT_REPORT_LEN);
 #else
@@ -102,6 +110,7 @@ static inline uint16_t mavlink_msg_inert_report_pack_chan(uint8_t system_id, uin
     packet.roll_deg = roll_deg;
     packet.pitch_deg = pitch_deg;
     packet.yaw_deg = yaw_deg;
+    packet.tiltFlag = tiltFlag;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_INERT_REPORT_LEN);
 #endif
@@ -120,7 +129,7 @@ static inline uint16_t mavlink_msg_inert_report_pack_chan(uint8_t system_id, uin
  */
 static inline uint16_t mavlink_msg_inert_report_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_inert_report_t* inert_report)
 {
-    return mavlink_msg_inert_report_pack(system_id, component_id, msg, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg);
+    return mavlink_msg_inert_report_pack(system_id, component_id, msg, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg, inert_report->tiltFlag);
 }
 
 /**
@@ -134,7 +143,7 @@ static inline uint16_t mavlink_msg_inert_report_encode(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_inert_report_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_inert_report_t* inert_report)
 {
-    return mavlink_msg_inert_report_pack_chan(system_id, component_id, chan, msg, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg);
+    return mavlink_msg_inert_report_pack_chan(system_id, component_id, chan, msg, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg, inert_report->tiltFlag);
 }
 
 /**
@@ -144,16 +153,18 @@ static inline uint16_t mavlink_msg_inert_report_encode_chan(uint8_t system_id, u
  * @param roll_deg 
  * @param pitch_deg 
  * @param yaw_deg 
+ * @param tiltFlag 
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_inert_report_send(mavlink_channel_t chan, float roll_deg, float pitch_deg, float yaw_deg)
+static inline void mavlink_msg_inert_report_send(mavlink_channel_t chan, float roll_deg, float pitch_deg, float yaw_deg, uint8_t tiltFlag)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_INERT_REPORT_LEN];
     _mav_put_float(buf, 0, roll_deg);
     _mav_put_float(buf, 4, pitch_deg);
     _mav_put_float(buf, 8, yaw_deg);
+    _mav_put_uint8_t(buf, 12, tiltFlag);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_INERT_REPORT, buf, MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN, MAVLINK_MSG_ID_INERT_REPORT_LEN, MAVLINK_MSG_ID_INERT_REPORT_CRC);
 #else
@@ -161,6 +172,7 @@ static inline void mavlink_msg_inert_report_send(mavlink_channel_t chan, float r
     packet.roll_deg = roll_deg;
     packet.pitch_deg = pitch_deg;
     packet.yaw_deg = yaw_deg;
+    packet.tiltFlag = tiltFlag;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_INERT_REPORT, (const char *)&packet, MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN, MAVLINK_MSG_ID_INERT_REPORT_LEN, MAVLINK_MSG_ID_INERT_REPORT_CRC);
 #endif
@@ -174,7 +186,7 @@ static inline void mavlink_msg_inert_report_send(mavlink_channel_t chan, float r
 static inline void mavlink_msg_inert_report_send_struct(mavlink_channel_t chan, const mavlink_inert_report_t* inert_report)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_inert_report_send(chan, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg);
+    mavlink_msg_inert_report_send(chan, inert_report->roll_deg, inert_report->pitch_deg, inert_report->yaw_deg, inert_report->tiltFlag);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_INERT_REPORT, (const char *)inert_report, MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN, MAVLINK_MSG_ID_INERT_REPORT_LEN, MAVLINK_MSG_ID_INERT_REPORT_CRC);
 #endif
@@ -188,13 +200,14 @@ static inline void mavlink_msg_inert_report_send_struct(mavlink_channel_t chan, 
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_inert_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float roll_deg, float pitch_deg, float yaw_deg)
+static inline void mavlink_msg_inert_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float roll_deg, float pitch_deg, float yaw_deg, uint8_t tiltFlag)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
     _mav_put_float(buf, 0, roll_deg);
     _mav_put_float(buf, 4, pitch_deg);
     _mav_put_float(buf, 8, yaw_deg);
+    _mav_put_uint8_t(buf, 12, tiltFlag);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_INERT_REPORT, buf, MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN, MAVLINK_MSG_ID_INERT_REPORT_LEN, MAVLINK_MSG_ID_INERT_REPORT_CRC);
 #else
@@ -202,6 +215,7 @@ static inline void mavlink_msg_inert_report_send_buf(mavlink_message_t *msgbuf, 
     packet->roll_deg = roll_deg;
     packet->pitch_deg = pitch_deg;
     packet->yaw_deg = yaw_deg;
+    packet->tiltFlag = tiltFlag;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_INERT_REPORT, (const char *)packet, MAVLINK_MSG_ID_INERT_REPORT_MIN_LEN, MAVLINK_MSG_ID_INERT_REPORT_LEN, MAVLINK_MSG_ID_INERT_REPORT_CRC);
 #endif
@@ -244,6 +258,16 @@ static inline float mavlink_msg_inert_report_get_yaw_deg(const mavlink_message_t
 }
 
 /**
+ * @brief Get field tiltFlag from inert_report message
+ *
+ * @return 
+ */
+static inline uint8_t mavlink_msg_inert_report_get_tiltFlag(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint8_t(msg,  12);
+}
+
+/**
  * @brief Decode a inert_report message into a struct
  *
  * @param msg The message to decode
@@ -255,6 +279,7 @@ static inline void mavlink_msg_inert_report_decode(const mavlink_message_t* msg,
     inert_report->roll_deg = mavlink_msg_inert_report_get_roll_deg(msg);
     inert_report->pitch_deg = mavlink_msg_inert_report_get_pitch_deg(msg);
     inert_report->yaw_deg = mavlink_msg_inert_report_get_yaw_deg(msg);
+    inert_report->tiltFlag = mavlink_msg_inert_report_get_tiltFlag(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_INERT_REPORT_LEN? msg->len : MAVLINK_MSG_ID_INERT_REPORT_LEN;
         memset(inert_report, 0, MAVLINK_MSG_ID_INERT_REPORT_LEN);

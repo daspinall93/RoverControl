@@ -106,6 +106,7 @@
             <field name="roll_deg" type="float"/>
             <field name="pitch_deg" type="float"/>
             <field name="yaw_deg" type="float"/>
+            <field name="tiltFlag" type="uint8_t"/>            
         </message>
         <message id="26" name="SONAR_COMMAND">
             <field name="new_command" type="uint8_t"/>

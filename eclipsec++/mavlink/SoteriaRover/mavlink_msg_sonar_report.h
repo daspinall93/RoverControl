@@ -5,7 +5,7 @@
 
 MAVPACKED(
 typedef struct __mavlink_sonar_report_t {
- float object_distance_m; /*< */
+ float object_distance_cm; /*< */
  uint8_t object_detected_flag; /*< */
 }) mavlink_sonar_report_t;
 
@@ -25,7 +25,7 @@ typedef struct __mavlink_sonar_report_t {
     "SONAR_REPORT", \
     2, \
     {  { "object_detected_flag", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_sonar_report_t, object_detected_flag) }, \
-         { "object_distance_m", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sonar_report_t, object_distance_m) }, \
+         { "object_distance_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sonar_report_t, object_distance_cm) }, \
          } \
 }
 #else
@@ -33,7 +33,7 @@ typedef struct __mavlink_sonar_report_t {
     "SONAR_REPORT", \
     2, \
     {  { "object_detected_flag", NULL, MAVLINK_TYPE_UINT8_T, 0, 4, offsetof(mavlink_sonar_report_t, object_detected_flag) }, \
-         { "object_distance_m", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sonar_report_t, object_distance_m) }, \
+         { "object_distance_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sonar_report_t, object_distance_cm) }, \
          } \
 }
 #endif
@@ -45,21 +45,21 @@ typedef struct __mavlink_sonar_report_t {
  * @param msg The MAVLink message to compress the data into
  *
  * @param object_detected_flag 
- * @param object_distance_m 
+ * @param object_distance_cm 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_sonar_report_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t object_detected_flag, float object_distance_m)
+                               uint8_t object_detected_flag, float object_distance_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SONAR_REPORT_LEN];
-    _mav_put_float(buf, 0, object_distance_m);
+    _mav_put_float(buf, 0, object_distance_cm);
     _mav_put_uint8_t(buf, 4, object_detected_flag);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_SONAR_REPORT_LEN);
 #else
     mavlink_sonar_report_t packet;
-    packet.object_distance_m = object_distance_m;
+    packet.object_distance_cm = object_distance_cm;
     packet.object_detected_flag = object_detected_flag;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_SONAR_REPORT_LEN);
@@ -76,22 +76,22 @@ static inline uint16_t mavlink_msg_sonar_report_pack(uint8_t system_id, uint8_t 
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
  * @param object_detected_flag 
- * @param object_distance_m 
+ * @param object_distance_cm 
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_sonar_report_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t object_detected_flag,float object_distance_m)
+                                   uint8_t object_detected_flag,float object_distance_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SONAR_REPORT_LEN];
-    _mav_put_float(buf, 0, object_distance_m);
+    _mav_put_float(buf, 0, object_distance_cm);
     _mav_put_uint8_t(buf, 4, object_detected_flag);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_SONAR_REPORT_LEN);
 #else
     mavlink_sonar_report_t packet;
-    packet.object_distance_m = object_distance_m;
+    packet.object_distance_cm = object_distance_cm;
     packet.object_detected_flag = object_detected_flag;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_SONAR_REPORT_LEN);
@@ -111,7 +111,7 @@ static inline uint16_t mavlink_msg_sonar_report_pack_chan(uint8_t system_id, uin
  */
 static inline uint16_t mavlink_msg_sonar_report_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_sonar_report_t* sonar_report)
 {
-    return mavlink_msg_sonar_report_pack(system_id, component_id, msg, sonar_report->object_detected_flag, sonar_report->object_distance_m);
+    return mavlink_msg_sonar_report_pack(system_id, component_id, msg, sonar_report->object_detected_flag, sonar_report->object_distance_cm);
 }
 
 /**
@@ -125,7 +125,7 @@ static inline uint16_t mavlink_msg_sonar_report_encode(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_sonar_report_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_sonar_report_t* sonar_report)
 {
-    return mavlink_msg_sonar_report_pack_chan(system_id, component_id, chan, msg, sonar_report->object_detected_flag, sonar_report->object_distance_m);
+    return mavlink_msg_sonar_report_pack_chan(system_id, component_id, chan, msg, sonar_report->object_detected_flag, sonar_report->object_distance_cm);
 }
 
 /**
@@ -133,21 +133,21 @@ static inline uint16_t mavlink_msg_sonar_report_encode_chan(uint8_t system_id, u
  * @param chan MAVLink channel to send the message
  *
  * @param object_detected_flag 
- * @param object_distance_m 
+ * @param object_distance_cm 
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_sonar_report_send(mavlink_channel_t chan, uint8_t object_detected_flag, float object_distance_m)
+static inline void mavlink_msg_sonar_report_send(mavlink_channel_t chan, uint8_t object_detected_flag, float object_distance_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SONAR_REPORT_LEN];
-    _mav_put_float(buf, 0, object_distance_m);
+    _mav_put_float(buf, 0, object_distance_cm);
     _mav_put_uint8_t(buf, 4, object_detected_flag);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SONAR_REPORT, buf, MAVLINK_MSG_ID_SONAR_REPORT_MIN_LEN, MAVLINK_MSG_ID_SONAR_REPORT_LEN, MAVLINK_MSG_ID_SONAR_REPORT_CRC);
 #else
     mavlink_sonar_report_t packet;
-    packet.object_distance_m = object_distance_m;
+    packet.object_distance_cm = object_distance_cm;
     packet.object_detected_flag = object_detected_flag;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SONAR_REPORT, (const char *)&packet, MAVLINK_MSG_ID_SONAR_REPORT_MIN_LEN, MAVLINK_MSG_ID_SONAR_REPORT_LEN, MAVLINK_MSG_ID_SONAR_REPORT_CRC);
@@ -162,7 +162,7 @@ static inline void mavlink_msg_sonar_report_send(mavlink_channel_t chan, uint8_t
 static inline void mavlink_msg_sonar_report_send_struct(mavlink_channel_t chan, const mavlink_sonar_report_t* sonar_report)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_sonar_report_send(chan, sonar_report->object_detected_flag, sonar_report->object_distance_m);
+    mavlink_msg_sonar_report_send(chan, sonar_report->object_detected_flag, sonar_report->object_distance_cm);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SONAR_REPORT, (const char *)sonar_report, MAVLINK_MSG_ID_SONAR_REPORT_MIN_LEN, MAVLINK_MSG_ID_SONAR_REPORT_LEN, MAVLINK_MSG_ID_SONAR_REPORT_CRC);
 #endif
@@ -176,17 +176,17 @@ static inline void mavlink_msg_sonar_report_send_struct(mavlink_channel_t chan, 
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_sonar_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t object_detected_flag, float object_distance_m)
+static inline void mavlink_msg_sonar_report_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t object_detected_flag, float object_distance_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_float(buf, 0, object_distance_m);
+    _mav_put_float(buf, 0, object_distance_cm);
     _mav_put_uint8_t(buf, 4, object_detected_flag);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SONAR_REPORT, buf, MAVLINK_MSG_ID_SONAR_REPORT_MIN_LEN, MAVLINK_MSG_ID_SONAR_REPORT_LEN, MAVLINK_MSG_ID_SONAR_REPORT_CRC);
 #else
     mavlink_sonar_report_t *packet = (mavlink_sonar_report_t *)msgbuf;
-    packet->object_distance_m = object_distance_m;
+    packet->object_distance_cm = object_distance_cm;
     packet->object_detected_flag = object_detected_flag;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SONAR_REPORT, (const char *)packet, MAVLINK_MSG_ID_SONAR_REPORT_MIN_LEN, MAVLINK_MSG_ID_SONAR_REPORT_LEN, MAVLINK_MSG_ID_SONAR_REPORT_CRC);
@@ -210,11 +210,11 @@ static inline uint8_t mavlink_msg_sonar_report_get_object_detected_flag(const ma
 }
 
 /**
- * @brief Get field object_distance_m from sonar_report message
+ * @brief Get field object_distance_cm from sonar_report message
  *
  * @return 
  */
-static inline float mavlink_msg_sonar_report_get_object_distance_m(const mavlink_message_t* msg)
+static inline float mavlink_msg_sonar_report_get_object_distance_cm(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  0);
 }
@@ -228,7 +228,7 @@ static inline float mavlink_msg_sonar_report_get_object_distance_m(const mavlink
 static inline void mavlink_msg_sonar_report_decode(const mavlink_message_t* msg, mavlink_sonar_report_t* sonar_report)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    sonar_report->object_distance_m = mavlink_msg_sonar_report_get_object_distance_m(msg);
+    sonar_report->object_distance_cm = mavlink_msg_sonar_report_get_object_distance_cm(msg);
     sonar_report->object_detected_flag = mavlink_msg_sonar_report_get_object_detected_flag(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_SONAR_REPORT_LEN? msg->len : MAVLINK_MSG_ID_SONAR_REPORT_LEN;
