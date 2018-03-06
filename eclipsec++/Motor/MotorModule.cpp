@@ -141,6 +141,30 @@ void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
 	Debug();
 }
 
+void MotorModule::Stop()
+{
+	/* SET ALL OUTPUTS LOW */
+	bcm2835_gpio_write(M1_INPIN1, LOW);
+	bcm2835_gpio_write(M1_INPIN2, LOW);
+	bcm2835_gpio_write(M2_INPIN1, LOW);
+	bcm2835_gpio_write(M2_INPIN2, LOW);
+#if PWM_ENABLED
+		bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
+		bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
+#else
+		bcm2835_gpio_write(M1_PWMPIN, LOW);
+		bcm2835_gpio_write(M2_PWMPIN, LOW);
+#endif
+
+	/* SET ALL PINS TO INPUTS */
+	bcm2835_gpio_fsel(M1_INPIN1, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(M1_INPIN2, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(M2_INPIN1, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(M2_INPIN2, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(M2_PWMPIN, BCM2835_GPIO_FSEL_INPT);
+	bcm2835_gpio_fsel(M1_PWMPIN, BCM2835_GPIO_FSEL_INPT);
+}
+
 void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)
 {
 	/* ASSIGN THE MODES FOR THE MOTORS */
@@ -213,7 +237,7 @@ void MotorModule::SubModeStop(const mavlink_motor_command_t* p_MotorCommand_in,
 #endif
 
 		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_MODE_STOP;
+		m1_subMode = MOTOR_SUBMODE_STOP;
 		break;
 
 	case 2:
@@ -234,7 +258,7 @@ void MotorModule::SubModeStop(const mavlink_motor_command_t* p_MotorCommand_in,
 #endif
 
 		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_MODE_STOP;
+		m2_subMode = MOTOR_SUBMODE_STOP;
 		break;
 
 	}
@@ -263,7 +287,7 @@ void MotorModule::SubModeForward(
 #endif
 
 		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_MODE_FORWARD;
+		m1_subMode = MOTOR_SUBMODE_FORWARD;
 		break;
 
 	case 2:
@@ -284,7 +308,7 @@ void MotorModule::SubModeForward(
 #endif
 
 		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_MODE_FORWARD;
+		m2_subMode = MOTOR_SUBMODE_FORWARD;
 		break;
 
 	}
@@ -315,7 +339,7 @@ void MotorModule::SubModeBackward(
 #endif
 
 		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_MODE_BACKWARD;
+		m1_subMode = MOTOR_SUBMODE_BACKWARD;
 		break;
 
 	case 2:
@@ -336,7 +360,7 @@ void MotorModule::SubModeBackward(
 #endif
 
 		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_MODE_BACKWARD;
+		m2_subMode = MOTOR_SUBMODE_BACKWARD;
 		break;
 
 	}

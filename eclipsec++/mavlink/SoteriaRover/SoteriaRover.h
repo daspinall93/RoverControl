@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 119, 14, 0, 0, 0}, {11, 87, 19, 0, 0, 0}, {20, 173, 13, 0, 0, 0}, {26, 142, 1, 0, 0, 0}, {27, 91, 5, 0, 0, 0}, {28, 25, 1, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 119, 14, 0, 0, 0}, {11, 87, 19, 0, 0, 0}, {20, 173, 13, 0, 0, 0}, {21, 103, 1, 0, 0, 0}, {26, 97, 1, 0, 0, 0}, {27, 32, 5, 0, 0, 0}, {28, 216, 1, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -63,25 +63,13 @@ typedef enum MOTOR_MODE
 #endif
 
 /** @brief Mode of each motor (i.e m1 and m2) */
-#ifndef HAVE_ENUM_MOTOR_SUB_COMMAND_ID
-#define HAVE_ENUM_MOTOR_SUB_COMMAND_ID
-typedef enum MOTOR_SUB_COMMAND_ID
-{
-   MOTOR_COMMAND_STOP=0, /* Command to stop motor | */
-   MOTOR_COMMAND_FORWARD=1, /* Command for motor to travel forward | */
-   MOTOR_COMMAND_BACKWARD=2, /* Command for motor to go backward | */
-   MOTOR_SUB_COMMAND_ID_ENUM_END=3, /*  | */
-} MOTOR_SUB_COMMAND_ID;
-#endif
-
-/** @brief Mode of each motor (i.e m1 and m2) */
 #ifndef HAVE_ENUM_MOTOR_SUB_MODE
 #define HAVE_ENUM_MOTOR_SUB_MODE
 typedef enum MOTOR_SUB_MODE
 {
-   MOTOR_MODE_STOP=0, /* The motor is in stopped mode | */
-   MOTOR_MODE_FORWARD=1, /* The motor is in forward mode | */
-   MOTOR_MODE_BACKWARD=2, /* The motor is in backward mode | */
+   MOTOR_SUBMODE_STOP=0, /* The motor is in stopped mode | */
+   MOTOR_SUBMODE_FORWARD=1, /* The motor is in forward mode | */
+   MOTOR_SUBMODE_BACKWARD=2, /* The motor is in backward mode | */
    MOTOR_SUB_MODE_ENUM_END=3, /*  | */
 } MOTOR_SUB_MODE;
 #endif
@@ -102,6 +90,7 @@ typedef enum MOTOR_SUB_MODE
 #include "./mavlink_msg_motor_command.h"
 #include "./mavlink_msg_motor_report.h"
 #include "./mavlink_msg_inert_report.h"
+#include "./mavlink_msg_inert_command.h"
 #include "./mavlink_msg_sonar_command.h"
 #include "./mavlink_msg_sonar_report.h"
 #include "./mavlink_msg_camera_command.h"
@@ -113,8 +102,8 @@ typedef enum MOTOR_SUB_MODE
 #define MAVLINK_THIS_XML_IDX 0
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
-# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_MOTOR_COMMAND, MAVLINK_MESSAGE_INFO_MOTOR_REPORT, MAVLINK_MESSAGE_INFO_INERT_REPORT, MAVLINK_MESSAGE_INFO_SONAR_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_REPORT, MAVLINK_MESSAGE_INFO_CAMERA_COMMAND}
-# define MAVLINK_MESSAGE_NAMES {{ "CAMERA_COMMAND", 28 }, { "HEARTBEAT", 0 }, { "INERT_REPORT", 20 }, { "MOTOR_COMMAND", 3 }, { "MOTOR_REPORT", 11 }, { "SONAR_COMMAND", 26 }, { "SONAR_REPORT", 27 }}
+# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_MOTOR_COMMAND, MAVLINK_MESSAGE_INFO_MOTOR_REPORT, MAVLINK_MESSAGE_INFO_INERT_REPORT, MAVLINK_MESSAGE_INFO_INERT_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_REPORT, MAVLINK_MESSAGE_INFO_CAMERA_COMMAND}
+# define MAVLINK_MESSAGE_NAMES {{ "CAMERA_COMMAND", 28 }, { "HEARTBEAT", 0 }, { "INERT_COMMAND", 21 }, { "INERT_REPORT", 20 }, { "MOTOR_COMMAND", 3 }, { "MOTOR_REPORT", 11 }, { "SONAR_COMMAND", 26 }, { "SONAR_REPORT", 27 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

@@ -126,24 +126,29 @@ void InertModule::Execute(mavlink_inert_report_t* p_InertReport_out)
 void InertModule::UpdateWindow()
 {
 #if MPU6050_MA_ENABLED
-	/* MOVE WINDOW OF MA ALONG 1*/
-	memcpy(&accX_dig[1], &accX_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
-	memcpy(&accY_dig[1], &accY_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
-	memcpy(&accZ_dig[1], &accZ_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
-	memcpy(&gyroX_dig[1], &gyroX_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
-	memcpy(&gyroY_dig[1], &gyroY_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
-	memcpy(&gyroZ_dig[1], &gyroZ_dig[0],
-			(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+	for (int i = 0; i < MPU6050_MA_WINDOW_SIZE; i++)
+	{
 
-	/* GET LATEST SAMPLED VALUES FROM MPU6050 AND PLACE AT BEGINNING OF MA */
-	getMotion6(&accX_dig[0], &accY_dig[0], &accZ_dig[0], &gyroX_dig[0],
-			&gyroY_dig[0], &gyroZ_dig[0]);
+		/* MOVE WINDOW OF MA ALONG 1*/
+		memcpy(&accX_dig[1], &accX_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+		memcpy(&accY_dig[1], &accY_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+		memcpy(&accZ_dig[1], &accZ_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+		memcpy(&gyroX_dig[1], &gyroX_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+		memcpy(&gyroY_dig[1], &gyroY_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
+		memcpy(&gyroZ_dig[1], &gyroZ_dig[0],
+				(MPU6050_MA_WINDOW_SIZE - 1) * sizeof(int16_t));
 
+		/* GET LATEST SAMPLED VALUES FROM MPU6050 AND PLACE AT BEGINNING OF MA */
+		getMotion6(&accX_dig[0], &accY_dig[0], &accZ_dig[0], &gyroX_dig[0],
+				&gyroY_dig[0], &gyroZ_dig[0]);
+
+		bcm2835_delay(1);
+	}
 #else
 	getMotion6(&accXAv_dig, &accYAv_dig, &accZAv_dig, &gyroXAv_dig, &gyroYAv_dig, &gyroZAv_dig);
 	numSamples++;

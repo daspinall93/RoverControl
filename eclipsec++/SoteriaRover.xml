@@ -41,7 +41,7 @@
             </entry>
         </enum>
         <!-- Motor Module enumerations -->
-        <enum name="MOTOR_SUB_COMMAND_ID">
+        <!-- <enum name="MOTOR_SUB_COMMAND_ID">
             <description>Mode of each motor (i.e m1 and m2)</description>
             <entry name="MOTOR_COMMAND_STOP" value="0">
                 <description>Command to stop motor</description>
@@ -52,16 +52,16 @@
             <entry name="MOTOR_COMMAND_BACKWARD" value="2">
                 <description>Command for motor to go backward</description>
             </entry>
-        </enum>
+        </enum> -->
         <enum name="MOTOR_SUB_MODE">
             <description>Mode of each motor (i.e m1 and m2)</description>
-            <entry name="MOTOR_MODE_STOP" value="0">
+            <entry name="MOTOR_SUBMODE_STOP" value="0">
                 <description>The motor is in stopped mode</description>
             </entry>
-            <entry name="MOTOR_MODE_FORWARD" value="1">
+            <entry name="MOTOR_SUBMODE_FORWARD" value="1">
                 <description>The motor is in forward mode</description>
             </entry>
-            <entry name="MOTOR_MODE_BACKWARD" value="2">
+            <entry name="MOTOR_SUBMODE_BACKWARD" value="2">
                 <description>The motor is in backward mode</description>
             </entry>
         </enum>
@@ -108,15 +108,18 @@
             <field name="yaw_deg" type="float"/>
             <field name="tiltFlag" type="uint8_t"/>            
         </message>
+        <message id="21" name="INERT_COMMAND">
+            <field name="newCommand" type="uint8_t"/>
+        </message>
         <message id="26" name="SONAR_COMMAND">
-            <field name="new_command" type="uint8_t"/>
+            <field name="newCommand" type="uint8_t"/>
         </message>
         <message id="27" name="SONAR_REPORT">
-            <field name="object_detected_flag" type="uint8_t"/>
-            <field name="object_distance_cm" type="float"/>
+            <field name="objectDetected_flag" type="uint8_t"/>
+            <field name="objectDistance_cm" type="float"/>
         </message>
         <message id="28" name="CAMERA_COMMAND">
-            <field name="new_command" type="uint8_t"/>
+            <field name="newCommand" type="uint8_t"/>
         </message>               
     </messages>
 </mavlink>

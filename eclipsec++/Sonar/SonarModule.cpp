@@ -42,6 +42,14 @@ void SonarModule::Execute(mavlink_sonar_command_t* p_LocomCommand_in,
 
 }
 
+void SonarModule::Stop()
+{
+    bcm2835_gpio_write(TRIG_PIN, LOW);
+
+    bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_INPT);
+
+}
 void SonarModule::MeasureDistance()
 {
 	/* START TIMEOUT TIMER */
@@ -96,7 +104,7 @@ void SonarModule::MeasureDistance()
 void SonarModule::UpdateReport(mavlink_sonar_report_t* p_LocomReport_out)
 {
 	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
-	p_LocomReport_out->object_detected_flag = objectDetectedFlag;
-	p_LocomReport_out->object_distance_m = distance_cm;
+	p_LocomReport_out->objectDetected_flag = objectDetectedFlag;
+	p_LocomReport_out->objectDistance_m = distance_cm;
 
 }

@@ -13,7 +13,7 @@
 #include <time.h>
 
 /* INCLUDED FOR THE COMMAND INTERPRITATION FUNCTION */
-#include "../mavlink/SoteriaRover/mavlink.h"
+//#include "../mavlink/SoteriaRover/mavlink.h"
 
 /* INCLUDES FOR THREADING TO GET INPUT FROM CMD LINE */
 #include <iostream>
@@ -21,10 +21,10 @@
 #include <string.h>
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
-#define MOTOR_ENABLED 1
-#define INERT_ENABLED 1
-#define SONAR_ENABLED 1
-#define CAMERA_ENABLED 1
+#define MOTOR_ENABLED 0
+#define INERT_ENABLED 0
+#define SONAR_ENABLED 0
+#define CAMERA_ENABLED 0
 
 void ManagerModule::Start()
 {
@@ -54,30 +54,44 @@ void ManagerModule::Start()
 
 void ManagerModule::Execute()
 {
-    while (1)
+	/* INITIATE THREAD THAT WILL WATCH FOR INPUT ON THE CMD LINE */
+
+    while (!endProgram_flag)
     {
 		/* UPDATE TIMER FLAGS */
     	UpdateTimer();
 
-    	/* CARRY OUT CYCLIC TASKS */
-		/* EXECUTE MODULES AT 1HZ */
-		if (onehzFlag)
-		{
+	    /* CHECK FOR COMMAND INPUT */
+	    GetCmdLineInput();
 
-		}
+	    ExecuteCommand();
 
-		/* EXECUTE MODULES AT 10HZ */
-		if (tenhzFlag)
-		{
-			/* POLL COMMAND LINE TO SEE IF NEW COMMAND HAS BEEN RECEIVED */
+    }
 
+}
+
+void ManagerModule::Stop()
+{
 
 #if INERT_ENABLED
-			/* GET REPORT FROM INERT MODULE FOR COARSE TILT */
-			Inert.Execute(&InertReport);
+    Inert.Stop();
 #endif
-		}
-    }
+
+#if MOTOR_ENABLED
+    Motor.Stop();
+#endif
+
+#if SONAR_ENABLED
+    Sonar.Stop();
+#endif
+
+#if CAMERA_ENABLED
+    Camera.Stop();
+#endif
+
+#if MOTORS_ENABLED || INERT_ENABLED
+    bcm2835_(close);
+#endif
 }
 
 void ManagerModule::StartTimer()
@@ -143,30 +157,108 @@ void ManagerModule::UpdateTimer()
 
 void ManagerModule::GetCmdLineInput()
 {
-	char mystring[100];
-	std::string s;
-	std::string delimiter = " ";
+	std::string cmdLineInput;
 	size_t pos = 0;
 
 	std::string token;
 
 	/* POLL THE CMD LINE TO SEE IF ANY INPUT WAS PRESENT */
-	if (fgets(mystring, 100, stdin) != NULL)
+	std::cout << ">>";
+	std::cin >> cmdLineInput;
+
+	/* GO THROUGH EACH ELEMENT OF THE COMMAND */
+	if ((pos = cmdLineInput.find(" ")) != std::string::npos)
 	{
-		cmdLineInput = mystring;
-
-		/* GO THROUGH EACH ELEMENT OF THE COMMAND */
-		while ((pos = s.find(delimiter)) != std::string::npos) {
-		    token = s.substr(0, pos);
-		    std::cout << token << std::endl;
-		    s.erase(0, pos + delimiter.length());
-		}
-
+		std::cout << "Only one value allowed" << std::endl;
 	}
+	else
+	{
+		token = cmdLineInput.substr(0, pos);
 
-
-
+		if (token == "forward")
+		{
+			/* CURRENTLY ONLY USING THE FORWARD COMMAND WITH NO TIME OR POWER INPUT */
+			MotorCommand.newCommand = 1;
+			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_FORWARD;
+			MotorCommand.power_per = 50;
+			MotorCommand.duration_ms = 100000;
+		}
+		else if (token == "backward")
+		{
+			MotorCommand.newCommand = 1;
+			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_BACKWARD;
+			MotorCommand.power_per = 50;
+			MotorCommand.duration_ms = 100000;
+		}
+		else if (token == "right")
+		{
+			MotorCommand.newCommand = 1;
+			MotorCommand.commandid = MOTOR_COMMAND_TURN_RIGHT;
+			MotorCommand.power_per = 50;
+			MotorCommand.duration_ms = 100000;
+		}
+		else if (token == "left")
+		{
+			MotorCommand.newCommand = 1;
+			MotorCommand.commandid = MOTOR_COMMAND_TURN_LEFT;
+			MotorCommand.power_per = 50;
+			MotorCommand.duration_ms = 100000;
+		}
+		else if (token == "stop")
+		{
+			MotorCommand.newCommand = 1;
+			MotorCommand.commandid = MOTOR_COMMAND_STOP;
+			MotorCommand.power_per = 50;
+			MotorCommand.duration_ms = 100000;
+		}
+		else if (token == "tilt")
+		{
+			InertCommand.newCommand = 1;
+		}
+		else if (token == "image")
+		{
+			CameraCommand.newCommand = 1;
+		}
+		else if (token == "distance")
+		{
+			SonarCommand.newCommand = 1;
+		}
+		else if (token == "end")
+		{
+			endProgram_flag = 1;
+		}
+		else
+		{
+			std::cout << "Incorrect Command" << std::endl;
+		}
+	}
 }
+
+void ManagerModule::ExecuteCommand()
+{
+    /* CHECK TO SEE IF A NEW COMMAND HAS BEEN ASSIGNED FOR ANY MODULE */
+    if (MotorCommand.newCommand)
+    {
+    	std::cout << "Motor Command" << std::endl;
+    	MotorCommand.newCommand = 0;
+    }
+    if (InertCommand.newCommand)
+    {
+    	std::cout << "Inert Command" << std::endl;
+    	InertCommand.newCommand = 0;
+    }
+    if (SonarCommand.newCommand)
+    {
+    	std::cout << "Sonar Command" << std::endl;
+    	SonarCommand.newCommand = 0;
+    }
+    if (CameraCommand.newCommand)
+    {
+    	std::cout << "Sonar Command" << std::endl;
+    	SonarCommand.newCommand = 0;
+    }
+}
+
 void ManagerModule::Debug()
 {
 

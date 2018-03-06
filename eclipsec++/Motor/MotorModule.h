@@ -24,6 +24,7 @@ class MotorModule{
 public:
     void Start();
     void Execute(mavlink_motor_command_t* p_MotorCommand_in, mavlink_motor_report_t* p_MotorReport_out);
+    void Stop();
 
 private:
 
