@@ -15,8 +15,8 @@ class SonarModule
 public:
 
 	void Start();
-	void Execute(mavlink_sonar_command_t* p_LocomCommand_in,
-			mavlink_sonar_report_t* p_LocomReport_out);
+	void Execute(mavlink_sonar_command_t* p_SonarCommand_in,
+			mavlink_sonar_report_t* p_SonarReport_out);
 
 private:
 	long int echoStartTime_us;
@@ -27,7 +27,8 @@ private:
 	uint8_t objectDetectedFlag;
 
 	void MeasureDistance();
-	void UpdateReport(mavlink_sonar_report_t* p_LocomReport_out);
+	void UpdateReport(mavlink_sonar_report_t* p_SonarReport_out);
+	void Stop();
 };
 
 #endif /* SONARMODULE_H_ */

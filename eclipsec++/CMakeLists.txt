@@ -6,29 +6,26 @@ set(PROJECT_SOURCE_DIR ../)
 
 #create the library for the program and include external ones
 add_library(LibsModule
-    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.cpp
-    ${PROJECT_SOURCE_DIR}/Locom/LocomModule.cpp
     ${PROJECT_SOURCE_DIR}/Motor/MotorModule.cpp
-    ${PROJECT_SOURCE_DIR}/Rover/RoverModule.cpp
-    ${PROJECT_SOURCE_DIR}/Local/LocalModule.cpp
-    ${PROJECT_SOURCE_DIR}/MPU6050/MPU6050.cpp   
+    ${PROJECT_SOURCE_DIR}/Manager/ManagerModule.cpp
+    ${PROJECT_SOURCE_DIR}/Sonar/SonarModule.cpp    
+    ${PROJECT_SOURCE_DIR}/Inert/InertModule.cpp   
     ${PROJECT_SOURCE_DIR}/Utils/Utils.cpp
-    ${PROJECT_SOURCE_DIR}/MPU6050/I2Cdev.cpp
+    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
 )
+#for accessing GPIO pins
 target_link_libraries(LibsModule -lbcm2835)
+target_link_libraries (LibsModule -lraspicam -lmmal -lmmal_core -lmmal_util)
 
 #set the source files
 set(SOURCES 
-    ${PROJECT_SOURCE_DIR}/main.cpp 
-    ${PROJECT_SOURCE_DIR}/Rover/RoverModule.h 
-    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.h 
-    ${PROJECT_SOURCE_DIR}/Locom/LocomModule.h 
+    ${PROJECT_SOURCE_DIR}/SoteriaRover.cpp 
+    ${PROJECT_SOURCE_DIR}/Manager/ManagerModule.h 
     ${PROJECT_SOURCE_DIR}/Motor/MotorModule.h 
     ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
-    ${PROJECT_SOURCE_DIR}/Local/LocalModule.h
-    ${PROJECT_SOURCE_DIR}/MPU6050/MPU6050.h
+    ${PROJECT_SOURCE_DIR}/Inert/InertModule.h
     ${PROJECT_SOURCE_DIR}/Utils/Utils.h
-    ${PROJECT_SOURCE_DIR}/MPU6050/I2Cdev.cpp
+    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
 )
 
 #create the xecutable and link it to all the libraries

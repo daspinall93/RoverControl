@@ -10,6 +10,7 @@
 
 #include "raspicam/raspicam.h"
 #include <string>
+#include <stdint.h>
 
 class CameraModule
 {
@@ -21,7 +22,7 @@ public:
 	void Stop();
 
 private:
-	std::string fileFolder = "/home/pi/SoteriaRover/";
+	std::string fileFolder;
 	int16_t imageNum;
 
 	void Debug();

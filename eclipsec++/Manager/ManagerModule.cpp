@@ -22,31 +22,38 @@
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
 #define MOTOR_ENABLED 0
-#define INERT_ENABLED 0
+#define INERT_ENABLED 1
 #define SONAR_ENABLED 0
 #define CAMERA_ENABLED 0
 
-void ManagerModule::Start()
+void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
+		SonarModule* p_Sonar_in, CameraModule* p_Camera_in)
 {
+	/* ASSIGN OBJECT POINTERS */
+	p_Motor = p_Motor_in;
+	p_Inert = p_Inert_in;
+	p_Sonar = p_Sonar_in;
+	p_Camera = p_Camera_in;
+
     /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
-#if MOTORS_ENABLED || INERT_ENABLED
+#if MOTORS_ENABLED || INERT_ENABLED || SONAR_ENABLED
     bcm2835_init();
 #endif
 
 #if INERT_ENABLED
-    Inert.Start();
+    p_Inert->Start();
 #endif
 
 #if MOTOR_ENABLED
-    Motor.Start();
+    p_Motor->Start();
 #endif
 
 #if SONAR_ENABLED
-    Sonar.Start();
+    p_Sonar->Start();
 #endif
 
 #if CAMERA_ENABLED
-    Camera.Start();
+    p_Camera->Start();
 #endif
     /* START THE ROVER MODULES TIMER */
     StartTimer();
@@ -74,23 +81,23 @@ void ManagerModule::Stop()
 {
 
 #if INERT_ENABLED
-    Inert.Stop();
+    p_Inert->Stop();
 #endif
 
 #if MOTOR_ENABLED
-    Motor.Stop();
+    p_Motor->Stop();
 #endif
 
 #if SONAR_ENABLED
-    Sonar.Stop();
+    p_Sonar->Stop();
 #endif
 
 #if CAMERA_ENABLED
-    Camera.Stop();
+    p_Camera->Stop();
 #endif
 
-#if MOTORS_ENABLED || INERT_ENABLED
-    bcm2835_(close);
+#if MOTORS_ENABLED || INERT_ENABLED || SONAR_ENABLED
+    bcm2835_close();
 #endif
 }
 
@@ -244,7 +251,7 @@ void ManagerModule::ExecuteCommand()
     }
     if (InertCommand.newCommand)
     {
-    	std::cout << "Inert Command" << std::endl;
+    	p_Inert->Execute(&InertReport);
     	InertCommand.newCommand = 0;
     }
     if (SonarCommand.newCommand)

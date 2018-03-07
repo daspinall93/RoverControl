@@ -12,6 +12,9 @@
 
 void CameraModule::Start()
 {
+	/* ASSIGN THE IMAGE FOLDER */
+	fileFolder = "/home/pi/SoteriaRover/";
+
 	/* SETUP THE CAMERA */
 	raspCam.setFormat(raspicam::RASPICAM_FORMAT_RGB);
 	raspCam.setWidth(1280);

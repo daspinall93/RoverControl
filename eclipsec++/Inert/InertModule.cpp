@@ -115,7 +115,7 @@ void InertModule::Execute(mavlink_inert_report_t* p_InertReport_out)
 
 	/* UPDATE ANGLES */
 	UpdateAnglesAcc();
-	UpdateAnglesGyro();
+	//UpdateAnglesGyro();
 
 	/* PUT THE SAMPLED VALUES IN THE REPORT */
 	UpdateReport(p_InertReport_out);
@@ -314,7 +314,8 @@ void InertModule::UpdateReport(mavlink_inert_report_t* p_InertReport_out)
 	/* USING THE ACCELEROMETER VALUES FOR RP AND GYRO FOR YAW */
 	p_InertReport_out->pitch_deg = accPitch_deg;
 	p_InertReport_out->roll_deg = accRoll_deg;
-	p_InertReport_out->yaw_deg = gyroYaw_deg;
+//	p_InertReport_out->yaw_deg = gyroYaw_deg;
+	p_InertReport_out->yaw_deg = 0.0;
 
 	/* DETERMINE IF COARSE TILT FLAG SHOULD BE SET HIGH */
 	if (p_InertReport_out->pitch_deg > PITCH_LIMIT_DEG)

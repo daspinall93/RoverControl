@@ -7,6 +7,7 @@
 
 /* INCLUDE HEADER FILE */
 #include "MotorModule.h"
+#include "../Utils/Utils.h"
 
 /* INCLUDE EXTERNAL LIBRARIES */
 #include <stdio.h>
@@ -22,7 +23,7 @@
 #define M1_PWM_CHANNEL 0
 #define M2_PWM_CHANNEL 1
 
-#define MOTORS_ENABLED 1
+#define MOTORS_ENABLED 0
 #define PWM_ENABLED 1
 #define PWM_RANGE 1024
 
@@ -117,7 +118,6 @@ void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
 		/* INITALISE THE TIMER FOR THE COMMAND */
 		modeStartTime_ms = Utils::GetTimems();
 		modeElapsedTime_ms = 0;
-		p_MotorCommand_in->newCommand = 0;
 
 	}
 	else
@@ -143,6 +143,7 @@ void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
 
 void MotorModule::Stop()
 {
+#if MOTORS_ENABLED
 	/* SET ALL OUTPUTS LOW */
 	bcm2835_gpio_write(M1_INPIN1, LOW);
 	bcm2835_gpio_write(M1_INPIN2, LOW);
@@ -163,6 +164,7 @@ void MotorModule::Stop()
 	bcm2835_gpio_fsel(M2_INPIN2, BCM2835_GPIO_FSEL_INPT);
 	bcm2835_gpio_fsel(M2_PWMPIN, BCM2835_GPIO_FSEL_INPT);
 	bcm2835_gpio_fsel(M1_PWMPIN, BCM2835_GPIO_FSEL_INPT);
+#endif
 }
 
 void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)

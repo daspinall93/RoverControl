@@ -8,7 +8,6 @@
 #ifndef MANAGER_MANAGERMODULE_H_
 #define MANAGER_MANAGERMODULE_H_
 
-
 /* INCLUDES FOR INTERACTING WITH MODULES */
 #include "../Motor/MotorModule.h"
 #include "../Inert/InertModule.h"
@@ -18,24 +17,22 @@
 
 #include <string.h>
 
-
 class ManagerModule
 {
 public:
-
-	void Start();
+	void Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
+			SonarModule* p_Sonar_in, CameraModule* p_Camera_in);
 	void Execute();
 	void Stop();
 
 private:
 	/* OBJECTS TO CALL */
-	MotorModule Motor;
-	InertModule Inert;
-	SonarModule Sonar;
-	CameraModule Camera;
+	MotorModule* p_Motor;
+	InertModule* p_Inert;
+	SonarModule* p_Sonar;
+	CameraModule* p_Camera;
 
 	/* TIMING COMPONENTS */
-
 
 	long int milSec;
 

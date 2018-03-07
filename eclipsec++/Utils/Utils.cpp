@@ -26,7 +26,7 @@ long int Utils::GetTimeus(){
 	long int timeus = 0;
 	clock_gettime(CLOCK_MONOTONIC, &tspec);
 	tspec.tv_nsec = round(tspec.tv_nsec / 1.0e3);
-	timeus = tspec.tv_nsec + (tspec.tv_sec * 1000);
+	timeus = tspec.tv_nsec + (tspec.tv_sec * 1000000);
 	return timeus;
 
 }

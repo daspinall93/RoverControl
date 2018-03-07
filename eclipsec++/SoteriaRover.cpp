@@ -8,11 +8,18 @@
 
 int main()
 {
-	ManagerModule Manager = ManagerModule();
 
-	Manager.Start();
+	ManagerModule Manager = ManagerModule();
+	MotorModule Motor = MotorModule();
+	InertModule Inert = InertModule();
+	SonarModule Sonar = SonarModule();
+	CameraModule Camera = CameraModule();
+
+	Manager.Start(&Motor, &Inert, &Sonar, &Camera);
 
 	Manager.Execute();
+
+	Manager.Stop();
 
 	return 0;
 
