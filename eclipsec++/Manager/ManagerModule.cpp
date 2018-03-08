@@ -21,10 +21,10 @@
 #include <string.h>
 
 /* SELECT WHICH ELEMENTS WILL BE ENABLED */
-#define MOTOR_ENABLED 0
+#define MOTOR_ENABLED 1
 #define INERT_ENABLED 1
-#define SONAR_ENABLED 0
-#define CAMERA_ENABLED 0
+#define SONAR_ENABLED 1
+#define CAMERA_ENABLED 1
 
 void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
 		SonarModule* p_Sonar_in, CameraModule* p_Camera_in)
@@ -246,7 +246,7 @@ void ManagerModule::ExecuteCommand()
     /* CHECK TO SEE IF A NEW COMMAND HAS BEEN ASSIGNED FOR ANY MODULE */
     if (MotorCommand.newCommand)
     {
-    	std::cout << "Motor Command" << std::endl;
+    	p_Motor->Execute(&MotorCommand, &MotorReport);
     	MotorCommand.newCommand = 0;
     }
     if (InertCommand.newCommand)
@@ -256,12 +256,12 @@ void ManagerModule::ExecuteCommand()
     }
     if (SonarCommand.newCommand)
     {
-    	std::cout << "Sonar Command" << std::endl;
+    	p_Sonar->Execute(&SonarCommand, &SonarReport);
     	SonarCommand.newCommand = 0;
     }
     if (CameraCommand.newCommand)
     {
-    	std::cout << "Sonar Command" << std::endl;
+    	p_Camera->Execute();
     	SonarCommand.newCommand = 0;
     }
 }

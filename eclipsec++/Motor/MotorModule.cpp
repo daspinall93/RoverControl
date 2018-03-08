@@ -23,7 +23,7 @@
 #define M1_PWM_CHANNEL 0
 #define M2_PWM_CHANNEL 1
 
-#define MOTORS_ENABLED 0
+#define MOTORS_ENABLED 1
 #define PWM_ENABLED 1
 #define PWM_RANGE 1024
 
@@ -150,11 +150,11 @@ void MotorModule::Stop()
 	bcm2835_gpio_write(M2_INPIN1, LOW);
 	bcm2835_gpio_write(M2_INPIN2, LOW);
 #if PWM_ENABLED
-		bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
-		bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
 #else
-		bcm2835_gpio_write(M1_PWMPIN, LOW);
-		bcm2835_gpio_write(M2_PWMPIN, LOW);
+	bcm2835_gpio_write(M1_PWMPIN, LOW);
+	bcm2835_gpio_write(M2_PWMPIN, LOW);
 #endif
 
 	/* SET ALL PINS TO INPUTS */

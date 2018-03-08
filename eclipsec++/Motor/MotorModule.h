@@ -13,8 +13,6 @@
 #ifndef MOTORCONTAINER_H_
 #define MOTORCONTAINER_H_
 
-#define M1_PWMPIN
-#define M1
 
 #include <stdint.h>
 

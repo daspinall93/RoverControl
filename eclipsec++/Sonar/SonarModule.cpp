@@ -40,6 +40,8 @@ void SonarModule::Execute(mavlink_sonar_command_t* p_SonarCommand_in,
 
 	UpdateReport(p_SonarReport_out);
 
+	Debug();
+
 }
 
 void SonarModule::Stop()
@@ -59,21 +61,27 @@ void SonarModule::MeasureDistance()
 	bcm2835_gpio_write(TRIG_PIN, HIGH);
 	echoStartTime_us = Utils::GetTimeus();
 
+	std::cout << bcm2835_gpio_lev(ECHO_PIN) << std::endl;
+
 	/* WAIT FOR THE ECHO PIN TO GO HIGH */
 	objectDetectedFlag = 1;
 
+	std::cout << "startTime_us = " << startTime_us << std::endl;
+
 	// TODO look into problem with bcm285_gpio_lev function
-//	while (!bcm2835_gpio_lev(ECHO_PIN))
-	while(1)
+	while (!bcm2835_gpio_lev(ECHO_PIN))
+//	while(1)
 	{
 		echoStartTime_us = Utils::GetTimeus();
 
 		/* BREAK FROM LOOP IF TIMEOUT IS REACHED AND SET DETECTED FLAG LOW */
 		if ((echoStartTime_us - startTime_us) >= ECHO_TIMEOUT_US)
 		{
-
 			objectDetectedFlag = 0;
+			std::cout << "echoStartTime_us = " << echoStartTime_us << std::endl;
+			std::cout << "objectDetectedFlag = " << objectDetectedFlag << std::endl;
 			break;
+
 		}
 	}
 
@@ -109,5 +117,12 @@ void SonarModule::UpdateReport(mavlink_sonar_report_t* p_SonarReport_out)
 	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
 	p_SonarReport_out->objectDetected_flag = objectDetectedFlag;
 	p_SonarReport_out->objectDistance_cm = distance_cm;
+
+}
+
+void SonarModule::Debug()
+{
+	std::cout << "[SONAR]Object detected flag = " << objectDetectedFlag << std::endl;
+	std::cout << "[SONAR]Object Distance = " << distance_cm << std::endl;
 
 }

@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <bcm2835.h>
+#include <stdint.h>
 
 void CameraModule::Start()
 {
@@ -25,10 +27,15 @@ void CameraModule::Start()
 	/* OPEN CAMERA */
 	if (!raspCam.open())
 	{
-		printf("Error opening camera");
+		std::cout << "Error opening camera" << std::endl;
 	}
 
-	imageNum = 0;
+	/* DELAY TO ALLOW CAMERA TO STARTUP */
+	std::cout << "[CAMERA]Starting camera..." << std::endl;
+	bcm2835_delay(5000);
+
+//	imageNum = 0;
+
 
 }
 
@@ -48,7 +55,6 @@ void CameraModule::Execute()
 	std::ofstream outFile(fileFolder + fileName);
 	outFile << "P6\n" << raspCam.getWidth() << " " << raspCam.getHeight() << " 255\n";
 	outFile.write((char*) data, (long) raspCam.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB));
-	std::cout << "image saved to:" << fileFolder + fileName << std::endl;
 
 	/* CLOSE THE FILE */
 	outFile.close();
@@ -59,7 +65,7 @@ void CameraModule::Execute()
 	/* INCREASE FILE NUMBER */
 	imageNum++;
 
-	Debug();
+	std::cout << "[CAMERA]Image saved to:" << fileFolder + fileName << std::endl;
 }
 
 void CameraModule::Stop()

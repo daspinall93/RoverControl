@@ -17,6 +17,7 @@ public:
 	void Start();
 	void Execute(mavlink_sonar_command_t* p_SonarCommand_in,
 			mavlink_sonar_report_t* p_SonarReport_out);
+	void Stop();
 
 private:
 	long int echoStartTime_us;
@@ -28,7 +29,7 @@ private:
 
 	void MeasureDistance();
 	void UpdateReport(mavlink_sonar_report_t* p_SonarReport_out);
-	void Stop();
+	void Debug();
 };
 
 #endif /* SONARMODULE_H_ */

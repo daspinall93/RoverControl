@@ -12,6 +12,7 @@ add_library(LibsModule
     ${PROJECT_SOURCE_DIR}/Inert/InertModule.cpp   
     ${PROJECT_SOURCE_DIR}/Utils/Utils.cpp
     ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
+    ${PROJECT_SOURCE_DIR}/Camera/CameraModule.cpp
 )
 #for accessing GPIO pins
 target_link_libraries(LibsModule -lbcm2835)
@@ -25,7 +26,8 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
     ${PROJECT_SOURCE_DIR}/Inert/InertModule.h
     ${PROJECT_SOURCE_DIR}/Utils/Utils.h
-    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
+    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.h
+    ${PROJECT_SOURCE_DIR}/Camera/CameraModule.h
 )
 
 #create the xecutable and link it to all the libraries
