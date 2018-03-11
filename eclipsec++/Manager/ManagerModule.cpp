@@ -57,6 +57,7 @@ void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
 #endif
     /* START THE ROVER MODULES TIMER */
     StartTimer();
+
 }
 
 void ManagerModule::Execute()
@@ -71,6 +72,7 @@ void ManagerModule::Execute()
 	    /* CHECK FOR COMMAND INPUT */
 	    GetCmdLineInput();
 
+	    /* EXECUTE ANY COMMANDS */
 	    ExecuteCommand();
 
     }

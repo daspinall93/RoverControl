@@ -12,15 +12,17 @@
 #include <bcm2835.h>
 #include <stdint.h>
 
+#include "pngEncoder/lodepng.h"
+
 void CameraModule::Start()
 {
-	/* ASSIGN THE IMAGE FOLDER */
-	fileFolder = "/home/pi/SoteriaRover/";
+
+	fileFolder = IMAGE_FOLDER;
 
 	/* SETUP THE CAMERA */
 	raspCam.setFormat(raspicam::RASPICAM_FORMAT_RGB);
-	raspCam.setWidth(1280);
-	raspCam.setHeight(960);
+	raspCam.setWidth(IMAGE_WIDTH);
+	raspCam.setHeight(IMAGE_HEIGHT);
 	raspCam.setHorizontalFlip(0);
 	raspCam.setVerticalFlip(1);
 
@@ -34,30 +36,30 @@ void CameraModule::Start()
 	std::cout << "[CAMERA]Starting camera..." << std::endl;
 	bcm2835_delay(5000);
 
-//	imageNum = 0;
-
-
 }
 
 void CameraModule::Execute()
 {
 	/* CREATE THE DYNAMIC ARRAY FOR HOLDING THE IMAGE DATA */
-	unsigned char* data = new unsigned char[raspCam.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB)];
+	unsigned char* data = new unsigned char[raspCam.getImageTypeSize(
+			raspicam::RASPICAM_FORMAT_RGB)];
 
 	/* GET CAMERA TO STORE IMAGE IN INTERNAL BUFFER */
 	raspCam.grab();
 
 	/* RETRIEVE IMAGE FROM INTERNAL BUFFER AND STORE IN DYNAMIC ARRAY */
-	raspCam.retrieve(data,raspicam::RASPICAM_FORMAT_RGB);
+	raspCam.retrieve(data, raspicam::RASPICAM_FORMAT_RGB);
 
-	/* STORE IMAGE IN THE A FILE */
-	std::string fileName = "Image" + std::to_string(imageNum) + ".ppm";
-	std::ofstream outFile(fileFolder + fileName);
-	outFile << "P6\n" << raspCam.getWidth() << " " << raspCam.getHeight() << " 255\n";
-	outFile.write((char*) data, (long) raspCam.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB));
+	/* ENCODE AND SAVE */
+	std::string fileName = fileFolder + "image" + std::to_string(imageNum);
 
-	/* CLOSE THE FILE */
-	outFile.close();
+#if IMAGE_PNG_ENCODE
+	fileName = fileName + ".png";
+	EncodePNG(fileName, data, IMAGE_WIDTH, IMAGE_HEIGHT);
+#else
+	fileName = fileName + ".ppm";
+	EncodePPM(fileName, data, IMAGE_WIDTH, IMAGE_HEIGHT);
+#endif
 
 	/* DELETE THE DYNAMIC ARRAY */
 	delete[] data;
@@ -65,7 +67,40 @@ void CameraModule::Execute()
 	/* INCREASE FILE NUMBER */
 	imageNum++;
 
-	std::cout << "[CAMERA]Image saved to:" << fileFolder + fileName << std::endl;
+	std::cout << "[CAMERA]Image saved to:" << fileFolder + fileName
+			<< std::endl;
+}
+
+void CameraModule::EncodePNG(const std::string& fileName, const unsigned char* image,
+		unsigned width, unsigned height)
+{
+
+	std::vector<unsigned char> png;
+
+	/* ENCODE IMAGE */
+	unsigned error = lodepng::encode(png, image, width, height, LCT_RGB, 8);
+
+	/* SAVE IMAGE */
+	if (!error)
+		lodepng::save_file(png, fileName);
+
+	/* DISPLAY ERRORS */
+	if (error)
+		std::cout << "encoder error " << error << ": "
+				<< lodepng_error_text(error) << std::endl;
+
+}
+
+void CameraModule::EncodePPM(const std::string& fileName, const unsigned char* image,
+		unsigned width, unsigned height)
+{
+	std::ofstream outFile(fileName);
+
+	/* ENCODE IMAGE AND SAVE */
+	outFile << "P6\n" << raspCam.getWidth() << " " << raspCam.getHeight() << " 255\n";
+	outFile.write((char*) image, (long) raspCam.getImageTypeSize(raspicam::RASPICAM_FORMAT_RGB));
+
+	outFile.close();
 }
 
 void CameraModule::Stop()
