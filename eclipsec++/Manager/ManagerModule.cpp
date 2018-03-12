@@ -264,7 +264,7 @@ void ManagerModule::ExecuteCommand()
     if (CameraCommand.newCommand)
     {
     	p_Camera->Execute();
-    	SonarCommand.newCommand = 0;
+    	CameraCommand.newCommand = 0;
     }
 }
 

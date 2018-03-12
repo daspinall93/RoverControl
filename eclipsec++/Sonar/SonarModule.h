@@ -25,7 +25,14 @@ private:
 
 	float distance_cm;
 
-	uint8_t objectDetectedFlag;
+
+	short int objectDetectedFlag;
+	/* 0 = echo pin wasnt low at beggining
+	 * 1 = echo pin was low but never went high
+	 * 2 = echo pin went high
+	 * 3 = echo pin went high but didn't come low
+	 * 4 = echo pin went high and came low
+	 */
 
 	void MeasureDistance();
 	void UpdateReport(mavlink_sonar_report_t* p_SonarReport_out);
