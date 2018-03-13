@@ -26,6 +26,9 @@
 #define SONAR_ENABLED 1
 #define CAMERA_ENABLED 1
 
+/* FOR CONSTANT PWM */
+#define PWM_PERCENTAGE 70
+
 void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
 		SonarModule* p_Sonar_in, CameraModule* p_Camera_in)
 {
@@ -36,25 +39,16 @@ void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
 	p_Camera = p_Camera_in;
 
     /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
-#if MOTORS_ENABLED || INERT_ENABLED || SONAR_ENABLED
     bcm2835_init();
-#endif
 
-#if INERT_ENABLED
     p_Inert->Start();
-#endif
 
-#if MOTOR_ENABLED
     p_Motor->Start();
-#endif
 
-#if SONAR_ENABLED
     p_Sonar->Start();
-#endif
 
-#if CAMERA_ENABLED
     p_Camera->Start();
-#endif
+
     /* START THE ROVER MODULES TIMER */
     StartTimer();
 
@@ -82,25 +76,15 @@ void ManagerModule::Execute()
 void ManagerModule::Stop()
 {
 
-#if INERT_ENABLED
     p_Inert->Stop();
-#endif
 
-#if MOTOR_ENABLED
     p_Motor->Stop();
-#endif
 
-#if SONAR_ENABLED
     p_Sonar->Stop();
-#endif
 
-#if CAMERA_ENABLED
     p_Camera->Stop();
-#endif
 
-#if MOTORS_ENABLED || INERT_ENABLED || SONAR_ENABLED
     bcm2835_close();
-#endif
 }
 
 void ManagerModule::StartTimer()
@@ -189,35 +173,35 @@ void ManagerModule::GetCmdLineInput()
 			/* CURRENTLY ONLY USING THE FORWARD COMMAND WITH NO TIME OR POWER INPUT */
 			MotorCommand.newCommand = 1;
 			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_FORWARD;
-			MotorCommand.power_per = 50;
+			MotorCommand.power_per = PWM_PERCENTAGE;
 			MotorCommand.duration_ms = 100000;
 		}
 		else if (token == "backward")
 		{
 			MotorCommand.newCommand = 1;
 			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_BACKWARD;
-			MotorCommand.power_per = 50;
+			MotorCommand.power_per = PWM_PERCENTAGE;
 			MotorCommand.duration_ms = 100000;
 		}
 		else if (token == "right")
 		{
 			MotorCommand.newCommand = 1;
 			MotorCommand.commandid = MOTOR_COMMAND_TURN_RIGHT;
-			MotorCommand.power_per = 50;
+			MotorCommand.power_per = PWM_PERCENTAGE;
 			MotorCommand.duration_ms = 100000;
 		}
 		else if (token == "left")
 		{
 			MotorCommand.newCommand = 1;
 			MotorCommand.commandid = MOTOR_COMMAND_TURN_LEFT;
-			MotorCommand.power_per = 50;
+			MotorCommand.power_per = PWM_PERCENTAGE;
 			MotorCommand.duration_ms = 100000;
 		}
 		else if (token == "stop")
 		{
 			MotorCommand.newCommand = 1;
 			MotorCommand.commandid = MOTOR_COMMAND_STOP;
-			MotorCommand.power_per = 50;
+			MotorCommand.power_per = PWM_PERCENTAGE;
 			MotorCommand.duration_ms = 100000;
 		}
 		else if (token == "tilt")

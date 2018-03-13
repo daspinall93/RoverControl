@@ -14,22 +14,20 @@
 #include <bcm2835.h>
 
 /* PIN CONSTANTS */
-#define M1_PWMPIN 18	//PWM
-#define M2_PWMPIN 19	//PWM
-#define M1_INPIN1 4	//dig for M1
-#define M1_INPIN2 17	//dig for M1
-#define M2_INPIN1 27	//dig for M2
-#define M2_INPIN2 22	//dig for M2
+#define M1_PWMPIN 18	//PWM 5
+#define M2_PWMPIN 19	//PWM 6
+#define M1_INPIN1 17	//dig for M1 8
+#define M1_INPIN2 4	//dig for M1 7
+#define M2_INPIN1 22	//dig for M2 12
+#define M2_INPIN2 27	//dig for M2 13
 #define M1_PWM_CHANNEL 0
 #define M2_PWM_CHANNEL 1
 
-#define MOTORS_ENABLED 1
 #define PWM_ENABLED 1
 #define PWM_RANGE 1024
 
 void MotorModule::Start()
 {
-#if MOTORS_ENABLED
 	/* SETUP PIN FUNCTIONS */
 	bcm2835_gpio_fsel(M1_INPIN1, BCM2835_GPIO_FSEL_OUTP); //Basic out function
 	bcm2835_gpio_fsel(M1_INPIN2, BCM2835_GPIO_FSEL_OUTP);
@@ -65,9 +63,10 @@ void MotorModule::Start()
 	bcm2835_gpio_write(M1_PWMPIN, LOW);
 	bcm2835_gpio_write(M2_PWMPIN, LOW);
 #endif
-#endif
-	m1_subMode = MOTOR_MODE_STOP;
-	m2_subMode = MOTOR_MODE_STOP;
+
+	m1_subMode = MOTOR_SUBMODE_STOP;
+	m2_subMode = MOTOR_SUBMODE_STOP;
+	mode = MOTOR_MODE_STOP;
 }
 
 void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
@@ -84,8 +83,7 @@ void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
 		case MOTOR_COMMAND_STOP:
 
 			/* SET THE SUB MODE FOR EACH MOTOR */
-			SubModeStop(p_MotorCommand_in, 1);
-			SubModeStop(p_MotorCommand_in, 2);
+			ModeStop(p_MotorCommand_in);
 
 			break;
 
@@ -122,28 +120,16 @@ void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
 	}
 	else
 	{
-
 		/* UPDATE ELAPSED TIME */
 		modeElapsedTime_ms = (Utils::GetTimems() - modeStartTime_ms);
 
-		/* CHECK IF THE COMMAND HAS FINISHED */
-		if (modeElapsedTime_ms >= p_MotorCommand_in->duration_ms)
-		{
-			/* RESET TIMER AND SET MODE TO STOP */
-			modeStartTime_ms = Utils::GetTimems();
-			modeElapsedTime_ms = 0;
-			ModeStop(p_MotorCommand_in);
-
-		}
-
 	}
-	//execute the changes for the motors
+
 	Debug();
 }
 
 void MotorModule::Stop()
 {
-#if MOTORS_ENABLED
 	/* SET ALL OUTPUTS LOW */
 	bcm2835_gpio_write(M1_INPIN1, LOW);
 	bcm2835_gpio_write(M1_INPIN2, LOW);
@@ -164,14 +150,45 @@ void MotorModule::Stop()
 	bcm2835_gpio_fsel(M2_INPIN2, BCM2835_GPIO_FSEL_INPT);
 	bcm2835_gpio_fsel(M2_PWMPIN, BCM2835_GPIO_FSEL_INPT);
 	bcm2835_gpio_fsel(M1_PWMPIN, BCM2835_GPIO_FSEL_INPT);
-#endif
+
 }
 
 void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)
 {
-	/* ASSIGN THE MODES FOR THE MOTORS */
-	SubModeStop(p_MotorCommand_in, 1);
-	SubModeStop(p_MotorCommand_in, 2);
+	/* M1 = STOP
+	 * M2 = STOP
+	 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m1_pwmInput = 0;
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M1_INPIN1, LOW);
+	bcm2835_gpio_write(M1_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
+#else
+	bcm2835_gpio_write(M1_PWMPIN, LOW);
+#endif
+
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m2_pwmInput = 0;
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M2_INPIN1, LOW);
+	bcm2835_gpio_write(M2_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
+#else
+	bcm2835_gpio_write(M2_PWMPIN, LOW);
+#endif
+
+	/* UPDATE THE STATE */
+	m1_subMode = MOTOR_SUBMODE_STOP;
+	m2_subMode = MOTOR_SUBMODE_STOP;
 
 	mode = MOTOR_MODE_STOP;
 }
@@ -179,193 +196,187 @@ void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)
 void MotorModule::ModeStraightForward(
 		mavlink_motor_command_t* p_MotorCommand_in)
 {
-	/* ASSIGN THE MODES FOR THE MOTORS */
-	SubModeForward(p_MotorCommand_in, 1);
-	SubModeForward(p_MotorCommand_in, 2);
+	/* M1 = FORWARD
+	 * M2 = FORWARD
+	 */
 
+	/* UPDATE M1 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M1_INPIN1, HIGH);
+	bcm2835_gpio_write(M1_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M1_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m1_subMode = MOTOR_SUBMODE_FORWARD;
+
+	/* UPDATE M2 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M2_INPIN1, HIGH);
+	bcm2835_gpio_write(M2_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M2_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m2_subMode = MOTOR_SUBMODE_FORWARD;
+
+	/* UPDATE MODE */
 	mode = MOTOR_MODE_STRAIGHT_FORWARD;
 }
 
 void MotorModule::ModeStraightBackward(
 		mavlink_motor_command_t* p_MotorCommand_in)
 {
-	/* ASSIGN THE MODES FOR THE MOTORS */
-	SubModeBackward(p_MotorCommand_in, 1);
-	SubModeBackward(p_MotorCommand_in, 2);
+	/* M1 = BACKWARD
+	 * M2 = BACKWARD
+	 */
 
+	/* UPDATE M1 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M1_INPIN1, LOW);
+	bcm2835_gpio_write(M1_INPIN2, HIGH);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M1_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m1_subMode = MOTOR_SUBMODE_BACKWARD;
+
+	/* UPDATE M2 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M2_INPIN1, LOW);
+	bcm2835_gpio_write(M2_INPIN2, HIGH);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M2_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m2_subMode = MOTOR_SUBMODE_BACKWARD;
+
+	/* UPDATE MODE */
 	mode = MOTOR_MODE_STRAIGHT_BACKWARD;
 }
 
 void MotorModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in)
 {
+	/* M1 = FORWARD
+	 * M2 = BACKWARD
+	 */
 
-	/* ASSIGN THE MODES FOR THE MOTORS */
-	SubModeForward(p_MotorCommand_in, 1);
-	SubModeBackward(p_MotorCommand_in, 2);
+	/* UPDATE M1 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
 
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M1_INPIN1, HIGH);
+	bcm2835_gpio_write(M1_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M1_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m1_subMode = MOTOR_SUBMODE_FORWARD;
+
+	/* UPDATE M2 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M2_INPIN1, LOW);
+	bcm2835_gpio_write(M2_INPIN2, HIGH);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M2_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m2_subMode = MOTOR_SUBMODE_BACKWARD;
+
+	/* UPDATE MODE */
 	mode = MOTOR_MODE_TURN_RIGHT;
 }
 
 void MotorModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in)
 {
+	/* M1 = BACKWARD
+	 * M2 = FORWARD
+	 */
 
-	/* ASSIGN THE MODES FOR THE MOTORS */
-	SubModeBackward(p_MotorCommand_in, 1);
-	SubModeForward(p_MotorCommand_in, 2);
+	/* UPDATE M1 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
 
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M1_INPIN1, LOW);
+	bcm2835_gpio_write(M1_INPIN2, HIGH);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M1_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M1_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m1_subMode = MOTOR_SUBMODE_BACKWARD;
+
+	/* UPDATE M2 */
+	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+
+	/* SET THE DIRECTION OF MOTOR */
+	bcm2835_gpio_write(M2_INPIN1, HIGH);
+	bcm2835_gpio_write(M2_INPIN2, LOW);
+
+	/* SET THE OUTPUT AVERAGE VOLTAGE */
+#if PWM_ENABLED
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+#else
+	bcm2835_gpio_write(M2_PWMPIN, HIGH);
+#endif
+
+	/* UPDATE THE SUB MODE */
+	m2_subMode = MOTOR_SUBMODE_FORWARD;
+
+	/* UPDATE MODE */
 	mode = MOTOR_MODE_TURN_LEFT;
-}
-
-void MotorModule::SubModeStop(const mavlink_motor_command_t* p_MotorCommand_in,
-		uint8_t motorid)
-{
-	switch (motorid)
-	{
-	case 1:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m1_pwmInput = 0;
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M1_INPIN1, LOW);
-		bcm2835_gpio_write(M1_INPIN2, LOW);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M1_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_SUBMODE_STOP;
-		break;
-
-	case 2:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m2_pwmInput = 0;
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M2_INPIN1, LOW);
-		bcm2835_gpio_write(M2_INPIN2, LOW);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M2_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_SUBMODE_STOP;
-		break;
-
-	}
-}
-
-void MotorModule::SubModeForward(
-		const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid)
-{
-	switch (motorid)
-	{
-	case 1:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M1_INPIN1, HIGH);
-		bcm2835_gpio_write(M1_INPIN2, LOW);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M1_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_SUBMODE_FORWARD;
-		break;
-
-	case 2:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M2_INPIN1, HIGH);
-		bcm2835_gpio_write(M2_INPIN2, LOW);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M2_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_SUBMODE_FORWARD;
-		break;
-
-	}
-
-}
-
-void MotorModule::SubModeBackward(
-		const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid)
-{
-
-	switch (motorid)
-	{
-	case 1:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M1_INPIN1, LOW);
-		bcm2835_gpio_write(M1_INPIN2, HIGH);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M1_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M1_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m1_subMode = MOTOR_SUBMODE_BACKWARD;
-		break;
-
-	case 2:
-		/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-		m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
-
-#if MOTORS_ENABLED
-		/* SET THE DIRECTION OF MOTOR */
-		bcm2835_gpio_write(M2_INPIN1, LOW);
-		bcm2835_gpio_write(M2_INPIN2, HIGH);
-
-		/* SET THE OUTPUT AVERAGE VOLTAGE */
-#if PWM_ENABLED
-		bcm2835_pwm_set_data(M2_PWM_CHANNEL, 0);
-#else
-		bcm2835_gpio_write(M2_PWMPIN, LOW);
-#endif
-#endif
-
-		/* UPDATE THE STATE */
-		m2_subMode = MOTOR_SUBMODE_BACKWARD;
-		break;
-
-	}
 }
 
 void MotorModule::UpdateReport(mavlink_motor_report_t* p_MotorReport_out)

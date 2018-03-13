@@ -14,7 +14,7 @@
 #define ECHO_PIN 6
 
 /* ECHO TIMEOUT TO ENSURE THE PROGRAM ISN'T STOPPED IF NO RESPONSE IS RECEIVED */
-#define ECHO_TIMEOUT_US 1000000
+#define ECHO_TIMEOUT_US 5000000
 
 /* VALUE FOR CONVERTING TIME TO DISTANCE */
 #define CONVERSION_FACTOR_CM 0.017
@@ -57,14 +57,14 @@ void SonarModule::MeasureDistance()
 	/* START TIMEOUT TIMER */
 	long int startTime_us = Utils::GetTimeus();
 
-	std::cout << "startTime_us = " << startTime_us << std::endl;
+	/* SET FLAG TO LOW */
+	objectDetectedFlag = 0;
 
 	/* SET THE TRIGGER */
 	bcm2835_gpio_write(TRIG_PIN, HIGH);
+	bcm2835_delayMicroseconds(10);
+	bcm2835_gpio_write(TRIG_PIN, LOW);
 	echoStartTime_us = Utils::GetTimeus();
-
-	/* SET FLAG TO LOW */
-	objectDetectedFlag = 0;
 
 	/* WAIT FOR ECHO PIN TO GO HIGH */
 	while (!bcm2835_gpio_lev(ECHO_PIN))
@@ -76,8 +76,6 @@ void SonarModule::MeasureDistance()
 		if ((echoStartTime_us - startTime_us) >= ECHO_TIMEOUT_US)
 		{
 			objectDetectedFlag = 1;
-			std::cout << "echoStartTime_us = " << echoStartTime_us << std::endl;
-			std::cout << "objectDetectedFlag = " << objectDetectedFlag << std::endl;
 			break;
 
 		}
@@ -96,8 +94,6 @@ void SonarModule::MeasureDistance()
 			if ((echoEndTime_us - echoStartTime_us) >= ECHO_TIMEOUT_US)
 			{
 				objectDetectedFlag = 3;
-				std::cout << "echoStartTime_us = " << echoStartTime_us << std::endl;
-				std::cout << "objectDetectedFlag = " << objectDetectedFlag << std::endl;
 				break;
 
 			}
@@ -110,7 +106,7 @@ void SonarModule::MeasureDistance()
 	{
 		/* ASSUME AS OBJECT HAS BEEN DETECTED THAT TIME WONT BE 0 */
 		long int delta_time_us = echoStartTime_us - echoEndTime_us;
-		distance_cm = delta_time_us * CONVERSION_FACTOR_CM;
+		distance_cm = std::abs(delta_time_us * CONVERSION_FACTOR_CM);
 
 	}
 	else
@@ -132,6 +128,5 @@ void SonarModule::Debug()
 {
 	std::cout << "[SONAR]Object detected flag = " << objectDetectedFlag << std::endl;
 	std::cout << "[SONAR]Object Distance = " << distance_cm << std::endl;
-
 
 }
