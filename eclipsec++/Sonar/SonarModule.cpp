@@ -4,86 +4,129 @@
  *  Created on: 21 Feb 2018
  *      Author: G.P Team 1
  */
-
-#include <bcm2835>
+#include "SonarModule.h"
+#include <bcm2835.h>
 #include "../Utils/Utils.h"
+#include <iostream>
 
 /* DEFINE GPIO PIN NUMBERING */
-#define TRIG_GPIO 5
-#define ECHO_GPIO 6
+#define TRIG_PIN 5
+#define ECHO_PIN 6
 
-SonarModule::SonarModule()
-{
-	/* INITIALISE ALL DATA TO 0 */
-    memset(&Report, 0, sizeof(Report));
-    memset(&Config, 0, sizeof(Report));
-    memset(&State, 0, sizeof(Report));
-    memset(&Command, 0, sizeof(Report));
+/* ECHO TIMEOUT TO ENSURE THE PROGRAM ISN'T STOPPED IF NO RESPONSE IS RECEIVED */
+#define ECHO_TIMEOUT_US 5000000
 
-}
+/* VALUE FOR CONVERTING TIME TO DISTANCE */
+#define CONVERSION_FACTOR_CM 0.017
 
 void SonarModule::Start()
 {
-
-	/* SETUP CONFIG */
-	Config.echoPin = ECHO_GPIO;
-	Config.trigPin = TRIG_GPIO;
-
 	/* SETUP THE PINS */
-    bcm2835_gpio_fsel(Config.echoPin , BCM2835_GPIO_FSEL_INPT);
-    bcm2835_gpio_fsel(Config.trigPin, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_OUTP);
 
     /* ENSURE TRIGGER PIN IS LOW */
-    bcm2835_gpio_write(Config.trigPin, LOW);
-}
+    bcm2835_gpio_write(TRIG_PIN, LOW);
 
-void SonarModule::Execute()
-{
-	/* IF NEW COMMAND HAS BEEN PASSED TAKE MEASUREMENT */
-	if (Command.makeNewMeasurement)
-	{
-		/* MEASURE THE TIME BETWEEN PULSE AND ECHO */
-		MeasureEcho();
-	}
-
-	UpdateReport();
+    objectDetectedFlag = 0;
 
 }
 
-void SonarModule::MeasureEcho()
+void SonarModule::Execute(mavlink_sonar_command_t* p_SonarCommand_in,
+		mavlink_sonar_report_t* p_SonarReport_out)
 {
+	/* MEASURE THE TIME BETWEEN PULSE AND ECHO */
+	MeasureDistance();
+
+	UpdateReport(p_SonarReport_out);
+
+	Debug();
+
+}
+
+void SonarModule::Stop()
+{
+    bcm2835_gpio_write(TRIG_PIN, LOW);
+
+    bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
+    bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_INPT);
+
+}
+void SonarModule::MeasureDistance()
+{
+	/* START TIMEOUT TIMER */
+	long int startTime_us = Utils::GetTimeus();
+
+	/* SET FLAG TO LOW */
+	objectDetectedFlag = 0;
+
 	/* SET THE TRIGGER */
-	bcm2835_gpio_write(Config.trigPin, HIGH);
+	bcm2835_gpio_write(TRIG_PIN, HIGH);
+	bcm2835_delayMicroseconds(10);
+	bcm2835_gpio_write(TRIG_PIN, LOW);
+	echoStartTime_us = Utils::GetTimeus();
 
-	/* WAIT FOR THE ECHO PIN TO GO HIGH */
-	/* TODO ADD ERROR CHECKING FOR IF THE PIN NEVER GOES HIGH/COMES LOW */
-	while (!bcm2835_gpio_lev(Config.echoPin))
+	/* WAIT FOR ECHO PIN TO GO HIGH */
+	while (!bcm2835_gpio_lev(ECHO_PIN))
 	{
-		State.echoStartTime_us = Utils::GetTimeus();
+		echoStartTime_us = Utils::GetTimeus();
+		objectDetectedFlag = 2;
+
+		/* BREAK FROM LOOP IF TIMEOUT IS REACHED AND SET DETECTED FLAG LOW */
+		if ((echoStartTime_us - startTime_us) >= ECHO_TIMEOUT_US)
+		{
+			objectDetectedFlag = 1;
+			break;
+
+		}
 	}
 
-	/* MEASURE HOW LONG THE ECHO PIN IS HIGH FOR */
-	while (bcm2835_gpio_lev(Config.echoPin))
+	/* ONLY CHECK FOR PIN GOING LOW IF IT WENT HIGH IN FIRST PLACE */
+	if (objectDetectedFlag == 2)
 	{
-		State.echoEndTime_us= Utils::GetTimeus();
+		/* MEASURE HOW LONG THE ECHO PIN IS HIGH FOR */
+		while (bcm2835_gpio_lev(ECHO_PIN))
+		{
+			objectDetectedFlag = 4;
+			echoEndTime_us= Utils::GetTimeus();
+
+			/* BREAK FROM LOOP IF TIMEOUT IS REACHED AND SET DETECTED FLAG LOW */
+			if ((echoEndTime_us - echoStartTime_us) >= ECHO_TIMEOUT_US)
+			{
+				objectDetectedFlag = 3;
+				break;
+
+			}
+
+		}
 	}
 
-	State.newMeasure = 1;
-
-}
-
-void SonarModule::UpdateReport()
-{
-	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
-	if (State.newMeasure)
+	/* IF A VALID TIME WAS RECEIVED THEN CALCULATE DISTANCE */
+	if (objectDetectedFlag == 4)
 	{
-		/* MEASURE THE NEW DELTA TIME */
-		Report.newMeasureUpdate = 1;
-		Report.echoHighTime_us = State.echoEndTime_us - State.echoEndTime_us;
+		/* ASSUME AS OBJECT HAS BEEN DETECTED THAT TIME WONT BE 0 */
+		long int delta_time_us = echoStartTime_us - echoEndTime_us;
+		distance_cm = std::abs(delta_time_us * CONVERSION_FACTOR_CM);
+
 	}
 	else
 	{
-		/* NO NEW UPDATE TO THE SONAR MEASUREMENT */
-		Report.newMeasureUpdate = 0;
+		distance_cm = 0;
 	}
+
+}
+
+void SonarModule::UpdateReport(mavlink_sonar_report_t* p_SonarReport_out)
+{
+	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
+	p_SonarReport_out->objectDetected_flag = objectDetectedFlag;
+	p_SonarReport_out->objectDistance_cm = distance_cm;
+
+}
+
+void SonarModule::Debug()
+{
+	std::cout << "[SONAR]Object detected flag = " << objectDetectedFlag << std::endl;
+	std::cout << "[SONAR]Object Distance = " << distance_cm << std::endl;
+
 }

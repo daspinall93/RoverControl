@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/main.cpp.o CMakeFiles/SoteriaRover.dir/home/dan/git/SoteriaRover/eclipsec++/MPU6050/I2Cdev.cpp.o  -o SoteriaRover -rdynamic libLibsModule.a -lbcm2835 

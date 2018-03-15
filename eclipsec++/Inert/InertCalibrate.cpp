@@ -7,15 +7,19 @@
 
 #include "InertModule.h"
 #include <unistd.h>
+#include <bcm2835.h>
+
 int main()
 {
+	bcm2835_init();
+
 	InertModule Inert = InertModule();
 
 	Inert.Start();
 
 	sleep(1);
 
-	Inert.Calibrate();
+	Inert.CalibrateMPU();
 
 
 }

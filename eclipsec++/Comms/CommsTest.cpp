@@ -43,6 +43,7 @@ int main()
 		sleep(1);
 		i++;
 	}
+
 	/* TEST DECODING THE MESSAGE RECEIVED FROM COMMS */
 	if (CommsReport.numBytesRec > 0)
 	{

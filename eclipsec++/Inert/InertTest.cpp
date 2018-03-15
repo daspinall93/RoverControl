@@ -26,10 +26,10 @@ int main()
 	bcm2835_delay(100);
 
 	/* EXECUTE INERT TO UPDATE MEASUREMENTS at 10HZ */
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		Inert.Execute(&InertReport);
-		bcm2835_delay(100);
+		bcm2835_delay(2000);
 	}
 
 	bcm2835_close();

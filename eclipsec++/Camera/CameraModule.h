@@ -10,6 +10,16 @@
 
 #include "raspicam/raspicam.h"
 #include <string>
+#include <stdint.h>
+#include <vector>
+
+#define IMAGE_WIDTH 1280
+#define IMAGE_HEIGHT 960
+#define IMAGE_BIT_DEPTH
+
+#define IMAGE_FOLDER "/home/pi/SoteriaRover/"
+
+#define IMAGE_PNG_ENCODE 1
 
 class CameraModule
 {
@@ -21,9 +31,12 @@ public:
 	void Stop();
 
 private:
-	std::string fileFolder = "/home/pi/SoteriaRover/";
+	std::string fileFolder;
 	int16_t imageNum;
-
+	void EncodePNG(const std::string& filename, const unsigned char* image,
+			unsigned width, unsigned height);
+	void EncodePPM(const std::string& filename, const unsigned char* image,
+			unsigned width, unsigned height);
 	void Debug();
 };
 

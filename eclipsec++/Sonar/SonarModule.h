@@ -8,45 +8,35 @@
 #ifndef SONARMODULE_H_
 #define SONARMODULE_H_
 
+#include "../mavlink/SoteriaRover/mavlink.h"
+
 class SonarModule
 {
 public:
-	struct
-	{
-		uint8_t newMeasureUpdate;
-		long int echoHighTime_us;
 
-	} Report;
-
-	struct
-	{
-		uint8_t makeNewMeasurement;
-	} Command;
-
-	SonarModule();
 	void Start();
-	void Execute();
+	void Execute(mavlink_sonar_command_t* p_SonarCommand_in,
+			mavlink_sonar_report_t* p_SonarReport_out);
+	void Stop();
 
 private:
+	long int echoStartTime_us;
+	long int echoEndTime_us;
 
-	struct
-	{
-		uint8_t newMeasure;
-		long int echoStartTime_us;
-		long int echoEndTime_us;
-	} State;
+	float distance_cm;
 
-	struct
-	{
-		uint8_t echoPin;
-		uint8_t trigPin;
 
-	} Config;
+	short int objectDetectedFlag;
+	/* 0 = echo pin wasnt low at beggining
+	 * 1 = echo pin was low but never went high
+	 * 2 = echo pin went high
+	 * 3 = echo pin went high but didn't come low
+	 * 4 = echo pin went high and came low
+	 */
 
-	void MeasureEcho();
-	void UpdateReport();
+	void MeasureDistance();
+	void UpdateReport(mavlink_sonar_report_t* p_SonarReport_out);
+	void Debug();
 };
-
-
 
 #endif /* SONARMODULE_H_ */
