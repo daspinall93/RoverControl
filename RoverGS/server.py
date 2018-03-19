@@ -36,12 +36,13 @@ def main():
 
 #     while True:
     # Receive data and store in log
-    data = serverSocket.recv(1024)
-    logFile.write(str(data))
-
-    # Decode the data
-    mavmsg = mav.decode(data)
-    print(mavmsg.commandid)
+    while True:
+        data = serverSocket.recv(1024)
+        logFile.write(str(data))
+    
+        # Decode the data
+        mavmsg = mav.decode(data)
+        print(mavmsg.commandid)
 
     logFile.close()
     serverSocket.close()
