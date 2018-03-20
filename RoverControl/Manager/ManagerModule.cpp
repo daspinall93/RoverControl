@@ -24,21 +24,28 @@
 #define PWM_PERCENTAGE 70
 
 void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-		SonarModule* p_Sonar_in)
+		SonarModule* p_Sonar_in, CommsModule* p_Comms_in, TelecModule* p_Telec_in)
 {
 	/* ASSIGN OBJECT POINTERS */
 	p_Motor = p_Motor_in;
 	p_Inert = p_Inert_in;
 	p_Sonar = p_Sonar_in;
+	p_Comms = p_Comms_in;
 
     /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
     bcm2835_init();
+
+//    p_Comms->Start();
 
     p_Inert->Start();
 
     p_Motor->Start();
 
     p_Sonar->Start();
+
+    p_Comms->Start();
+
+    p_Telec-> Start();
 
     /* START THE ROVER MODULES TIMER */
     StartTimer();
@@ -54,11 +61,29 @@ void ManagerModule::Execute()
 		/* UPDATE TIMER FLAGS */
     	UpdateTimer();
 
+    	if (tenhzFlag)
+    	{
+    		/* RUN TELEM TO UPDATE THE COMMS COMMAND */
+
+    		/* CHECK COMMS MODULE */
+    		p_Comms->Execute(&CommsCommand, &CommsReport);
+
+    		/* RUN TELEC TO SEE IF COMMAND HAS BEEN ISSUED */
+    		p_Telec->Execute(&TelecReport, &CommsReport);
+
+
+    	}
+
+    	/* DELAY TO STOP FROM RUNNING TOO QUICKLY */
+    	bcm2835_delay(10);
+
 	    /* CHECK FOR COMMAND INPUT */
-	    GetCmdLineInput();
+	    //GetCmdLineInput();
 
 	    /* EXECUTE ANY COMMANDS */
-	    ExecuteCommand();
+	    //ExecuteCommand();
+
+    	Debug();
 
     }
 
@@ -234,8 +259,6 @@ void ManagerModule::ExecuteCommand()
 
 void ManagerModule::Debug()
 {
-
-
 
 }
 

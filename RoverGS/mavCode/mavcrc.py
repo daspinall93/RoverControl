@@ -1,5 +1,5 @@
 '''MAVLink X25 CRC code'''
-from builtins import object
+#from builtins import object
 
 
 class x25crc(object):
@@ -25,6 +25,6 @@ class x25crc(object):
         '''add in some more bytes'''
         accum = self.crc
         import array
-        bytes = array.array('B')
-        bytes.fromstring(buf)
-        self.accumulate(bytes)
+        numBytes = array.array('B')
+        numBytes.fromstring(buf)
+        self.accumulate(numBytes)

@@ -7,7 +7,7 @@
 
 #include "TelecModule.h"
 
-#include <stdio.h>
+#include <iostream>
 
 void TelecModule::Start()
 {
@@ -17,12 +17,13 @@ void TelecModule::Start()
 void TelecModule::Execute(mavlink_telec_report_t* p_TelecReport_out,
 		mavlink_comms_report_t* p_CommsReport_in)
 {
-	/* AS ONLY ACCEPTING ONE TC ON EACH PASS ENSURE THE PMESSAGE BUFFER IS EMPTY */
+	/* AS ONLY ACCEPTING ONE TC ON EACH PASS ENSURE THE MESSAGE BUFFER IS EMPTY */
 	memset(parsedMsgs, 0, MSG_BUFFER_SIZE);
 	numParsedMsgs = 0;
 
 	/* HANDLE TC FIRST OF ALL */
 	/* CHECK IF A NEW DATA FROM GS HAS ARRIVED */
+	std::cout << "[TELEC]Number of bytes received = " << p_CommsReport_in->numBytesRec << std::endl;
 	if (p_CommsReport_in->numBytesRec > 0)
 	{
 		ParseMessages(p_CommsReport_in);
@@ -73,32 +74,16 @@ void TelecModule::UpdateReport(mavlink_telec_report_t* p_TelecReport_out)
 		/* LOOP THROUGH EVERY COMMAND CURRENTLY IN PARSED MESSAGES */
 		switch (parsedMsgs[0].msgid)
 		{
-		case MAVLINK_MSG_ID_LOCOM_COMMAND:
-			p_TelecReport_out->LocomCommand.commandid =
-					mavlink_msg_locom_command_get_commandid(&parsedMsgs[0]);
-			p_TelecReport_out->LocomCommand.duration_ms =
-					mavlink_msg_locom_command_get_duration_ms(&parsedMsgs[0]);
-			p_TelecReport_out->LocomCommand.power_per =
-					mavlink_msg_locom_command_get_power_per(&parsedMsgs[0]);
-			p_TelecReport_out->LocomCommand.newCommand = 1;
-
-			break;
-
 		case MAVLINK_MSG_ID_MOTOR_COMMAND:
-			p_TelecReport_out->MotorCommand.m1_commandid =
-					mavlink_msg_motor_command_get_m1_commandid(&parsedMsgs[0]);
-			p_TelecReport_out->MotorCommand.m1_power_per =
-					mavlink_msg_motor_command_get_m1_power_per(&parsedMsgs[0]);
-			p_TelecReport_out->MotorCommand.m1_newCommand = 1;
-
-			p_TelecReport_out->MotorCommand.m2_commandid =
-					mavlink_msg_motor_command_get_m2_commandid(&parsedMsgs[0]);
-			p_TelecReport_out->MotorCommand.m2_power_per =
-					mavlink_msg_motor_command_get_m2_power_per(&parsedMsgs[0]);
-			p_TelecReport_out->MotorCommand.m2_newCommand = 1;
+			p_TelecReport_out->MotorCommand.commandid =
+					mavlink_msg_motor_command_get_commandid(&parsedMsgs[0]);
+			p_TelecReport_out->MotorCommand.duration_ms =
+					mavlink_msg_motor_command_get_duration_ms(&parsedMsgs[0]);
+			p_TelecReport_out->MotorCommand.power_per =
+					mavlink_msg_motor_command_get_power_per(&parsedMsgs[0]);
+			p_TelecReport_out->MotorCommand.newCommand = 1;
 
 			break;
-
 
 		}
 	}
@@ -112,5 +97,5 @@ void TelecModule::UpdateReport(mavlink_telec_report_t* p_TelecReport_out)
 
 void TelecModule::Debug()
 {
-	printf("[TELEC]Number parsed msg = %d \n", numParsedMsgs);
+	std::cout << "[TELEC]Number parsed msg = " << numParsedMsgs << std::endl;
 }

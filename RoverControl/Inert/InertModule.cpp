@@ -36,8 +36,7 @@
 
 #include "InertModule.h"
 #include "../Utils/Utils.h"
-#include <stdio.h>
-
+#include <iostream>
 /* USED FOR INCLUDING A DELAY */
 #include <bcm2835.h>
 
@@ -63,6 +62,8 @@
  */
 void InertModule::Start()
 {
+
+	std::cout << "[INERT]Starting Module..." << std::endl;
 
 	/* ASSIGN THE ADDRESS OF THE IMU ON I2C BUS */
 	devAddr = MPU6050_DEFAULT_ADDRESS;

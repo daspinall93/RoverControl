@@ -11,6 +11,7 @@
 
 /* INCLUDE EXTERNAL LIBRARIES */
 #include <stdio.h>
+#include <iostream>
 #include <bcm2835.h>
 
 /* PIN CONSTANTS */
@@ -28,6 +29,9 @@
 
 void MotorModule::Start()
 {
+
+	std::cout << "[MOTOR]Starting Module..." << std::endl;
+
 	/* SETUP PIN FUNCTIONS */
 	bcm2835_gpio_fsel(M1_INPIN1, BCM2835_GPIO_FSEL_OUTP); //Basic out function
 	bcm2835_gpio_fsel(M1_INPIN2, BCM2835_GPIO_FSEL_OUTP);

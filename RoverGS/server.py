@@ -2,7 +2,6 @@ import socket
 from mavCode import mavlink
 import datetime
 import argparse
-import tkinter as tk
 import sys
 
 # def send_command(event):
@@ -38,6 +37,7 @@ def main():
     # Receive data and store in log
     while True:
         data = serverSocket.recv(1024)
+        print(sys.getsizeof(data))
         logFile.write(str(data))
     
         # Decode the data

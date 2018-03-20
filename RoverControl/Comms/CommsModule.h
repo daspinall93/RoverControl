@@ -8,8 +8,6 @@
 #ifndef CommsModule_H_
 #define CommsModule_H_
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -22,13 +20,14 @@
 
 
 #define BUFFER_LENGTH 2041
-#define GROUND_IP_ADDRESS "192.168.0.17"
+#define GROUND_IP_ADDRESS "127.0.0.1"
 #define ROVER_SOCKETNO 14550
 #define GROUND_SOCKETNO 14550
 
 class CommsModule
 {
 public:
+	CommsModule(int port, char* ip);
 	void Start();
 	void Execute(const mavlink_comms_command_t* p_CommsCommand_in,
 			mavlink_comms_report_t* p_CommsReport_out);
@@ -41,7 +40,7 @@ private:
 
 	int groundPortNum; //the port on the GS to connect to
 	int roverPortNum;
-	char groundipAddr[100];
+	char* groundipAddr;
 
 	uint8_t bufferArray[BUFFER_LENGTH];
 	int bufferLength;	//length of the buffer currently occupied

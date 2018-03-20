@@ -21,6 +21,8 @@
 
 void SonarModule::Start()
 {
+	std::cout << "[SONAR]Starting Module..." << std::endl;
+
 	/* SETUP THE PINS */
     bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_OUTP);

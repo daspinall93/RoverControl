@@ -12,7 +12,11 @@
 #include "../Motor/MotorModule.h"
 #include "../Inert/InertModule.h"
 #include "../Sonar/SonarModule.h"
+#include "../Comms/CommsModule.h"
+#include "../Comms/CommsInterfaceStructs.h"
 #include "../mavlink/SoteriaRover/mavlink.h"
+#include "../Telec/TelecModule.h"
+#include "../Telec/TelecInterfaceStructs.h"
 
 #include <string.h>
 
@@ -20,7 +24,7 @@ class ManagerModule
 {
 public:
 	void Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-			SonarModule* p_Sonar_in);
+			SonarModule* p_Sonar_in, CommsModule* p_Comms_in, TelecModule* p_Telec_in);
 	void Execute();
 	void Stop();
 
@@ -29,6 +33,9 @@ private:
 	MotorModule* p_Motor;
 	InertModule* p_Inert;
 	SonarModule* p_Sonar;
+	CommsModule* p_Comms;
+	TelecModule* p_Telec;
+
 	/* TIMING COMPONENTS */
 
 	long int milSec;
@@ -41,6 +48,12 @@ private:
 
 	uint8_t endProgram_flag;
 	/* Structures for passing info between modules*/
+
+	mavlink_comms_command_t CommsCommand;
+	mavlink_comms_report_t CommsReport;
+
+	mavlink_telec_report_t TelecReport;
+
 	mavlink_motor_command_t MotorCommand;
 	mavlink_motor_report_t MotorReport;
 

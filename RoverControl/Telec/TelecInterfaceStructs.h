@@ -15,7 +15,6 @@ typedef struct __mavlink_telec_report_t {
 	/* TC */
 	uint8_t newTc;
 	uint8_t msgid;
-	mavlink_locom_command_t LocomCommand;
 	mavlink_motor_command_t MotorCommand;
 	//mavlink_motor_command_t LocalCommand;
 

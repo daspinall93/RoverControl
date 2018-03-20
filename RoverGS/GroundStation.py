@@ -24,7 +24,7 @@ class GroundStation(object):
         self.command.mainloop()
         
     def KeyInput(self, event):
-#         print('Key: ' + event.char)
+        print('Key: ' + event.char)
         keyPress = event.char
         
         buf = ''
@@ -54,7 +54,7 @@ class GroundStation(object):
                 
             elif keyPress.lower() == 'e':
                 message = self.mav.motor_command_encode(
-                    mavlink.MOTOR_COMMAND_TURN_LEFT, 100, 50, 1)
+                    mavlink.MOTOR_COMMAND_STOP, 100, 50, 1)
                 buf = message.pack(self.mav)
                 
             self.lastKey = keyPress.lower()
@@ -64,12 +64,11 @@ class GroundStation(object):
         # Send the message if buffer is filled
         if buf:
             try:
-                
                 sent = self.sock.sendto(buf, (self.ip, self.port))
                 if sent == 0:
                     raise SendError
                 else:
-                    self.logFile.write(buf + '\n')
+                    self.logFile.write(str(buf) + '\n')
             except SendError:
                 print ('Data not sent')
 

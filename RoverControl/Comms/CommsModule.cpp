@@ -6,19 +6,35 @@
  */
 
 #include "CommsModule.h"
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+
+CommsModule::CommsModule(int port, char* ip)
+{
+	groundipAddr = ip;
+	groundPortNum = port;
+	roverPortNum = port;
+	memset((char *) &socketidRover, 0, sizeof(socketidRover));
+	memset((char *) &socketidGround, 0, sizeof(struct sockaddr));
+	bufferLength = 0;
+	bytesReceived = 0;
+	bytesSent = 0;
+	socketNum = 0;
+
+}
 
 void CommsModule::Start()
 {
-	/* CONFIGURE SOCKET PARAMETERS */
-	socketLength = sizeof(struct sockaddr_in);
-	roverPortNum = ROVER_SOCKETNO;
+	std::cout << "[COMMS]Starting Module..." << std::endl;
 
 	/* SETUP THE ROVER SOCKET */
 	//TODO Add error checking to the socket set up process
 	socketNum = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	memset((char *) &socketidRover, 0, sizeof(socketidRover));
 
 	//configure the socket for use
+	memset((char *) &socketidRover, 0, sizeof(socketidRover));
 	socketidRover.sin_family = AF_INET;
 	socketidRover.sin_port = htons(roverPortNum);
 	socketidRover.sin_addr.s_addr = INADDR_ANY;
@@ -26,7 +42,7 @@ void CommsModule::Start()
 	if (bind(socketNum, (struct sockaddr*) &socketidRover,
 			sizeof(struct sockaddr)) == -1)
 	{
-		printf("Error on binding");
+		printf("Error on binding \n");
 	}
 
 	/* ATTEMPT TO MAKE NON-BLOCKING */
@@ -40,12 +56,14 @@ void CommsModule::Start()
 
 	/* GROUND SOCKET CONFIG */
 	groundPortNum = GROUND_SOCKETNO;
-	strcpy(groundipAddr, GROUND_IP_ADDRESS);
 	socketLength = sizeof(struct sockaddr_in);
 
 	socketidGround.sin_family = AF_INET;
 	socketidGround.sin_addr.s_addr = inet_addr(groundipAddr);
 	socketidGround.sin_port = htons(groundPortNum);
+
+	/* SET THE BUFFER ARRAY TO 0 */
+	//memset(bufferArray, 0, sizeof(bufferArray));
 }
 
 void CommsModule::Stop()
@@ -123,8 +141,5 @@ void CommsModule::Debug()
 {
 	printf("[COMMS]bytes sent = %d \n", bytesSent);
 	printf("[COMMS]bytes received = %d \n", bytesReceived);
-//	printf("[COMMS]locom_commandid = %d \n", Report.locomCommand.command_id);
-//	printf("[COMMS]locom_duration = %d \n", Report.locomCommand.duration_ms);
-//	printf("[COMMS]locom_power = %d \n", Report.locomCommand.power);
 }
 

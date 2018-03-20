@@ -9,14 +9,14 @@
 #define COMMS_COMMSINTERFACESTRUCTS_H_
 
 typedef struct __mavlink_comms_report_t {
- int32_t numBytesRec; /*< */
- int32_t numBytesSent; /*< */
- uint8_t msgRecBuffer[2041]; /*< */
+	int32_t numBytesRec; /*< */
+	int32_t numBytesSent; /*< */
+	uint8_t msgRecBuffer[2041]; /*< */
 } mavlink_comms_report_t;
 
 typedef struct __mavlink_comms_command_t {
- int32_t BufferLength; /*< */
- uint8_t msgSentBuffer[2041]; /*< */
+	int32_t BufferLength; /*< */
+	uint8_t msgSentBuffer[2041]; /*< */
 } mavlink_comms_command_t;
 
 #endif /* COMMS_COMMSINTERFACESTRUCTS_H_ */

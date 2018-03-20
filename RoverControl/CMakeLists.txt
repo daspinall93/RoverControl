@@ -12,6 +12,8 @@ add_library(LibsModule
     ${PROJECT_SOURCE_DIR}/Inert/InertModule.cpp   
     ${PROJECT_SOURCE_DIR}/Utils/Utils.cpp
     ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
+    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.cpp
+    ${PROJECT_SOURCE_DIR}/Telec/TelecModule.cpp    
 )
 #for accessing GPIO pins
 target_link_libraries(LibsModule -lbcm2835)
@@ -22,10 +24,13 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/Manager/ManagerModule.h 
     ${PROJECT_SOURCE_DIR}/Motor/MotorModule.h 
     ${PROJECT_SOURCE_DIR}/Sonar/SonarModule.h   
+    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.h
     ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
     ${PROJECT_SOURCE_DIR}/Inert/InertModule.h
     ${PROJECT_SOURCE_DIR}/Utils/Utils.h
     ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.h
+    ${PROJECT_SOURCE_DIR}/Telec/TelecModule.h   
+
 )
 
 #create the xecutable and link it to all the libraries
