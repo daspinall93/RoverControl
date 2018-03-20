@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../mavlink/mavlink_types.h"
 #include "string.h"
-#include "mavlink_types.h"
 
 /*
    If you want MAVLink on a system that is native big-endian,
@@ -80,7 +80,7 @@
 #else
 
     #define MAVLINK_HELPER static inline
-    #include "mavlink_helpers.h"
+    #include "../mavlink/mavlink_helpers.h"
 
 #endif // MAVLINK_SEPARATE_HELPERS
 

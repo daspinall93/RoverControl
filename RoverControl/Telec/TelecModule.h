@@ -25,8 +25,7 @@ public:
 private:
 	char buffer[2041];
 	int bufferLength;
-	mavlink_status_t mavlinkStatus;
-	mavlink_message_t parsedMsgs[MSG_BUFFER_SIZE]; //buffer containing the TC from GS
+	mavlink_message_t parsedMsg; //buffer containing the TC from GS
 	int numParsedMsgs;
 
 	void ParseMessages(const mavlink_comms_report_t* p_CommsReport_in);

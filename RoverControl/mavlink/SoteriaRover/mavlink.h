@@ -28,7 +28,7 @@
 #define MAVLINK_COMMAND_24BIT 1
 #endif
 
-#include "version.h"
-#include "SoteriaRover.h"
+#include "../../mavlink/SoteriaRover/version.h"
+#include "../../mavlink/SoteriaRover/SoteriaRover.h"
 
 #endif // MAVLINK_H

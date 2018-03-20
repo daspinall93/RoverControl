@@ -27,7 +27,7 @@ extern "C" {
 #define MAVLINK_MESSAGE_CRCS {{0, 176, 4, 0, 0, 0}, {3, 119, 14, 0, 0, 0}, {11, 87, 19, 0, 0, 0}, {20, 173, 13, 0, 0, 0}, {21, 103, 1, 0, 0, 0}, {26, 97, 1, 0, 0, 0}, {27, 32, 5, 0, 0, 0}, {28, 216, 1, 0, 0, 0}}
 #endif
 
-#include "../protocol.h"
+#include "../../mavlink/protocol.h"
 
 #define MAVLINK_ENABLED_SOTERIAROVER
 
@@ -86,14 +86,14 @@ typedef enum MOTOR_SUB_MODE
 #endif
 
 // MESSAGE DEFINITIONS
-#include "./mavlink_msg_heartbeat.h"
-#include "./mavlink_msg_motor_command.h"
-#include "./mavlink_msg_motor_report.h"
-#include "./mavlink_msg_inert_report.h"
-#include "./mavlink_msg_inert_command.h"
-#include "./mavlink_msg_sonar_command.h"
-#include "./mavlink_msg_sonar_report.h"
-#include "./mavlink_msg_camera_command.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_heartbeat.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_motor_command.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_motor_report.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_inert_report.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_inert_command.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_sonar_command.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_sonar_report.h"
+#include "../../mavlink/SoteriaRover/mavlink_msg_camera_command.h"
 
 // base include
 
@@ -105,7 +105,7 @@ typedef enum MOTOR_SUB_MODE
 # define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_MOTOR_COMMAND, MAVLINK_MESSAGE_INFO_MOTOR_REPORT, MAVLINK_MESSAGE_INFO_INERT_REPORT, MAVLINK_MESSAGE_INFO_INERT_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_COMMAND, MAVLINK_MESSAGE_INFO_SONAR_REPORT, MAVLINK_MESSAGE_INFO_CAMERA_COMMAND}
 # define MAVLINK_MESSAGE_NAMES {{ "CAMERA_COMMAND", 28 }, { "HEARTBEAT", 0 }, { "INERT_COMMAND", 21 }, { "INERT_REPORT", 20 }, { "MOTOR_COMMAND", 3 }, { "MOTOR_REPORT", 11 }, { "SONAR_COMMAND", 26 }, { "SONAR_REPORT", 27 }}
 # if MAVLINK_COMMAND_24BIT
-#  include "../mavlink_get_info.h"
+#  include "../../mavlink/mavlink_get_info.h"
 # endif
 #endif
 

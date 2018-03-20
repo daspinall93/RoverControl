@@ -1,5 +1,5 @@
 import socket
-from mavCode import mavlink 
+import mavlink 
 import tkinter as tk
 
 class SendError(Exception):

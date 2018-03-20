@@ -10,36 +10,9 @@ from builtins import range
 from builtins import object
 import struct, array, time, json, os, sys, platform
 
+from pymavlink.mavutil import x25crc
+
 import hashlib
-
-class x25crc(object):
-    '''x25 CRC - based on checksum.h from mavlink library'''
-    def __init__(self, buf=None):
-        self.crc = 0xffff
-        if buf is not None:
-            if isinstance(buf, str):
-                self.accumulate_str(buf)
-            else:
-                self.accumulate(buf)
-
-    def accumulate(self, buf):
-        '''add in some more bytes'''
-        accum = self.crc
-        for b in buf:
-            tmp = b ^ (accum & 0xff)
-            tmp = (tmp ^ (tmp<<4)) & 0xFF
-            accum = (accum>>8) ^ (tmp<<8) ^ (tmp<<3) ^ (tmp>>4)
-        self.crc = accum
-
-    def accumulate_str(self, buf):
-        '''add in some more bytes'''
-        accum = self.crc
-        import array
-        numBytes = array.array('B')
-        numBytes.fromstring(buf)
-        self.accumulate(numBytes)
-
-
 
 WIRE_PROTOCOL_VERSION = '2.0'
 DIALECT = 'mavlink'
@@ -225,7 +198,7 @@ class MAVLink_message(object):
         self._msgbuf = self._header.pack(force_mavlink1=force_mavlink1) + self._payload
         crc = x25crc(self._msgbuf[1:])
         if True: # using CRC extra
-            crc.accumulate_str(struct.pack('B', crc_extra))
+            crc.accumulate(struct.pack('B', crc_extra))
         self._crc = crc.crc
         self._msgbuf += struct.pack('<H', self._crc)
         if mav.signing.sign_outgoing and not force_mavlink1:

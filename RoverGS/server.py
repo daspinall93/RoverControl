@@ -1,8 +1,9 @@
 import socket
-from mavCode import mavlink
+import mavlink
 import datetime
 import argparse
 import sys
+from _socket import INADDR_ANY
 
 # def send_command(event):
 #     print("Key pressed: " + event.char)
@@ -16,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Parse the arguments
-    parser.add_argument("ip", help="IP address to transmit to")
+#     parser.add_argument("ip", help="IP address to transmit to")
     parser.add_argument("port", help="Port number to transmit to", type=int)
     args = parser.parse_args()
 
@@ -31,7 +32,7 @@ def main():
     mav = mavlink.MAVLink(logFile)
     
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    serverSocket.bind((args.ip, args.port))
+    serverSocket.bind(("127.0.0.1", args.port))
 
 #     while True:
     # Receive data and store in log

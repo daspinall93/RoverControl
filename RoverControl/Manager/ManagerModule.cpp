@@ -31,6 +31,7 @@ void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
 	p_Inert = p_Inert_in;
 	p_Sonar = p_Sonar_in;
 	p_Comms = p_Comms_in;
+	p_Telec = p_Telec_in;
 
     /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
     bcm2835_init();
