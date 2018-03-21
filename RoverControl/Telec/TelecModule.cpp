@@ -6,12 +6,12 @@
  */
 
 #include "TelecModule.h"
-#include "../mavlink/mavlink_helpers.h"
+#include "../mavlink/SoteriaRover/mavlink.h"
 #include <iostream>
 
 void TelecModule::Start()
 {
-
+	std::cout << "[TELEC]Telec starting ..." << std::endl;
 }
 
 void TelecModule::Execute(mavlink_telec_report_t* p_TelecReport_out,

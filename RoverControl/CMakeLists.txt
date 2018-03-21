@@ -26,6 +26,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/Sonar/SonarModule.h   
     ${PROJECT_SOURCE_DIR}/Comms/CommsModule.h
     ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
+    ${PROJECT_SOURCE_DIR}/mavlink/mavlink_helpers.h
     ${PROJECT_SOURCE_DIR}/Inert/InertModule.h
     ${PROJECT_SOURCE_DIR}/Utils/Utils.h
     ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.h
