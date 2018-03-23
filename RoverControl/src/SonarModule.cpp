@@ -6,7 +6,7 @@
  */
 #include "SonarModule.h"
 #include <bcm2835.h>
-#include "../Utils/Utils.h"
+#include "Utils.h"
 #include <iostream>
 
 /* DEFINE GPIO PIN NUMBERING */

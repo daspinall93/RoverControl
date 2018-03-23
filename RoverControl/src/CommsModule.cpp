@@ -5,7 +5,7 @@
  *      Author: dan
  */
 
-#include "../mavlink/SoteriaRover/mavlink.h"
+#include "mavlink.h"
 #include "CommsModule.h"
 #include <iostream>
 #include <stdio.h>
@@ -117,20 +117,6 @@ void CommsModule::ReceiveData()
 	bytesReceived = recvfrom(socketNum, bufferArray, sizeof(bufferArray), 0,
 			(struct sockaddr*) &socketidGround, (socklen_t*) &socketLength);
 
-	if (bytesReceived != 0)
-	{
-		mavlink_message_t parsedMsg;
-		mavlink_status_t mavlinkStatus;
-		int byteNum = 0;
-		while (mavlink_parse_char(MAVLINK_COMM_0,
-					bufferArray[byteNum], &parsedMsg, &mavlinkStatus)
-					!= 1)
-		{
-			byteNum++;
-		}
-
-		std::cout << "Number of bytes parsed" << byteNum << std::endl;
-	}
 	bufferLength = bytesReceived;
 
 }

@@ -35,7 +35,7 @@
  */
 
 #include "InertModule.h"
-#include "../Utils/Utils.h"
+#include "Utils.h"
 #include <iostream>
 /* USED FOR INCLUDING A DELAY */
 #include <bcm2835.h>

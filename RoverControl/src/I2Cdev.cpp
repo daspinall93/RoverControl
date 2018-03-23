@@ -27,7 +27,7 @@ THE SOFTWARE.
 ===============================================
 */
 
-#include "../Inert/I2Cdev.h"
+#include "I2Cdev.h"
 
 #include <stdio.h>
 

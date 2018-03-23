@@ -16,7 +16,7 @@
 
 #include <stdint.h>
 
-#include "../mavlink/SoteriaRover/mavlink.h"
+#include "mavlink/SoteriaRover/mavlink.h"
 
 class MotorModule{
 public:

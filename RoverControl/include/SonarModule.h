@@ -8,7 +8,7 @@
 #ifndef SONARMODULE_H_
 #define SONARMODULE_H_
 
-#include "../mavlink/SoteriaRover/mavlink.h"
+#include "mavlink/SoteriaRover/mavlink.h"
 
 class SonarModule
 {

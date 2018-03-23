@@ -1,39 +1,22 @@
 cmake_minimum_required(VERSION 3.0)
+
+# Set the project name
 project(SoteriaRover)
 
-#set the project source code directory
-set(PROJECT_SOURCE_DIR ../)
+# Bring all header files in
+include_directories(include include/mavlink/SoteriaRover)
 
-#create the library for the program and include external ones
-add_library(LibsModule
-    ${PROJECT_SOURCE_DIR}/Motor/MotorModule.cpp
-    ${PROJECT_SOURCE_DIR}/Manager/ManagerModule.cpp
-    ${PROJECT_SOURCE_DIR}/Sonar/SonarModule.cpp    
-    ${PROJECT_SOURCE_DIR}/Inert/InertModule.cpp   
-    ${PROJECT_SOURCE_DIR}/Utils/Utils.cpp
-    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.cpp
-    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.cpp
-    ${PROJECT_SOURCE_DIR}/Telec/TelecModule.cpp    
-)
-#for accessing GPIO pins
+# Add all sources files to SOURCES variable
+file(GLOB SOURCES "src/*.cpp")
+
+# Create the library for the program
+add_library(LibsModule SHARED ${SOURCES})
+
+# Add GPIO pin library
 target_link_libraries(LibsModule -lbcm2835)
 
-#set the source files
-set(SOURCES 
-    ${PROJECT_SOURCE_DIR}/SoteriaRover.cpp 
-    ${PROJECT_SOURCE_DIR}/Manager/ManagerModule.h 
-    ${PROJECT_SOURCE_DIR}/Motor/MotorModule.h 
-    ${PROJECT_SOURCE_DIR}/Sonar/SonarModule.h   
-    ${PROJECT_SOURCE_DIR}/Comms/CommsModule.h
-    ${PROJECT_SOURCE_DIR}/mavlink/SoteriaRover/mavlink.h
-    ${PROJECT_SOURCE_DIR}/mavlink/mavlink_helpers.h
-    ${PROJECT_SOURCE_DIR}/Inert/InertModule.h
-    ${PROJECT_SOURCE_DIR}/Utils/Utils.h
-    ${PROJECT_SOURCE_DIR}/Inert/I2Cdev.h
-    ${PROJECT_SOURCE_DIR}/Telec/TelecModule.h   
+# Create the executable and link it to all the libraries
+add_executable(SoteriaRover src/SoteriaRover.cpp)
 
-)
-
-#create the xecutable and link it to all the libraries
-add_executable(SoteriaRover ${SOURCES})
+# Link to the LibsModule library
 target_link_libraries(SoteriaRover LibsModule)

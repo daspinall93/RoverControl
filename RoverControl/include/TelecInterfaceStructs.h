@@ -8,7 +8,7 @@
 #ifndef TELEC_TELECINTERFACESTRUCTS_H_
 #define TELEC_TELECINTERFACESTRUCTS_H_
 
-#include "../mavlink/SoteriaRover/mavlink.h"
+#include "mavlink/SoteriaRover/mavlink.h"
 
 /* CONTAIN THE COMMAND STRUCTURE OF THE APPROPRIATE COMMAND */
 typedef struct __mavlink_telec_report_t {

@@ -7,7 +7,7 @@
 
 /* INCLUDE HEADER FILE */
 #include "MotorModule.h"
-#include "../Utils/Utils.h"
+#include "Utils.h"
 
 /* INCLUDE EXTERNAL LIBRARIES */
 #include <stdio.h>

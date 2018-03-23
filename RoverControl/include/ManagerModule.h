@@ -9,14 +9,14 @@
 #define MANAGER_MANAGERMODULE_H_
 
 /* INCLUDES FOR INTERACTING WITH MODULES */
-#include "../Motor/MotorModule.h"
-#include "../Inert/InertModule.h"
-#include "../Sonar/SonarModule.h"
-#include "../Comms/CommsModule.h"
-#include "../Comms/CommsInterfaceStructs.h"
-#include "../mavlink/SoteriaRover/mavlink.h"
-#include "../Telec/TelecModule.h"
-#include "../Telec/TelecInterfaceStructs.h"
+#include "MotorModule.h"
+#include "InertModule.h"
+#include "SonarModule.h"
+#include "CommsModule.h"
+#include "CommsInterfaceStructs.h"
+#include "mavlink/SoteriaRover/mavlink.h"
+#include "TelecModule.h"
+#include "TelecInterfaceStructs.h"
 
 #include <string.h>
 

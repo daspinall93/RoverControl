@@ -36,6 +36,7 @@ public:
 private:
 	struct sockaddr_in socketidRover, socketidGround;//structures specifying the socket properties
 	int socketNum;	//value to identify socket returned from socket()
+	int socketLength;
 
 	int groundPortNum; //the port on the GS to connect to
 	int roverPortNum;

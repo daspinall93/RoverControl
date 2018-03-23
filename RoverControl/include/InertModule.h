@@ -38,7 +38,7 @@ THE SOFTWARE.
 #define _MPU6050_H_
 
 #include "I2Cdev.h"
-#include "../mavlink/SoteriaRover/mavlink.h"
+#include "mavlink/SoteriaRover/mavlink.h"
 #include "InertModuleConst.h"
 
 class InertModule {

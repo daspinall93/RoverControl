@@ -8,10 +8,10 @@
 #ifndef TELEC_TELECMODULE_H_
 #define TELEC_TELECMODULE_H_
 
-#include "../Comms/CommsModule.h"
-#include "../Motor/MotorModule.h"
-#include "../mavlink/SoteriaRover/mavlink.h"
-#include "../Comms/CommsInterfaceStructs.h"
+#include "CommsModule.h"
+#include "MotorModule.h"
+#include "mavlink/SoteriaRover/mavlink.h"
+#include "CommsInterfaceStructs.h"
 #include "TelecInterfaceStructs.h"
 #define MSG_BUFFER_SIZE 10
 
@@ -23,7 +23,7 @@ public:
 			mavlink_comms_report_t* p_CommsReport_in);
 
 private:
-	char buffer[2041];
+	unsigned char buffer[2041];
 	int bufferLength;
 	mavlink_message_t parsedMsg; //buffer containing the TC from GS
 	int numParsedMsgs;

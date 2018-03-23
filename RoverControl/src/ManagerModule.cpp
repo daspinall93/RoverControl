@@ -70,7 +70,7 @@ void ManagerModule::Execute()
     		p_Comms->Execute(&CommsCommand, &CommsReport);
 
     		/* RUN TELEC TO SEE IF COMMAND HAS BEEN ISSUED */
-    		//p_Telec->Execute(&TelecReport, &CommsReport);
+    		p_Telec->Execute(&TelecReport, &CommsReport);
 
 
     	}
