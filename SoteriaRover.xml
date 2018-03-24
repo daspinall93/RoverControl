@@ -40,19 +40,6 @@
                 <description>Command the rover to turn left</description>
             </entry>
         </enum>
-        <!-- Motor Module enumerations -->
-        <!-- <enum name="MOTOR_SUB_COMMAND_ID">
-            <description>Mode of each motor (i.e m1 and m2)</description>
-            <entry name="MOTOR_COMMAND_STOP" value="0">
-                <description>Command to stop motor</description>
-            </entry>
-            <entry name="MOTOR_COMMAND_FORWARD" value="1">
-                <description>Command for motor to travel forward</description>
-            </entry>
-            <entry name="MOTOR_COMMAND_BACKWARD" value="2">
-                <description>Command for motor to go backward</description>
-            </entry>
-        </enum> -->
         <enum name="MOTOR_SUB_MODE">
             <description>Mode of each motor (i.e m1 and m2)</description>
             <entry name="MOTOR_SUBMODE_STOP" value="0">
@@ -117,9 +104,6 @@
         <message id="27" name="SONAR_REPORT">
             <field name="objectDetected_flag" type="uint8_t"/>
             <field name="objectDistance_cm" type="float"/>
-        </message>
-        <message id="28" name="CAMERA_COMMAND">
-            <field name="newCommand" type="uint8_t"/>
-        </message>               
+        </message>        
     </messages>
 </mavlink>

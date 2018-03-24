@@ -64,15 +64,26 @@ void ManagerModule::Execute()
 
     	if (tenhzFlag)
     	{
-    		/* RUN TELEM TO UPDATE THE COMMS COMMAND */
-
     		/* CHECK COMMS MODULE */
     		p_Comms->Execute(&CommsCommand, &CommsReport);
 
     		/* RUN TELEC TO SEE IF COMMAND HAS BEEN ISSUED */
     		p_Telec->Execute(&TelecReport, &CommsReport);
 
+    		// Pass the commands from telex report to modules
+    		p_Motor->Execute(&TelecReport.MotorCommand, &MotorReport);
+    		p_Inert->Execute(&InertReport);
 
+    		// Run the Telem module to send data back to GS
+
+
+
+
+
+    	}
+    	else if (onehzFlag)
+    	{
+    		p_Sonar->Execute(&TelecReport.SonarCommand, &SonarReport);
     	}
 
     	/* DELAY TO STOP FROM RUNNING TOO QUICKLY */

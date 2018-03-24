@@ -14,7 +14,7 @@
 #define ECHO_PIN 6
 
 /* ECHO TIMEOUT TO ENSURE THE PROGRAM ISN'T STOPPED IF NO RESPONSE IS RECEIVED */
-#define ECHO_TIMEOUT_US 5000000
+#define ECHO_TIMEOUT_US 100000
 
 /* VALUE FOR CONVERTING TIME TO DISTANCE */
 #define CONVERSION_FACTOR_CM 0.017
@@ -23,7 +23,6 @@ void SonarModule::Start()
 {
 	std::cout << "[SONAR]Starting Module..." << std::endl;
 
-	/* SETUP THE PINS */
     bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_OUTP);
 

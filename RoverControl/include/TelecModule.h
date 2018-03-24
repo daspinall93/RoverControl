@@ -25,6 +25,7 @@ public:
 private:
 	unsigned char buffer[2041];
 	int bufferLength;
+	mavlink_status_t mavlinkStatus;
 	mavlink_message_t parsedMsg; //buffer containing the TC from GS
 	int numParsedMsgs;
 

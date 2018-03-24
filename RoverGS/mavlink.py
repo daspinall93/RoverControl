@@ -10,11 +10,10 @@ from builtins import range
 from builtins import object
 import struct, array, time, json, os, sys, platform
 
-from pymavlink.mavutil import x25crc
-
+from mavcrc import x25crc
 import hashlib
 
-WIRE_PROTOCOL_VERSION = '2.0'
+WIRE_PROTOCOL_VERSION = '1.0'
 DIALECT = 'mavlink'
 
 PROTOCOL_MARKER_V1 = 0xFE
@@ -198,7 +197,7 @@ class MAVLink_message(object):
         self._msgbuf = self._header.pack(force_mavlink1=force_mavlink1) + self._payload
         crc = x25crc(self._msgbuf[1:])
         if True: # using CRC extra
-            crc.accumulate(struct.pack('B', crc_extra))
+            crc.accumulate_str(struct.pack('B', crc_extra))
         self._crc = crc.crc
         self._msgbuf += struct.pack('<H', self._crc)
         if mav.signing.sign_outgoing and not force_mavlink1:
@@ -784,11 +783,11 @@ class MAVLink(object):
                 except struct.error as emsg:
                     raise MAVError('Unable to unpack MAVLink CRC: %s' % emsg)
                 crcbuf = msgbuf[1:-(2+signature_len)]
-#                 if True: # using CRC extra
-#                     crcbuf.append(crc_extra)
-#                 crc2 = x25crc(crcbuf)
-#                 if crc != crc2.crc:
-#                     raise MAVError('invalid MAVLink CRC in msgID %u 0x%04x should be 0x%04x' % (msgId, crc, crc2.crc))
+                if True: # using CRC extra
+                    crcbuf.append(crc_extra)
+                crc2 = x25crc(crcbuf)
+                if crc != crc2.crc:
+                    raise MAVError('invalid MAVLink CRC in msgID %u 0x%04x should be 0x%04x' % (msgId, crc, crc2.crc))
 
                 sig_ok = False
                 if signature_len == MAVLINK_SIGNATURE_BLOCK_LEN:

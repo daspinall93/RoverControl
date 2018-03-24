@@ -1,38 +1,3 @@
-// I2Cdev library collection - MPU6050 I2C device class
-// Based on InvenSense MPU-6050 register map document rev. 2.0, 5/19/2011 (RM-MPU-6000A-00)
-// 8/24/2011 by Jeff Rowberg <jeff@rowberg.net>
-// Updates should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib
-//
-// Changelog:
-//     ... - ongoing debug release
-
-// NOTE: THIS IS ONLY A PARIAL RELEASE. THIS DEVICE CLASS IS CURRENTLY UNDERGOING ACTIVE
-// DEVELOPMENT AND IS STILL MISSING SOME IMPORTANT FEATURES. PLEASE KEEP THIS IN MIND IF
-// YOU DECIDE TO USE THIS PARTICULAR CODE FOR ANYTHING.
-
-/* ============================================
- I2Cdev device library code is placed under the MIT license
- Copyright (c) 2012 Jeff Rowberg
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- ===============================================
- */
 
 #include "InertModule.h"
 #include "Utils.h"
@@ -46,20 +11,6 @@
 /* USED FOR TIMING IN HEADING CALCULATIONS */
 #include <time.h>
 
-/** Specific address constructor.
- * @param address I2C address
- * @see MPU6050_DEFAULT_ADDRESS
- * @see MPU6050_ADDRESS_AD0_LOW
- * @see MPU6050_ADDRESS_AD0_HIGH
- */
-
-/** Power on and prepare for general usage.
- * This will activate the device and take it out of sleep mode (which must be done
- * after start-up). This function also sets both the accelerometer and the gyroscope
- * to their most sensitive settings, namely +/- 2g and +/- 250 degrees/sec, and sets
- * the clock source to use the X Gyro for reference, which is slightly better than
- * the default internal clock source.
- */
 void InertModule::Start()
 {
 
@@ -315,21 +266,20 @@ void InertModule::UpdateReport(mavlink_inert_report_t* p_InertReport_out)
 	/* USING THE ACCELEROMETER VALUES FOR RP AND GYRO FOR YAW */
 	p_InertReport_out->pitch_deg = accPitch_deg;
 	p_InertReport_out->roll_deg = accRoll_deg;
-//	p_InertReport_out->yaw_deg = gyroYaw_deg;
-	p_InertReport_out->yaw_deg = 0.0;
+	p_InertReport_out->yaw_deg = gyroYaw_deg;
 
 	/* DETERMINE IF COARSE TILT FLAG SHOULD BE SET HIGH */
-	if (p_InertReport_out->pitch_deg > PITCH_LIMIT_DEG)
+	if (accPitch_deg > PITCH_LIMIT_DEG)
 	{
-		tiltFlag = 1;
+		p_InertReport_out->tiltFlag = 1;
 	}
-	else if (p_InertReport_out->roll_deg > ROLL_LIMIT_DEG)
+	else if (accRoll_deg > ROLL_LIMIT_DEG)
 	{
-		tiltFlag = 1;
+		p_InertReport_out->tiltFlag = 1;
 	}
 	else
 	{
-		tiltFlag = 0;
+		p_InertReport_out->tiltFlag = 0;
 	}
 
 }
@@ -344,6 +294,61 @@ void InertModule::Debug()
 	printf("[INERT]roll = %f, pitch = %f, yaw = %f \n", accRoll_deg,
 			accPitch_deg, gyroYaw_deg);
 }
+
+
+/* MPU 6050 FROM I2CDEV WEBSITE */
+
+// I2Cdev library collection - MPU6050 I2C device class
+// Based on InvenSense MPU-6050 register map document rev. 2.0, 5/19/2011 (RM-MPU-6000A-00)
+// 8/24/2011 by Jeff Rowberg <jeff@rowberg.net>
+// Updates should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib
+//
+// Changelog:
+//     ... - ongoing debug release
+
+// NOTE: THIS IS ONLY A PARIAL RELEASE. THIS DEVICE CLASS IS CURRENTLY UNDERGOING ACTIVE
+// DEVELOPMENT AND IS STILL MISSING SOME IMPORTANT FEATURES. PLEASE KEEP THIS IN MIND IF
+// YOU DECIDE TO USE THIS PARTICULAR CODE FOR ANYTHING.
+
+/* ============================================
+ I2Cdev device library code is placed under the MIT license
+ Copyright (c) 2012 Jeff Rowberg
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ ===============================================
+ */
+
+/** Specific address constructor.
+ * @param address I2C address
+ * @see MPU6050_DEFAULT_ADDRESS
+ * @see MPU6050_ADDRESS_AD0_LOW
+ * @see MPU6050_ADDRESS_AD0_HIGH
+ */
+
+/** Power on and prepare for general usage.
+ * This will activate the device and take it out of sleep mode (which must be done
+ * after start-up). This function also sets both the accelerometer and the gyroscope
+ * to their most sensitive settings, namely +/- 2g and +/- 250 degrees/sec, and sets
+ * the clock source to use the X Gyro for reference, which is slightly better than
+ * the default internal clock source.
+ */
+
 /** Verify the I2C connection.
  * Make sure the device is connected and responds as expected.
  * @return True if connection is valid, false otherwise
