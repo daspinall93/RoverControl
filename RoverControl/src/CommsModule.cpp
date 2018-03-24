@@ -22,6 +22,7 @@ CommsModule::CommsModule(int port, char* ip)
 	bytesReceived = 0;
 	bytesSent = 0;
 	socketNum = 0;
+	socketLength = 0;
 
 }
 
@@ -99,7 +100,7 @@ void CommsModule::TransmitData(const mavlink_comms_command_t* p_CommsCommand_in)
 {
 	/* COPY CONTENTS OF COMMAND BUFFER TO THE SOCKET BUFFER */
 	memset(bufferArray, 0, sizeof(bufferArray));
-	memcpy(bufferArray, &p_CommsCommand_in->msgSentBuffer,
+	memcpy(bufferArray, &p_CommsCommand_in->msgSendBuffer,
 			p_CommsCommand_in->BufferLength);
 
 	bufferLength = p_CommsCommand_in->BufferLength;

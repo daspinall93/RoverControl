@@ -23,17 +23,15 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	/* CONVERT THE PORT NUMBER TO AN INT */
-
-	TelecModule Telec = TelecModule();
 	ManagerModule Manager = ManagerModule();
 	MotorModule Motor = MotorModule();
 	InertModule Inert = InertModule();
 	SonarModule Sonar = SonarModule();
 	CommsModule Comms = CommsModule(atoi(argv[2]), argv[1]);
+	TelecModule Telec = TelecModule();
+	TelemModule Telem = TelemModule();
 
-
-	Manager.Start(&Motor, &Inert, &Sonar, &Comms, &Telec);
+	Manager.Start(&Motor, &Inert, &Sonar, &Comms, &Telec, &Telem);
 
 	Manager.Execute();
 

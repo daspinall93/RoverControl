@@ -71,6 +71,9 @@ void MotorModule::Start()
 	m1_subMode = MOTOR_SUBMODE_STOP;
 	m2_subMode = MOTOR_SUBMODE_STOP;
 	mode = MOTOR_MODE_STOP;
+
+	modeStartTime_ms = Utils::GetTimems();
+
 }
 
 void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,

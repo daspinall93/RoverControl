@@ -17,14 +17,17 @@
 #include "mavlink/SoteriaRover/mavlink.h"
 #include "TelecModule.h"
 #include "TelecInterfaceStructs.h"
+#include "TelemInterfaceStructs.h"
+#include "TelemModule.h"
 
 #include <string.h>
-
+#include <stdint.h>
 class ManagerModule
 {
 public:
 	void Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-			SonarModule* p_Sonar_in, CommsModule* p_Comms_in, TelecModule* p_Telec_in);
+			SonarModule* p_Sonar_in, CommsModule* p_Comms_in,
+			TelecModule* p_Telec_in, TelemModule* p_Telem_in);
 	void Execute();
 	void Stop();
 
@@ -35,6 +38,7 @@ private:
 	SonarModule* p_Sonar;
 	CommsModule* p_Comms;
 	TelecModule* p_Telec;
+	TelemModule* p_Telem;
 
 	/* TIMING COMPONENTS */
 
@@ -47,12 +51,16 @@ private:
 	uint8_t tenhzFlag;
 
 	uint8_t endProgram_flag;
-	/* Structures for passing info between modules*/
 
+	/* Structures for passing info between modules*/
 	mavlink_comms_command_t CommsCommand;
 	mavlink_comms_report_t CommsReport;
 
 	mavlink_telec_report_t TelecReport;
+	mavlink_telec_command_t TelecCommand;
+
+	mavlink_telem_report_t TelemReport;
+	mavlink_telem_command_t TelemCommand;
 
 	mavlink_motor_command_t MotorCommand;
 	mavlink_motor_report_t MotorReport;
@@ -68,6 +76,13 @@ private:
 	void GetCmdLineInput();
 	void ExecuteCommand();
 	void Debug();
+
+	// Functions for preparing input to modules
+	void PrepComms(mavlink_comms_command_t* p_CommsCommand,
+			const mavlink_telem_report_t* p_TelemReport);
+
+	void PrepTelec(mavlink_telec_command_t* p_TelecCommand,
+			const mavlink_telem_report_t* p_CommsReport);
 
 };
 

@@ -20,7 +20,7 @@ class TelecModule
 public:
 	void Start();
 	void Execute(mavlink_telec_report_t* p_TelecReport_out,
-			mavlink_comms_report_t* p_CommsReport_in);
+			mavlink_telec_report_t* p_TelecReport_in);
 
 private:
 	unsigned char buffer[2041];

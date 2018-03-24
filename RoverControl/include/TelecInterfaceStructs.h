@@ -20,6 +20,10 @@ typedef struct __mavlink_telec_report_t {
 	mavlink_inert_command_t InertCommand;
 } mavlink_telec_report_t;
 
-
+typedef struct __mavlink_command_report_t {
+	/* TC */
+	int32_t bufferLength; /*< */
+	uint8_t buffer[2041]; /*< */
+} mavlink_telec_command_t;
 
 #endif /* TELEC_TELECINTERFACESTRUCTS_H_ */
