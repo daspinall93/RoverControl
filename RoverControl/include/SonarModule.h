@@ -15,8 +15,8 @@ class SonarModule
 public:
 
 	void Start();
-	void Execute(mavlink_sonar_command_t* p_SonarCommand_in,
-			mavlink_sonar_report_t* p_SonarReport_out);
+	void Execute(mavlink_sonar_command_t& SonarCommand_in,
+			mavlink_sonar_report_t& SonarReport_out);
 	void Stop();
 
 private:
@@ -35,7 +35,7 @@ private:
 	 */
 
 	void MeasureDistance();
-	void UpdateReport(mavlink_sonar_report_t* p_SonarReport_out);
+	void UpdateReport(mavlink_sonar_report_t& SonarReport_out);
 	void Debug();
 };
 

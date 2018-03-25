@@ -13,7 +13,7 @@ import struct, array, time, json, os, sys, platform
 from mavcrc import x25crc
 import hashlib
 
-WIRE_PROTOCOL_VERSION = '1.0'
+WIRE_PROTOCOL_VERSION = '2.0'
 DIALECT = 'mavlink'
 
 PROTOCOL_MARKER_V1 = 0xFE
@@ -66,7 +66,7 @@ class MAVLink_header(object):
 
     def pack(self, force_mavlink1=False):
         if WIRE_PROTOCOL_VERSION == '2.0' and not force_mavlink1:
-            return struct.pack('<BBBBBBBHB', 254, self.mlen,
+            return struct.pack('<BBBBBBBHB', 253, self.mlen,
                                self.incompat_flags, self.compat_flags,
                                self.seq, self.srcSystem, self.srcComponent,
                                self.msgId&0xFFFF, self.msgId>>16)
@@ -265,7 +265,6 @@ MAVLINK_MSG_ID_INERT_REPORT = 20
 MAVLINK_MSG_ID_INERT_COMMAND = 21
 MAVLINK_MSG_ID_SONAR_COMMAND = 26
 MAVLINK_MSG_ID_SONAR_REPORT = 27
-MAVLINK_MSG_ID_CAMERA_COMMAND = 28
 
 class MAVLink_heartbeat_message(MAVLink_message):
         '''
@@ -275,25 +274,30 @@ class MAVLink_heartbeat_message(MAVLink_message):
         '''
         id = MAVLINK_MSG_ID_HEARTBEAT
         name = 'HEARTBEAT'
-        fieldnames = ['locom_mode', 'motor1_mode', 'motor2_mode', 'mavlink_version']
-        ordered_fieldnames = [ 'locom_mode', 'motor1_mode', 'motor2_mode', 'mavlink_version' ]
-        format = '<BBBB'
-        native_format = bytearray('<BBBB', 'ascii')
-        orders = [0, 1, 2, 3]
-        lengths = [1, 1, 1, 1]
-        array_lengths = [0, 0, 0, 0]
-        crc_extra = 176
+        fieldnames = ['motor_mode', 'modeDur_ms', 'pitch_deg', 'roll_deg', 'yaw_deg', 'tiltFlag', 'objDetFlag', 'objDist_cm', 'mavlink_version']
+        ordered_fieldnames = [ 'pitch_deg', 'roll_deg', 'yaw_deg', 'objDist_cm', 'motor_mode', 'modeDur_ms', 'tiltFlag', 'objDetFlag', 'mavlink_version' ]
+        format = '<ffffBBBBB'
+        native_format = bytearray('<ffffBBBBB', 'ascii')
+        orders = [4, 5, 0, 1, 2, 6, 7, 3, 8]
+        lengths = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+        array_lengths = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        crc_extra = 44
 
-        def __init__(self, locom_mode, motor1_mode, motor2_mode, mavlink_version):
+        def __init__(self, motor_mode, modeDur_ms, pitch_deg, roll_deg, yaw_deg, tiltFlag, objDetFlag, objDist_cm, mavlink_version):
                 MAVLink_message.__init__(self, MAVLink_heartbeat_message.id, MAVLink_heartbeat_message.name)
                 self._fieldnames = MAVLink_heartbeat_message.fieldnames
-                self.locom_mode = locom_mode
-                self.motor1_mode = motor1_mode
-                self.motor2_mode = motor2_mode
+                self.motor_mode = motor_mode
+                self.modeDur_ms = modeDur_ms
+                self.pitch_deg = pitch_deg
+                self.roll_deg = roll_deg
+                self.yaw_deg = yaw_deg
+                self.tiltFlag = tiltFlag
+                self.objDetFlag = objDetFlag
+                self.objDist_cm = objDist_cm
                 self.mavlink_version = mavlink_version
 
         def pack(self, mav, force_mavlink1=False):
-                return MAVLink_message.pack(self, mav, 176, struct.pack('<BBBB', self.locom_mode, self.motor1_mode, self.motor2_mode, self.mavlink_version), force_mavlink1=force_mavlink1)
+                return MAVLink_message.pack(self, mav, 44, struct.pack('<ffffBBBBB', self.pitch_deg, self.roll_deg, self.yaw_deg, self.objDist_cm, self.motor_mode, self.modeDur_ms, self.tiltFlag, self.objDetFlag, self.mavlink_version), force_mavlink1=force_mavlink1)
 
 class MAVLink_motor_command_message(MAVLink_message):
         '''
@@ -445,29 +449,6 @@ class MAVLink_sonar_report_message(MAVLink_message):
         def pack(self, mav, force_mavlink1=False):
                 return MAVLink_message.pack(self, mav, 32, struct.pack('<fB', self.objectDistance_cm, self.objectDetected_flag), force_mavlink1=force_mavlink1)
 
-class MAVLink_camera_command_message(MAVLink_message):
-        '''
-
-        '''
-        id = MAVLINK_MSG_ID_CAMERA_COMMAND
-        name = 'CAMERA_COMMAND'
-        fieldnames = ['newCommand']
-        ordered_fieldnames = [ 'newCommand' ]
-        format = '<B'
-        native_format = bytearray('<B', 'ascii')
-        orders = [0]
-        lengths = [1]
-        array_lengths = [0]
-        crc_extra = 216
-
-        def __init__(self, newCommand):
-                MAVLink_message.__init__(self, MAVLink_camera_command_message.id, MAVLink_camera_command_message.name)
-                self._fieldnames = MAVLink_camera_command_message.fieldnames
-                self.newCommand = newCommand
-
-        def pack(self, mav, force_mavlink1=False):
-                return MAVLink_message.pack(self, mav, 216, struct.pack('<B', self.newCommand), force_mavlink1=force_mavlink1)
-
 
 mavlink_map = {
         MAVLINK_MSG_ID_HEARTBEAT : MAVLink_heartbeat_message,
@@ -477,7 +458,6 @@ mavlink_map = {
         MAVLINK_MSG_ID_INERT_COMMAND : MAVLink_inert_command_message,
         MAVLINK_MSG_ID_SONAR_COMMAND : MAVLink_sonar_command_message,
         MAVLINK_MSG_ID_SONAR_REPORT : MAVLink_sonar_report_message,
-        MAVLINK_MSG_ID_CAMERA_COMMAND : MAVLink_camera_command_message,
 }
 
 class MAVError(Exception):
@@ -544,7 +524,7 @@ class MAVLink(object):
                 self.expected_length = HEADER_LEN_V1+2
                 self.have_prefix_error = False
                 self.robust_parsing = False
-                self.protocol_marker = 254
+                self.protocol_marker = 253
                 self.little_endian = True
                 self.crc_extra = True
                 self.sort_fields = True
@@ -870,33 +850,43 @@ class MAVLink(object):
                 m._crc = crc
                 m._header = MAVLink_header(msgId, incompat_flags, compat_flags, mlen, seq, srcSystem, srcComponent)
                 return m
-        def heartbeat_encode(self, locom_mode, motor1_mode, motor2_mode, mavlink_version=3):
+        def heartbeat_encode(self, motor_mode, modeDur_ms, pitch_deg, roll_deg, yaw_deg, tiltFlag, objDetFlag, objDist_cm, mavlink_version=3):
                 '''
                 The heartbeat message shows that a system is present and responding.
                 Currently contains the locomotion module mode and
                 mavlink version
 
-                locom_mode                : Mode of the locomotion module (uint8_t)
-                motor1_mode               : Mode of motor 1 (uint8_t)
-                motor2_mode               : Mode of motor 2 (uint8_t)
+                motor_mode                : Mode of the locomotion module (uint8_t)
+                modeDur_ms                :  (uint8_t)
+                pitch_deg                 :  (float)
+                roll_deg                  :  (float)
+                yaw_deg                   :  (float)
+                tiltFlag                  :  (uint8_t)
+                objDetFlag                :  (uint8_t)
+                objDist_cm                :  (float)
                 mavlink_version           : MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version (uint8_t)
 
                 '''
-                return MAVLink_heartbeat_message(locom_mode, motor1_mode, motor2_mode, mavlink_version)
+                return MAVLink_heartbeat_message(motor_mode, modeDur_ms, pitch_deg, roll_deg, yaw_deg, tiltFlag, objDetFlag, objDist_cm, mavlink_version)
 
-        def heartbeat_send(self, locom_mode, motor1_mode, motor2_mode, mavlink_version=3, force_mavlink1=False):
+        def heartbeat_send(self, motor_mode, modeDur_ms, pitch_deg, roll_deg, yaw_deg, tiltFlag, objDetFlag, objDist_cm, mavlink_version=3, force_mavlink1=False):
                 '''
                 The heartbeat message shows that a system is present and responding.
                 Currently contains the locomotion module mode and
                 mavlink version
 
-                locom_mode                : Mode of the locomotion module (uint8_t)
-                motor1_mode               : Mode of motor 1 (uint8_t)
-                motor2_mode               : Mode of motor 2 (uint8_t)
+                motor_mode                : Mode of the locomotion module (uint8_t)
+                modeDur_ms                :  (uint8_t)
+                pitch_deg                 :  (float)
+                roll_deg                  :  (float)
+                yaw_deg                   :  (float)
+                tiltFlag                  :  (uint8_t)
+                objDetFlag                :  (uint8_t)
+                objDist_cm                :  (float)
                 mavlink_version           : MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version (uint8_t)
 
                 '''
-                return self.send(self.heartbeat_encode(locom_mode, motor1_mode, motor2_mode, mavlink_version), force_mavlink1=force_mavlink1)
+                return self.send(self.heartbeat_encode(motor_mode, modeDur_ms, pitch_deg, roll_deg, yaw_deg, tiltFlag, objDetFlag, objDist_cm, mavlink_version), force_mavlink1=force_mavlink1)
 
         def motor_command_encode(self, commandid, duration_ms, power_per, newCommand):
                 '''
@@ -1029,22 +1019,4 @@ class MAVLink(object):
 
                 '''
                 return self.send(self.sonar_report_encode(objectDetected_flag, objectDistance_cm), force_mavlink1=force_mavlink1)
-
-        def camera_command_encode(self, newCommand):
-                '''
-                
-
-                newCommand                :  (uint8_t)
-
-                '''
-                return MAVLink_camera_command_message(newCommand)
-
-        def camera_command_send(self, newCommand, force_mavlink1=False):
-                '''
-                
-
-                newCommand                :  (uint8_t)
-
-                '''
-                return self.send(self.camera_command_encode(newCommand), force_mavlink1=force_mavlink1)
 

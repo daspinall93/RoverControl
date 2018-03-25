@@ -20,32 +20,23 @@
 /* FOR CONSTANT PWM */
 #define PWM_PERCENTAGE 70
 
-void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-		SonarModule* p_Sonar_in, CommsModule* p_Comms_in,
-		TelecModule* p_Telec_in, TelemModule* p_Telem_in)
+void ManagerModule::Start(int port, char* ip)
 {
-	/* ASSIGN OBJECT POINTERS */
-	p_Motor = p_Motor_in;
-	p_Inert = p_Inert_in;
-	p_Sonar = p_Sonar_in;
-	p_Comms = p_Comms_in;
-	p_Telec = p_Telec_in;
-	p_Telem = p_Telem_in;
-
-	/* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
+	// Enable the bcm library for pin access
 	bcm2835_init();
 
-	p_Inert->Start();
+	// Start the modules
+	Inert.Start();
 
-	p_Motor->Start();
+	Motor.Start();
 
-	p_Sonar->Start();
+	Sonar.Start();
 
-	p_Comms->Start();
+	Comms.Start(port, ip);
 
-	p_Telec->Start();
+	Telec.Start();
 
-	p_Telem->Start();
+	Telem.Start();
 
 	/* START THE ROVER MODULES TIMER */
 	StartTimer();
@@ -64,30 +55,29 @@ void ManagerModule::Execute()
 		if (tenhzFlag)
 		{
 			// Check to see if any messages have been received and send messages
-			PrepComms(&CommsCommand, &TelemReport);
-			p_Comms->Execute(&CommsCommand, &CommsReport);
+			PrepComms(CommsCommand, TelemReport);
+			Comms.Execute(CommsCommand, CommsReport);
 
 			// Pass the comms report to parse any commands received
-			PrepTelec();
-			p_Telec->Execute(&TelecReport, &CommsReport);
+			PrepTelec(TelecCommand, CommsReport);
+			Telec.Execute(TelecReport, TelecCommand);
 
-			// Pass the commands from telex report to modules
-			p_Motor->Execute(&TelecReport.MotorCommand, &MotorReport);
+			// Pass the commands from telec report to modules
+			Motor.Execute(TelecReport.MotorCommand, MotorReport);
 			TelecReport.MotorCommand.newCommand = 0; // Set new command flag to 0
 
-			p_Inert->Execute(&InertReport);
+			Inert.Execute(InertReport);
 			TelecReport.InertCommand.newCommand = 0; // Set new command flag to 0
 
 			// Run the Telem module to send data back to GS
-			TelemCommand.InertReport = InertReport;
-			TelemCommand.MotorReport = MotorReport;
-			TelemCommand.SonarReport = SonarReport;
-			p_Telem->Execute(&TelemCommand, &TelemReport);
+			PrepTelem(TelemCommand, MotorReport, SonarReport, InertReport);
+			Telem.Execute(TelemCommand, TelemReport);
 
 		}
 		if (onehzFlag)
 		{
-			p_Sonar->Execute(&TelecReport.SonarCommand, &SonarReport);
+
+			Sonar.Execute(TelecReport.SonarCommand, SonarReport);
 			TelecReport.SonarCommand.newCommand = 0; // Set new command flag to 0
 		}
 
@@ -107,11 +97,11 @@ void ManagerModule::Execute()
 void ManagerModule::Stop()
 {
 
-	p_Inert->Stop();
+	Inert.Stop();
 
-	p_Motor->Stop();
+	Motor.Stop();
 
-	p_Sonar->Stop();
+	Sonar.Stop();
 
 	bcm2835_close();
 }
@@ -177,18 +167,34 @@ void ManagerModule::UpdateTimer()
 
 }
 
-void ManagerModule::PrepComms(mavlink_comms_command_t* p_CommsCommand,
-		const mavlink_telem_report_t* p_TelemReport)
+void ManagerModule::PrepComms(mavlink_comms_command_t& CommsCommand,
+		const mavlink_telem_report_t& TelemReport)
 {
-	CommsCommand.BufferLength = TelemReport.bufferLength;
+	// Copy the buffer content from the telem output to the comms input
+	CommsCommand.bufferLength = TelemReport.bufferLength;
 	memcpy(CommsCommand.msgSendBuffer, TelemReport.buffer,
 			TelemReport.bufferLength);
 }
 
-void ManagerModule::PrepTelec(mavlink_telec_command_t* p_TelecCommand,
-		const mavlink_telem_report_t* p_CommsReport)
+void ManagerModule::PrepTelec(mavlink_telec_command_t& TelecCommand,
+		const mavlink_comms_report_t& CommsReport)
 {
+	// Take the buffer produced by comms and pass to Telec input
+	TelecCommand.bufferLength = CommsReport.numBytesRec;
+	memcpy(TelecCommand.buffer, CommsReport.msgRecBuffer,
+			CommsReport.numBytesRec);
 
+}
+
+void ManagerModule::PrepTelem(mavlink_telem_command_t& TelemCommand,
+		const mavlink_motor_report_t& MotorReport,
+		const mavlink_sonar_report_t& SonarReport,
+		const mavlink_inert_report_t& InertReport)
+{
+	// put all the reports from the modules in the telem input
+	TelemCommand.InertReport = InertReport;
+	TelemCommand.MotorReport = MotorReport;
+	TelemCommand.SonarReport = SonarReport;
 }
 void ManagerModule::Debug()
 {

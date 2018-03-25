@@ -57,7 +57,7 @@ void InertModule::Start()
 	}
 }
 
-void InertModule::Execute(mavlink_inert_report_t* p_InertReport_out)
+void InertModule::Execute(mavlink_inert_report_t& InertReport_out)
 {
 	/* UPDATE THE MOVING AVERAGE */
 	UpdateWindow();
@@ -70,7 +70,7 @@ void InertModule::Execute(mavlink_inert_report_t* p_InertReport_out)
 	//UpdateAnglesGyro();
 
 	/* PUT THE SAMPLED VALUES IN THE REPORT */
-	UpdateReport(p_InertReport_out);
+	UpdateReport(InertReport_out);
 
 	Debug();
 }
@@ -261,25 +261,25 @@ void InertModule::Stop()
 	I2Cdev::enable(1);
 }
 
-void InertModule::UpdateReport(mavlink_inert_report_t* p_InertReport_out)
+void InertModule::UpdateReport(mavlink_inert_report_t& InertReport_out)
 {
 	/* USING THE ACCELEROMETER VALUES FOR RP AND GYRO FOR YAW */
-	p_InertReport_out->pitch_deg = accPitch_deg;
-	p_InertReport_out->roll_deg = accRoll_deg;
-	p_InertReport_out->yaw_deg = gyroYaw_deg;
+	InertReport_out.pitch_deg = accPitch_deg;
+	InertReport_out.roll_deg = accRoll_deg;
+	InertReport_out.yaw_deg = gyroYaw_deg;
 
 	/* DETERMINE IF COARSE TILT FLAG SHOULD BE SET HIGH */
 	if (accPitch_deg > PITCH_LIMIT_DEG)
 	{
-		p_InertReport_out->tiltFlag = 1;
+		InertReport_out.tiltFlag = 1;
 	}
 	else if (accRoll_deg > ROLL_LIMIT_DEG)
 	{
-		p_InertReport_out->tiltFlag = 1;
+		InertReport_out.tiltFlag = 1;
 	}
 	else
 	{
-		p_InertReport_out->tiltFlag = 0;
+		InertReport_out.tiltFlag = 0;
 	}
 
 }

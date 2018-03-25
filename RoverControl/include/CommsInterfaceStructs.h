@@ -15,7 +15,7 @@ typedef struct __mavlink_comms_report_t {
 } mavlink_comms_report_t;
 
 typedef struct __mavlink_comms_command_t {
-	int32_t BufferLength; /*< */
+	int32_t bufferLength; /*< */
 	uint8_t msgSendBuffer[2041]; /*< */
 } mavlink_comms_command_t;
 

@@ -33,13 +33,13 @@ void SonarModule::Start()
 
 }
 
-void SonarModule::Execute(mavlink_sonar_command_t* p_SonarCommand_in,
-		mavlink_sonar_report_t* p_SonarReport_out)
+void SonarModule::Execute(mavlink_sonar_command_t& SonarCommand_in,
+		mavlink_sonar_report_t& SonarReport_out)
 {
 	/* MEASURE THE TIME BETWEEN PULSE AND ECHO */
 	MeasureDistance();
 
-	UpdateReport(p_SonarReport_out);
+	UpdateReport(SonarReport_out);
 
 	Debug();
 
@@ -117,11 +117,11 @@ void SonarModule::MeasureDistance()
 
 }
 
-void SonarModule::UpdateReport(mavlink_sonar_report_t* p_SonarReport_out)
+void SonarModule::UpdateReport(mavlink_sonar_report_t& SonarReport_out)
 {
 	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
-	p_SonarReport_out->objectDetected_flag = objectDetectedFlag;
-	p_SonarReport_out->objectDistance_cm = distance_cm;
+	SonarReport_out.objectDetected_flag = objectDetectedFlag;
+	SonarReport_out.objectDistance_cm = distance_cm;
 
 }
 

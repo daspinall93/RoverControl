@@ -8,6 +8,8 @@
 #ifndef INCLUDE_TELEMINTERFACESTRUCTS_H_
 #define INCLUDE_TELEMINTERFACESTRUCTS_H_
 
+#include "mavlink/SoteriaRover/mavlink.h"
+
 typedef struct __mavlink_telem_command_t
 {
 	// Structures to allow for Telem to produce buffer for comms

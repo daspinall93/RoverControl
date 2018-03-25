@@ -15,9 +15,10 @@ class TelemModule
 {
 public:
 	void Start();
-	void Execute(const mavlink_telem_command_t* p_TelemCommand_in,
-			mavlink_telem_report_t* p_TelemReport_out);
+	void Execute(const mavlink_telem_command_t& TelemCommand_in,
+			mavlink_telem_report_t& TelemReport_out);
 	void Stop();
+	void Debug();
 
 private:
 	unsigned char buffer[2041];
@@ -27,8 +28,8 @@ private:
 	mavlink_message_t mavMsg;
 	int msgLength;
 
-	void EncodeTelem(const mavlink_telem_command_t* p_TelemCommand_in);
-	void UpdateReport(mavlink_telem_report_t* p_TelemReport_out);
+	void EncodeTelem(const mavlink_telem_command_t& TelemCommand_in);
+	void UpdateReport(mavlink_telem_report_t& TelemReport_out);
 };
 
 #endif /* INCLUDE_TELEMMODULE_H_ */

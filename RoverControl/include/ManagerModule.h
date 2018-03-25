@@ -25,20 +25,21 @@
 class ManagerModule
 {
 public:
-	void Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-			SonarModule* p_Sonar_in, CommsModule* p_Comms_in,
-			TelecModule* p_Telec_in, TelemModule* p_Telem_in);
+//	void Start(MotorModule& Motor_in, InertModule& Inert_in,
+//			SonarModule& Sonar_in, CommsModule& Comms_in, TelecModule& Telec_in,
+//			TelemModule& Telem_in);
+	void Start(int port, char* ip);
 	void Execute();
 	void Stop();
 
 private:
 	/* OBJECTS TO CALL */
-	MotorModule* p_Motor;
-	InertModule* p_Inert;
-	SonarModule* p_Sonar;
-	CommsModule* p_Comms;
-	TelecModule* p_Telec;
-	TelemModule* p_Telem;
+	MotorModule Motor;
+	InertModule Inert;
+	SonarModule Sonar;
+	CommsModule Comms;
+	TelecModule Telec;
+	TelemModule Telem;
 
 	/* TIMING COMPONENTS */
 
@@ -78,12 +79,16 @@ private:
 	void Debug();
 
 	// Functions for preparing input to modules
-	void PrepComms(mavlink_comms_command_t* p_CommsCommand,
-			const mavlink_telem_report_t* p_TelemReport);
+	void PrepComms(mavlink_comms_command_t& CommsCommand,
+			const mavlink_telem_report_t& TelemReport);
 
-	void PrepTelec(mavlink_telec_command_t* p_TelecCommand,
-			const mavlink_telem_report_t* p_CommsReport);
+	void PrepTelec(mavlink_telec_command_t& TelecCommand,
+			const mavlink_comms_report_t& CommsReport);
 
+	void PrepTelem(mavlink_telem_command_t& TelemCommand,
+			const mavlink_motor_report_t& MotorReport,
+			const mavlink_sonar_report_t& SonarReport,
+			const mavlink_inert_report_t& InertReport);
 };
 
 #endif /* MANAGER_MANAGERMODULE_H_ */
