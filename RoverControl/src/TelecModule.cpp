@@ -5,6 +5,12 @@
  *      Author: dan
  */
 
+/*
+ * Take the received buffer from the comms module and produce
+ * commands for other modules in the TelecReport.xCommand
+ * structure
+ */
+
 #include "TelecModule.h"
 #include "mavlink.h"
 #include <stdint.h>
@@ -15,91 +21,107 @@ void TelecModule::Start()
 	std::cout << "[TELEC]Telec starting ..." << std::endl;
 }
 
-void TelecModule::Execute(mavlink_telec_report_t* p_TelecReport_out,
-		mavlink_comms_report_t* p_CommsReport_in)
+void TelecModule::Execute(mavlink_telec_report_t& TelecReport_out,
+		mavlink_telec_command_t& TelecCommand_in)
 {
-	/* AS ONLY ACCEPTING ONE TC ON EACH PASS ENSURE THE MESSAGE IS EMPTY */
-	memset((char*)&parsedMsg, 0, sizeof(parsedMsg));
+	// Ensure the parsedMsg variable is empty from last pass
+	memset((char*) &parsedMsg, 0, sizeof(parsedMsg));
 	numParsedMsgs = 0;
 
-	/* CHECK IF A NEW DATA FROM GS HAS ARRIVED */
-	memcpy(buffer, p_CommsReport_in->msgRecBuffer, sizeof(buffer));
-	ParseMessages(p_CommsReport_in);
+	// Ensure the local buffer is empty
+	memset(&buffer, 0, sizeof(buffer));
+	bufferLength = 0;
 
+	// Parse the message
+	ParseMessages(TelecCommand_in);
 
-	/* UPDATE REPORT TO INCLUDE THE NEW TC */
-	UpdateReport(p_TelecReport_out);
+	// Update the report with new commands
+	UpdateReport(TelecReport_out);
 
-	/* CALL DEBUG TO SEE STATUS OF THE MODULE */
+	// Print to screen
 	Debug();
 }
 
-void TelecModule::ParseMessages(const mavlink_comms_report_t* p_CommsReport_in)
+void TelecModule::ParseMessages(const mavlink_telec_command_t& TelecCommand_in)
 {
-	/* CHECK IF NEW MESSAGE HAS BEEN RECEIVED */
-//	if (p_CommsReport_in->numBytesRec > 0)
-//	{
+	// Check if anything has been received
+	if (TelecCommand_in.bufferLength > 0)
+	{
 		int byteNum = 0;
-		mavlink_status_t mavlinkStatus;
-		unsigned char localBuffer[2041];
-		memset(localBuffer,0,2041);
 
-		/* ONLY ACCEPT THE FIRST TC IN THE BUFFER */
-		mavlink_msg_motor_command_pack(1, 1, &parsedMsg, MOTOR_COMMAND_STOP, 1000, 50, 1);
-		byteNum = mavlink_msg_to_send_buffer(
-				localBuffer, &parsedMsg);
-
-//		std::cout << unsigned(mavlink_parse_char(MAVLINK_COMM_0,localBuffer[0], &parsedMsg, &mavlinkStatus)) << std::endl;
-		while (mavlink_parse_char(MAVLINK_COMM_0, localBuffer[byteNum], &parsedMsg, &mavlinkStatus) == 0)
+		// Loop through buffer until either a message is parsed or the end of the buffer is reached
+		while (byteNum <= TelecCommand_in.bufferLength)
 		{
+			// Parse has finished in function returns 1
+			if (mavlink_parse_char(MAVLINK_COMM_0, TelecCommand_in.buffer[byteNum], &parsedMsg,
+					&mavlinkStatus) == 1)
+			{
+				numParsedMsgs++;
+				break;
+				//std::cout << mavlinkStatus.parse_state << std::endl;
+			}
 			byteNum++;
-			if (byteNum > 2000) break;
 
 		}
 
-		numParsedMsgs++;
-//	}
+	}
 
 }
 
-void TelecModule::UpdateReport(mavlink_telec_report_t* p_TelecReport_out)
+void TelecModule::UpdateReport(mavlink_telec_report_t& TelecReport_out)
 {
 	/* DETERMINE IF NEW TC IS AVAILABLE */
 	if (numParsedMsgs > 0)
 	{
-		p_TelecReport_out->newTc = 1;
+		// Notify that new command has been received
+		TelecReport_out.newTc = 1;
 
-		/* SET THE MESSAGE ID SO THAT NEW COMMAND IS KNOWN */
-		p_TelecReport_out->msgid = parsedMsg.msgid;
-		std::cout << "msgid = "<< mavlink_msg_motor_command_get_commandid(&parsedMsg) << std::endl;
+		/* SET THE MESSAGE ID SO THAT TYPE OF NEW COMMAND IS KNOWN */
+		TelecReport_out.msgid = parsedMsg.msgid;
 
-
-		/* LOOP THROUGH EVERY COMMAND CURRENTLY IN PARSED MESSAGES */
+		// Get the command from the parsedMsg and update the report
 		switch (parsedMsg.msgid)
 		{
 		case MAVLINK_MSG_ID_MOTOR_COMMAND:
-			p_TelecReport_out->MotorCommand.commandid =
+			TelecReport_out.MotorCommand.commandid =
 					mavlink_msg_motor_command_get_commandid(&parsedMsg);
-			p_TelecReport_out->MotorCommand.duration_ms =
+			TelecReport_out.MotorCommand.duration_ms =
 					mavlink_msg_motor_command_get_duration_ms(&parsedMsg);
-			p_TelecReport_out->MotorCommand.power_per =
+			TelecReport_out.MotorCommand.power_per =
 					mavlink_msg_motor_command_get_power_per(&parsedMsg);
-			p_TelecReport_out->MotorCommand.newCommand = 1;
+			TelecReport_out.MotorCommand.newCommand = 1;
 
-			std::cout << mavlink_msg_motor_command_get_commandid(&parsedMsg) << std::endl;
 			break;
 
+		case MAVLINK_MSG_ID_SONAR_COMMAND:
+			TelecReport_out.SonarCommand.newCommand =
+					mavlink_msg_sonar_command_get_newCommand(&parsedMsg);
+
+			break;
+
+		case MAVLINK_MSG_ID_INERT_COMMAND:
+			TelecReport_out.InertCommand.newCommand =
+					mavlink_msg_inert_command_get_newCommand(&parsedMsg);
+
+			break;
+
+		default:
+
+			break;
 		}
 	}
 	else
 	{
-		p_TelecReport_out->newTc = 0;
+		TelecReport_out.newTc = 0;
 	}
-
 
 }
 
 void TelecModule::Debug()
 {
-	std::cout << "[TELEC]Number parsed msg = " << numParsedMsgs << std::endl;
+	std::cout << "[TELEC]Number of parsed messages = " << numParsedMsgs << std::endl;
+	if (numParsedMsgs > 0)
+	{
+		std::cout << "[TELEC]Message ID = " << parsedMsg.msgid << std::endl;
+	}
 }

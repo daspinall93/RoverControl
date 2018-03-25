@@ -71,44 +71,47 @@ void MotorModule::Start()
 	m1_subMode = MOTOR_SUBMODE_STOP;
 	m2_subMode = MOTOR_SUBMODE_STOP;
 	mode = MOTOR_MODE_STOP;
+
+	modeStartTime_ms = Utils::GetTimems();
+
 }
 
-void MotorModule::Execute(mavlink_motor_command_t* p_MotorCommand_in,
-		mavlink_motor_report_t* p_MotorReport_out)
+void MotorModule::Execute(mavlink_motor_command_t& MotorCommand_in,
+		mavlink_motor_report_t& MotorReport_out)
 {
 	//Debug();
 
 	/* CHECK IF NEW COMMAND HAS BEEN ISSUED */
-	if (p_MotorCommand_in->newCommand)
+	if (MotorCommand_in.newCommand)
 	{
 		/* SWITCH ON THE COMMAND ID */
-		switch (p_MotorCommand_in->commandid)
+		switch (MotorCommand_in.commandid)
 		{
 		case MOTOR_COMMAND_STOP:
 
 			/* SET THE SUB MODE FOR EACH MOTOR */
-			ModeStop(p_MotorCommand_in);
+			ModeStop(MotorCommand_in);
 
 			break;
 
 		case MOTOR_COMMAND_STRAIGHT_FORWARD:
 
-			ModeStraightForward(p_MotorCommand_in);
+			ModeStraightForward(MotorCommand_in);
 			break;
 
 		case MOTOR_COMMAND_STRAIGHT_BACKWARD:
 
-			ModeStraightBackward(p_MotorCommand_in);
+			ModeStraightBackward(MotorCommand_in);
 			break;
 
 		case MOTOR_COMMAND_TURN_LEFT:
 
-			ModeTurnLeft(p_MotorCommand_in);
+			ModeTurnLeft(MotorCommand_in);
 			break;
 
 		case MOTOR_COMMAND_TURN_RIGHT:
 
-			ModeTurnRight(p_MotorCommand_in);
+			ModeTurnRight(MotorCommand_in);
 			break;
 
 		default:
@@ -157,7 +160,7 @@ void MotorModule::Stop()
 
 }
 
-void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)
+void MotorModule::ModeStop(mavlink_motor_command_t& MotorCommand_in)
 {
 	/* M1 = STOP
 	 * M2 = STOP
@@ -198,7 +201,7 @@ void MotorModule::ModeStop(mavlink_motor_command_t* p_MotorCommand_in)
 }
 
 void MotorModule::ModeStraightForward(
-		mavlink_motor_command_t* p_MotorCommand_in)
+		mavlink_motor_command_t& MotorCommand_in)
 {
 	/* M1 = FORWARD
 	 * M2 = FORWARD
@@ -206,7 +209,7 @@ void MotorModule::ModeStraightForward(
 
 	/* UPDATE M1 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M1_INPIN1, HIGH);
@@ -224,7 +227,7 @@ void MotorModule::ModeStraightForward(
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M2_INPIN1, HIGH);
@@ -245,7 +248,7 @@ void MotorModule::ModeStraightForward(
 }
 
 void MotorModule::ModeStraightBackward(
-		mavlink_motor_command_t* p_MotorCommand_in)
+		mavlink_motor_command_t& MotorCommand_in)
 {
 	/* M1 = BACKWARD
 	 * M2 = BACKWARD
@@ -253,7 +256,7 @@ void MotorModule::ModeStraightBackward(
 
 	/* UPDATE M1 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M1_INPIN1, LOW);
@@ -271,7 +274,7 @@ void MotorModule::ModeStraightBackward(
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M2_INPIN1, LOW);
@@ -291,7 +294,7 @@ void MotorModule::ModeStraightBackward(
 	mode = MOTOR_MODE_STRAIGHT_BACKWARD;
 }
 
-void MotorModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in)
+void MotorModule::ModeTurnRight(mavlink_motor_command_t& MotorCommand_in)
 {
 	/* M1 = FORWARD
 	 * M2 = BACKWARD
@@ -299,7 +302,7 @@ void MotorModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in)
 
 	/* UPDATE M1 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M1_INPIN1, HIGH);
@@ -317,7 +320,7 @@ void MotorModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in)
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M2_INPIN1, LOW);
@@ -337,7 +340,7 @@ void MotorModule::ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in)
 	mode = MOTOR_MODE_TURN_RIGHT;
 }
 
-void MotorModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in)
+void MotorModule::ModeTurnLeft(mavlink_motor_command_t& MotorCommand_in)
 {
 	/* M1 = BACKWARD
 	 * M2 = FORWARD
@@ -345,7 +348,7 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in)
 
 	/* UPDATE M1 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m1_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M1_INPIN1, LOW);
@@ -363,7 +366,7 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in)
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(p_MotorCommand_in->power_per);
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M2_INPIN1, HIGH);
@@ -383,16 +386,16 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in)
 	mode = MOTOR_MODE_TURN_LEFT;
 }
 
-void MotorModule::UpdateReport(mavlink_motor_report_t* p_MotorReport_out)
+void MotorModule::UpdateReport(mavlink_motor_report_t& MotorReport_out)
 {
-	p_MotorReport_out->m1_sub_mode = m1_subMode;
-	p_MotorReport_out->m1_pwmInput = m1_pwmInput;
+	MotorReport_out.m1_sub_mode = m1_subMode;
+	MotorReport_out.m1_pwmInput = m1_pwmInput;
 
-	p_MotorReport_out->m2_sub_mode = m2_subMode;
-	p_MotorReport_out->m2_pwmInput = m2_pwmInput;
+	MotorReport_out.m2_sub_mode = m2_subMode;
+	MotorReport_out.m2_pwmInput = m2_pwmInput;
 
-	p_MotorReport_out->mode = mode;
-	p_MotorReport_out->modeElapsedTime_ms = modeElapsedTime_ms;
+	MotorReport_out.mode = mode;
+	MotorReport_out.modeElapsedTime_ms = modeElapsedTime_ms;
 }
 
 void MotorModule::Debug()

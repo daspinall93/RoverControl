@@ -21,7 +21,7 @@
 class MotorModule{
 public:
     void Start();
-    void Execute(mavlink_motor_command_t* p_MotorCommand_in, mavlink_motor_report_t* p_MotorReport_out);
+    void Execute(mavlink_motor_command_t& MotorCommand_in, mavlink_motor_report_t& MotorReport_out);
     void Stop();
 
 private:
@@ -47,18 +47,18 @@ private:
 	uint32_t pwmRange;
 
 	/* MODULE MODES */
-	void ModeStop(mavlink_motor_command_t* p_MotorCommand_in);
-	void ModeStraightForward(mavlink_motor_command_t* p_MotorCommand_in);
-	void ModeStraightBackward(mavlink_motor_command_t* p_MotorCommand_in);
-	void ModeTurnRight(mavlink_motor_command_t* p_MotorCommand_in);
-	void ModeTurnLeft(mavlink_motor_command_t* p_MotorCommand_in);
+	void ModeStop(mavlink_motor_command_t& MotorCommand_in);
+	void ModeStraightForward(mavlink_motor_command_t& MotorCommand_in);
+	void ModeStraightBackward(mavlink_motor_command_t& MotorCommand_in);
+	void ModeTurnRight(mavlink_motor_command_t& MotorCommand_in);
+	void ModeTurnLeft(mavlink_motor_command_t& MotorCommand_in);
 
 	/* MODES FOR EACH MOTOR */
-    void SubModeStop(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
-    void SubModeForward(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
-    void SubModeBackward(const mavlink_motor_command_t* p_MotorCommand_in, uint8_t motorid);
+    void SubModeStop(const mavlink_motor_command_t& MotorCommand_in, uint8_t motorid);
+    void SubModeForward(const mavlink_motor_command_t& MotorCommand_in, uint8_t motorid);
+    void SubModeBackward(const mavlink_motor_command_t& MotorCommand_in, uint8_t motorid);
 
-    void UpdateReport(mavlink_motor_report_t* p_MotorReport_out);
+    void UpdateReport(mavlink_motor_report_t& MotorReport_out);
     void Debug();
     uint32_t CalculatepwmData(uint32_t power_per);
 

@@ -11,23 +11,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-CommsModule::CommsModule(int port, char* ip)
+void CommsModule::Start(int port, char* ip)
 {
+	std::cout << "[COMMS]Starting Module..." << std::endl;
+
+	// Set ip address to send messages to and port to receive on and send to
 	groundipAddr = ip;
 	groundPortNum = port;
 	roverPortNum = port;
-	memset((char *) &socketidRover, 0, sizeof(socketidRover));
-	memset((char *) &socketidGround, 0, sizeof(struct sockaddr));
-	bufferLength = 0;
-	bytesReceived = 0;
-	bytesSent = 0;
-	socketNum = 0;
-
-}
-
-void CommsModule::Start()
-{
-	std::cout << "[COMMS]Starting Module..." << std::endl;
 
 	/* SETUP THE ROVER SOCKET */
 	//TODO Add error checking to the socket set up process
@@ -55,9 +46,7 @@ void CommsModule::Start()
 	memset((char *) &socketidGround, 0, sizeof(struct sockaddr));
 
 	/* GROUND SOCKET CONFIG */
-	groundPortNum = GROUND_SOCKETNO;
 	socketLength = sizeof(struct sockaddr_in);
-
 	socketidGround.sin_family = AF_INET;
 	socketidGround.sin_addr.s_addr = inet_addr(groundipAddr);
 	socketidGround.sin_port = htons(groundPortNum);
@@ -72,14 +61,14 @@ void CommsModule::Stop()
 	close(socketNum);
 }
 
-void CommsModule::Execute(const mavlink_comms_command_t* p_CommsCommand_in,
-		mavlink_comms_report_t* p_CommsReport_out)
+void CommsModule::Execute(const mavlink_comms_command_t& CommsCommand_in,
+		mavlink_comms_report_t& CommsReport_out)
 {
 	/* CHECK IF SEND BUFFER HAS ANYTHING IN IT */
-	if (p_CommsCommand_in->BufferLength > 0)
+	if (CommsCommand_in.bufferLength > 0)
 	{
 		/* SEND CONTENTS OF THE BUFFER TO GS */
-		TransmitData(p_CommsCommand_in);
+		TransmitData(CommsCommand_in);
 	}
 	else
 	{
@@ -90,21 +79,15 @@ void CommsModule::Execute(const mavlink_comms_command_t* p_CommsCommand_in,
 	/* CHECK IF ANY DATA HAS BEEN RECEIVED */
 	ReceiveData();
 
-	UpdateReport(p_CommsReport_out);
+	UpdateReport(CommsReport_out);
 
 	Debug();
 }
 
-void CommsModule::TransmitData(const mavlink_comms_command_t* p_CommsCommand_in)
+void CommsModule::TransmitData(const mavlink_comms_command_t& CommsCommand_in)
 {
-	/* COPY CONTENTS OF COMMAND BUFFER TO THE SOCKET BUFFER */
-	memset(bufferArray, 0, sizeof(bufferArray));
-	memcpy(bufferArray, &p_CommsCommand_in->msgSentBuffer,
-			p_CommsCommand_in->BufferLength);
 
-	bufferLength = p_CommsCommand_in->BufferLength;
-
-	bytesSent = sendto(socketNum, bufferArray, bufferLength, 0,
+	bytesSent = sendto(socketNum, CommsCommand_in.msgSendBuffer, CommsCommand_in.bufferLength, 0,
 			(struct sockaddr*) &socketidGround, sizeof(struct sockaddr_in));
 
 }
@@ -121,20 +104,20 @@ void CommsModule::ReceiveData()
 
 }
 
-void CommsModule::UpdateReport(mavlink_comms_report_t* p_CommsReport_out)
+void CommsModule::UpdateReport(mavlink_comms_report_t& CommsReport_out)
 {
 	if (bytesReceived == -1)
 	{
 		/* SET BUFFER TO 0 WHEN NO BYTES WERE RECEIVED */
-		memset(p_CommsReport_out->msgRecBuffer, 0, BUFFER_LENGTH);
+		memset(CommsReport_out.msgRecBuffer, 0, BUFFER_LENGTH);
 	}
 	else
 	{
 		/* COPY CONTENTS OF BUFFER TO THE REPORT */
-		memcpy(p_CommsReport_out->msgRecBuffer, &bufferArray, bytesReceived);
+		memcpy(CommsReport_out.msgRecBuffer, &bufferArray, bytesReceived);
 	}
-	p_CommsReport_out->numBytesRec = bytesReceived;
-	p_CommsReport_out->numBytesSent = bytesSent;
+	CommsReport_out.numBytesRec = bytesReceived;
+	CommsReport_out.numBytesSent = bytesSent;
 }
 
 void CommsModule::Debug()

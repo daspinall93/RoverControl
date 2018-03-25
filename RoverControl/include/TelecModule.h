@@ -19,17 +19,18 @@ class TelecModule
 {
 public:
 	void Start();
-	void Execute(mavlink_telec_report_t* p_TelecReport_out,
-			mavlink_comms_report_t* p_CommsReport_in);
+	void Execute(mavlink_telec_report_t& TelecReport_out,
+			mavlink_telec_command_t& TelecReport_in);
 
 private:
 	unsigned char buffer[2041];
 	int bufferLength;
+	mavlink_status_t mavlinkStatus;
 	mavlink_message_t parsedMsg; //buffer containing the TC from GS
 	int numParsedMsgs;
 
-	void ParseMessages(const mavlink_comms_report_t* p_CommsReport_in);
-	void UpdateReport(mavlink_telec_report_t* p_TelecReport_out);
+	void ParseMessages(const mavlink_telec_command_t& TelecReport_in);
+	void UpdateReport(mavlink_telec_report_t& TelecReport_out);
 	void EncodeMessages();
 
 	void Debug();

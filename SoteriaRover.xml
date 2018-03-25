@@ -40,19 +40,6 @@
                 <description>Command the rover to turn left</description>
             </entry>
         </enum>
-        <!-- Motor Module enumerations -->
-        <!-- <enum name="MOTOR_SUB_COMMAND_ID">
-            <description>Mode of each motor (i.e m1 and m2)</description>
-            <entry name="MOTOR_COMMAND_STOP" value="0">
-                <description>Command to stop motor</description>
-            </entry>
-            <entry name="MOTOR_COMMAND_FORWARD" value="1">
-                <description>Command for motor to travel forward</description>
-            </entry>
-            <entry name="MOTOR_COMMAND_BACKWARD" value="2">
-                <description>Command for motor to go backward</description>
-            </entry>
-        </enum> -->
         <enum name="MOTOR_SUB_MODE">
             <description>Mode of each motor (i.e m1 and m2)</description>
             <entry name="MOTOR_SUBMODE_STOP" value="0">
@@ -70,9 +57,14 @@
         <!-- HKTM packets -->
         <message id="0" name="HEARTBEAT">
             <description>The heartbeat message shows that a system is present and responding. Currently contains the locomotion module mode and mavlink version</description>
-            <field enum="MOTOR_MODE" name="locom_mode" type="uint8_t">Mode of the locomotion module</field>
-            <field enum="roll_deg" name="motor1_mode" type="uint8_t">Mode of motor 1</field>
-            <field enum="pitch_deg" name="motor2_mode" type="uint8_t">Mode of motor 2</field>
+            <field enum="MOTOR_MODE" name="motor_mode" type="uint8_t">Mode of the locomotion module</field>
+            <field name="modeDur_ms" type="uint8_t"></field>            
+            <field name="pitch_deg" type="float"></field>
+            <field name="roll_deg" type="float"></field>
+            <field name="yaw_deg" type="float"></field>
+            <field name="tiltFlag" type="uint8_t"></field>
+            <field name="objDetFlag" type="uint8_t"></field>
+            <field name="objDist_cm" type="float"></field>
             <field name="mavlink_version" type="uint8_t_mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
         </message>
         <!-- Locomotion module commands, reports, state and config -->
@@ -117,9 +109,6 @@
         <message id="27" name="SONAR_REPORT">
             <field name="objectDetected_flag" type="uint8_t"/>
             <field name="objectDistance_cm" type="float"/>
-        </message>
-        <message id="28" name="CAMERA_COMMAND">
-            <field name="newCommand" type="uint8_t"/>
-        </message>               
+        </message>        
     </messages>
 </mavlink>

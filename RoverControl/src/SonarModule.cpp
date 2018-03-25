@@ -14,7 +14,7 @@
 #define ECHO_PIN 6
 
 /* ECHO TIMEOUT TO ENSURE THE PROGRAM ISN'T STOPPED IF NO RESPONSE IS RECEIVED */
-#define ECHO_TIMEOUT_US 5000000
+#define ECHO_TIMEOUT_US 100000
 
 /* VALUE FOR CONVERTING TIME TO DISTANCE */
 #define CONVERSION_FACTOR_CM 0.017
@@ -23,7 +23,6 @@ void SonarModule::Start()
 {
 	std::cout << "[SONAR]Starting Module..." << std::endl;
 
-	/* SETUP THE PINS */
     bcm2835_gpio_fsel(ECHO_PIN , BCM2835_GPIO_FSEL_INPT);
     bcm2835_gpio_fsel(TRIG_PIN, BCM2835_GPIO_FSEL_OUTP);
 
@@ -34,13 +33,13 @@ void SonarModule::Start()
 
 }
 
-void SonarModule::Execute(mavlink_sonar_command_t* p_SonarCommand_in,
-		mavlink_sonar_report_t* p_SonarReport_out)
+void SonarModule::Execute(mavlink_sonar_command_t& SonarCommand_in,
+		mavlink_sonar_report_t& SonarReport_out)
 {
 	/* MEASURE THE TIME BETWEEN PULSE AND ECHO */
 	MeasureDistance();
 
-	UpdateReport(p_SonarReport_out);
+	UpdateReport(SonarReport_out);
 
 	Debug();
 
@@ -118,11 +117,11 @@ void SonarModule::MeasureDistance()
 
 }
 
-void SonarModule::UpdateReport(mavlink_sonar_report_t* p_SonarReport_out)
+void SonarModule::UpdateReport(mavlink_sonar_report_t& SonarReport_out)
 {
 	/* UPDATE REPORT DEPENDING ON IF NEW MEASURE HAS BEEN MADE */
-	p_SonarReport_out->objectDetected_flag = objectDetectedFlag;
-	p_SonarReport_out->objectDistance_cm = distance_cm;
+	SonarReport_out.objectDetected_flag = objectDetectedFlag;
+	SonarReport_out.objectDistance_cm = distance_cm;
 
 }
 

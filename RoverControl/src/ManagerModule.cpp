@@ -12,9 +12,6 @@
 #include <bcm2835.h>
 #include <time.h>
 
-/* INCLUDED FOR THE COMMAND INTERPRITATION FUNCTION */
-//#include "../mavlink/SoteriaRover/mavlink.h"
-
 /* INCLUDES FOR THREADING TO GET INPUT FROM CMD LINE */
 #include <iostream>
 #include <stdio.h>
@@ -23,33 +20,26 @@
 /* FOR CONSTANT PWM */
 #define PWM_PERCENTAGE 70
 
-void ManagerModule::Start(MotorModule* p_Motor_in, InertModule* p_Inert_in,
-		SonarModule* p_Sonar_in, CommsModule* p_Comms_in, TelecModule* p_Telec_in)
+void ManagerModule::Start(int port, char* ip)
 {
-	/* ASSIGN OBJECT POINTERS */
-	p_Motor = p_Motor_in;
-	p_Inert = p_Inert_in;
-	p_Sonar = p_Sonar_in;
-	p_Comms = p_Comms_in;
-	p_Telec = p_Telec_in;
+	// Enable the bcm library for pin access
+	bcm2835_init();
 
-    /* NEED TO ENBALE BCM2835 LIBRARY FOR USING PI PINS */
-    bcm2835_init();
+	// Start the modules
+	Inert.Start();
 
-//    p_Comms->Start();
+	Motor.Start();
 
-    p_Inert->Start();
+	Sonar.Start();
 
-    p_Motor->Start();
+	Comms.Start(port, ip);
 
-    p_Sonar->Start();
+	Telec.Start();
 
-    p_Comms->Start();
+	Telem.Start();
 
-    p_Telec-> Start();
-
-    /* START THE ROVER MODULES TIMER */
-    StartTimer();
+	/* START THE ROVER MODULES TIMER */
+	StartTimer();
 
 }
 
@@ -57,68 +47,82 @@ void ManagerModule::Execute()
 {
 	/* INITIATE THREAD THAT WILL WATCH FOR INPUT ON THE CMD LINE */
 
-    while (!endProgram_flag)
-    {
+	while (!endProgram_flag)
+	{
 		/* UPDATE TIMER FLAGS */
-    	UpdateTimer();
+		UpdateTimer();
 
-    	if (tenhzFlag)
-    	{
-    		/* RUN TELEM TO UPDATE THE COMMS COMMAND */
+		if (tenhzFlag)
+		{
+			// Check to see if any messages have been received and send messages
+			PrepComms(CommsCommand, TelemReport);
+			Comms.Execute(CommsCommand, CommsReport);
 
-    		/* CHECK COMMS MODULE */
-    		p_Comms->Execute(&CommsCommand, &CommsReport);
+			// Pass the comms report to parse any commands received
+			PrepTelec(TelecCommand, CommsReport);
+			Telec.Execute(TelecReport, TelecCommand);
 
-    		/* RUN TELEC TO SEE IF COMMAND HAS BEEN ISSUED */
-    		p_Telec->Execute(&TelecReport, &CommsReport);
+			// Pass the commands from telec report to modules
+			Motor.Execute(TelecReport.MotorCommand, MotorReport);
+			TelecReport.MotorCommand.newCommand = 0; // Set new command flag to 0
 
+			Inert.Execute(InertReport);
+			TelecReport.InertCommand.newCommand = 0; // Set new command flag to 0
 
-    	}
+			// Run the Telem module to send data back to GS
+			PrepTelem(TelemCommand, MotorReport, SonarReport, InertReport);
+			Telem.Execute(TelemCommand, TelemReport);
 
-    	/* DELAY TO STOP FROM RUNNING TOO QUICKLY */
-    	bcm2835_delay(10);
+		}
+		if (onehzFlag)
+		{
 
-	    /* CHECK FOR COMMAND INPUT */
-	    //GetCmdLineInput();
+			Sonar.Execute(TelecReport.SonarCommand, SonarReport);
+			TelecReport.SonarCommand.newCommand = 0; // Set new command flag to 0
+		}
 
-	    /* EXECUTE ANY COMMANDS */
-	    //ExecuteCommand();
+		/* DELAY TO STOP FROM RUNNING TOO QUICKLY */
+		bcm2835_delay(10);
 
-    	Debug();
+		/* CHECK FOR COMMAND INPUT */
+		//GetCmdLineInput();
+		/* EXECUTE ANY COMMANDS */
+		//ExecuteCommand();
+		Debug();
 
-    }
+	}
 
 }
 
 void ManagerModule::Stop()
 {
 
-    p_Inert->Stop();
+	Inert.Stop();
 
-    p_Motor->Stop();
+	Motor.Stop();
 
-    p_Sonar->Stop();
+	Sonar.Stop();
 
-    bcm2835_close();
+	bcm2835_close();
 }
 
 void ManagerModule::StartTimer()
 {
 	struct timespec tspec;	//used to retrieve the current time
 
-    /* SET TIME AT WHICH THE ROVER STARTED */
-    clock_gettime(CLOCK_MONOTONIC, &tspec);
+	/* SET TIME AT WHICH THE ROVER STARTED */
+	clock_gettime(CLOCK_MONOTONIC, &tspec);
 
-    milSec = round(tspec.tv_nsec / 1.0e6);
-    milSec = milSec + (tspec.tv_sec * 1000);
+	milSec = round(tspec.tv_nsec / 1.0e6);
+	milSec = milSec + (tspec.tv_sec * 1000);
 
-    /* SET THE REFERENCE TIMES */
-    tenhzHighMilSec = milSec;
-    onehzHighMilSec = milSec;
+	/* SET THE REFERENCE TIMES */
+	tenhzHighMilSec = milSec;
+	onehzHighMilSec = milSec;
 
-    /* START FLAGS HIGH */
-    onehzFlag = 1;
-    tenhzFlag = 1;
+	/* START FLAGS HIGH */
+	onehzFlag = 1;
+	tenhzFlag = 1;
 
 }
 
@@ -126,142 +130,74 @@ void ManagerModule::UpdateTimer()
 {
 	struct timespec tspec;	//used to retrieve the current time
 
-    /* IF HIGH RESET */
-    if (onehzFlag)
-    {
-    	onehzFlag = 0;
-    }
+	/* IF HIGH RESET */
+	if (onehzFlag)
+	{
+		onehzFlag = 0;
+	}
 
-    if (tenhzFlag)
-    {
-    	tenhzFlag = 0;
-    }
+	if (tenhzFlag)
+	{
+		tenhzFlag = 0;
+	}
 
-    /* UPDATE THE TIME */
-    clock_gettime(CLOCK_MONOTONIC, &tspec);
+	/* UPDATE THE TIME */
+	clock_gettime(CLOCK_MONOTONIC, &tspec);
 
-    milSec = round(tspec.tv_nsec / 1.0e6);
-    milSec = milSec + (tspec.tv_sec * 1000);
+	milSec = round(tspec.tv_nsec / 1.0e6);
+	milSec = milSec + (tspec.tv_sec * 1000);
 
-    /* SEE IF 10MS HAS PASSED SINCE LAST TIME TENHZ FLAG WAS HIGH */
-    long int delta = milSec - tenhzHighMilSec;
-    if (delta > 100)
-    {
+	/* SEE IF 10MS HAS PASSED SINCE LAST TIME TENHZ FLAG WAS HIGH */
+	long int delta = milSec - tenhzHighMilSec;
+	if (delta > 100)
+	{
 		/* SET FLAG HIGH AND SET TIME AT WHICH FLAG WENT HIGH */
 		tenhzFlag = 1;
 		tenhzHighMilSec = milSec;
-    }
+	}
 
-    /* SEE IF 100MS HAS PASSED SINCE LAST TIME ONEHZ FLAG WAS HIGH */
-    delta = milSec - onehzHighMilSec;
-    if (delta > 1000)
-    {
+	/* SEE IF 100MS HAS PASSED SINCE LAST TIME ONEHZ FLAG WAS HIGH */
+	delta = milSec - onehzHighMilSec;
+	if (delta > 1000)
+	{
 		/* SET FLAG HIGH AND SET TIME AT WHICH FLAG WENT HIGH */
 		onehzFlag = 1;
 		onehzHighMilSec = milSec;
-    }
-
-}
-
-void ManagerModule::GetCmdLineInput()
-{
-	std::string cmdLineInput;
-	size_t pos = 0;
-
-	std::string token;
-
-	/* POLL THE CMD LINE TO SEE IF ANY INPUT WAS PRESENT */
-	std::cout << ">>";
-	std::cin >> cmdLineInput;
-
-	/* GO THROUGH EACH ELEMENT OF THE COMMAND */
-	if ((pos = cmdLineInput.find(" ")) != std::string::npos)
-	{
-		std::cout << "Only one value allowed" << std::endl;
 	}
-	else
-	{
-		token = cmdLineInput.substr(0, pos);
 
-		if (token == "forward")
-		{
-			/* CURRENTLY ONLY USING THE FORWARD COMMAND WITH NO TIME OR POWER INPUT */
-			MotorCommand.newCommand = 1;
-			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_FORWARD;
-			MotorCommand.power_per = PWM_PERCENTAGE;
-			MotorCommand.duration_ms = 100000;
-		}
-		else if (token == "backward")
-		{
-			MotorCommand.newCommand = 1;
-			MotorCommand.commandid = MOTOR_COMMAND_STRAIGHT_BACKWARD;
-			MotorCommand.power_per = PWM_PERCENTAGE;
-			MotorCommand.duration_ms = 100000;
-		}
-		else if (token == "right")
-		{
-			MotorCommand.newCommand = 1;
-			MotorCommand.commandid = MOTOR_COMMAND_TURN_RIGHT;
-			MotorCommand.power_per = PWM_PERCENTAGE;
-			MotorCommand.duration_ms = 100000;
-		}
-		else if (token == "left")
-		{
-			MotorCommand.newCommand = 1;
-			MotorCommand.commandid = MOTOR_COMMAND_TURN_LEFT;
-			MotorCommand.power_per = PWM_PERCENTAGE;
-			MotorCommand.duration_ms = 100000;
-		}
-		else if (token == "stop")
-		{
-			MotorCommand.newCommand = 1;
-			MotorCommand.commandid = MOTOR_COMMAND_STOP;
-			MotorCommand.power_per = PWM_PERCENTAGE;
-			MotorCommand.duration_ms = 100000;
-		}
-		else if (token == "tilt")
-		{
-			InertCommand.newCommand = 1;
-		}
-		else if (token == "distance")
-		{
-			SonarCommand.newCommand = 1;
-		}
-		else if (token == "end")
-		{
-			endProgram_flag = 1;
-		}
-		else
-		{
-			std::cout << "Incorrect Command" << std::endl;
-		}
-	}
 }
 
-void ManagerModule::ExecuteCommand()
+void ManagerModule::PrepComms(mavlink_comms_command_t& CommsCommand,
+		const mavlink_telem_report_t& TelemReport)
 {
-    /* CHECK TO SEE IF A NEW COMMAND HAS BEEN ASSIGNED FOR ANY MODULE */
-    if (MotorCommand.newCommand)
-    {
-    	p_Motor->Execute(&MotorCommand, &MotorReport);
-    	MotorCommand.newCommand = 0;
-    }
-    if (InertCommand.newCommand)
-    {
-    	p_Inert->Execute(&InertReport);
-    	InertCommand.newCommand = 0;
-    }
-    if (SonarCommand.newCommand)
-    {
-    	p_Sonar->Execute(&SonarCommand, &SonarReport);
-    	SonarCommand.newCommand = 0;
-    }
+	// Copy the buffer content from the telem output to the comms input
+	CommsCommand.bufferLength = TelemReport.bufferLength;
+	memcpy(CommsCommand.msgSendBuffer, TelemReport.buffer,
+			TelemReport.bufferLength);
 }
 
+void ManagerModule::PrepTelec(mavlink_telec_command_t& TelecCommand,
+		const mavlink_comms_report_t& CommsReport)
+{
+	// Take the buffer produced by comms and pass to Telec input
+	TelecCommand.bufferLength = CommsReport.numBytesRec;
+	memcpy(TelecCommand.buffer, CommsReport.msgRecBuffer,
+			CommsReport.numBytesRec);
+
+}
+
+void ManagerModule::PrepTelem(mavlink_telem_command_t& TelemCommand,
+		const mavlink_motor_report_t& MotorReport,
+		const mavlink_sonar_report_t& SonarReport,
+		const mavlink_inert_report_t& InertReport)
+{
+	// put all the reports from the modules in the telem input
+	TelemCommand.InertReport = InertReport;
+	TelemCommand.MotorReport = MotorReport;
+	TelemCommand.SonarReport = SonarReport;
+}
 void ManagerModule::Debug()
 {
 
 }
-
-
 

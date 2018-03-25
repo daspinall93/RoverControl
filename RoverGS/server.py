@@ -32,7 +32,7 @@ def main():
     mav = mavlink.MAVLink(logFile)
     
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    serverSocket.bind(("127.0.0.1", args.port))
+    serverSocket.bind(("0.0.0.0", args.port))
 
 #     while True:
     # Receive data and store in log
@@ -43,7 +43,7 @@ def main():
     
         # Decode the data
         mavmsg = mav.decode(data)
-        print(mavmsg.commandid)
+        print(mavmsg.motor_mode)
 
     logFile.close()
     serverSocket.close()

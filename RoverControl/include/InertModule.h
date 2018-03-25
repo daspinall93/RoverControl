@@ -44,7 +44,7 @@ THE SOFTWARE.
 class InertModule {
 public:
 	void Start();
-	void Execute(mavlink_inert_report_t* p_InertReport_out);
+	void Execute(mavlink_inert_report_t& InertReport_out);
 	void CalibrateMPU();
 	void Stop();
 
@@ -98,7 +98,7 @@ private:
 	/* ACC AND GYRO SAMPLING FUNCTIONS */
 	void UpdateWindow();
 	void UpdateAverages();
-	void UpdateReport(mavlink_inert_report_t* p_InertReport_out);
+	void UpdateReport(mavlink_inert_report_t& InertReport_out);
 	void Debug();
 
 	/* MPU6050 LIBRARY */

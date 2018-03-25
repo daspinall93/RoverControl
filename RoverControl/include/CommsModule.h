@@ -27,10 +27,10 @@
 class CommsModule
 {
 public:
-	CommsModule(int port, char* ip);
-	void Start();
-	void Execute(const mavlink_comms_command_t* p_CommsCommand_in,
-			mavlink_comms_report_t* p_CommsReport_out);
+//	CommsModule(int port, char* ip);
+	void Start(int port, char* ip);
+	void Execute(const mavlink_comms_command_t& CommsCommand_in,
+			mavlink_comms_report_t& CommsReport_out);
 	void Stop();
 
 private:
@@ -47,9 +47,9 @@ private:
 	int bytesSent;
 	int bytesReceived;//used for checking number of bytes sent and received
 
-	void TransmitData(const mavlink_comms_command_t* p_CommsCommand_in);
+	void TransmitData(const mavlink_comms_command_t& CommsCommand_in);
 	void ReceiveData();
-	void UpdateReport(mavlink_comms_report_t* p_CommsReport_out);
+	void UpdateReport(mavlink_comms_report_t& CommsReport_out);
 	void Debug();
 };
 
