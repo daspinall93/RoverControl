@@ -58,7 +58,7 @@
         <message id="0" name="HEARTBEAT">
             <description>The heartbeat message shows that a system is present and responding. Currently contains the locomotion module mode and mavlink version</description>
             <field enum="MOTOR_MODE" name="motor_mode" type="uint8_t">Mode of the locomotion module</field>
-            <field name="modeDur_ms" type="uint8_t"></field>            
+            <field name="modeDur_ms" type="uint32_t"></field>            
             <field name="pitch_deg" type="float"></field>
             <field name="roll_deg" type="float"></field>
             <field name="yaw_deg" type="float"></field>
