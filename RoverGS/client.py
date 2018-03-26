@@ -1,7 +1,8 @@
 import argparse
 import datetime
 import GroundStation as gs
-   
+import time
+
 def Main():
 
     # Parse the arguments
@@ -11,12 +12,18 @@ def Main():
     args = parser.parse_args()
     
     now = datetime.datetime.now()
-    logFileName = "mavLog/client_" + \
+    fileName = "mavLog/client_" + \
         str(now.month) + "_" + str(now.day) + "_" + \
         str(now.hour) + "_" + str(now.minute) + "_" + str(now.second) + ".log"
 
-    station = gs.GroundStation(args.ip, args.port, logFileName)
-    station.StartStation()
+    Ground = gs.GStation(args.port, args.ip, fileName)
+    Ground.startGS()
+    
+    time.sleep(1) # Allow thread to close
+    
+
+#     station = gs.GroundStation(args.ip, args.port, logFileName)
+#     station.StartStation()
 
 
 if __name__ == "__main__":

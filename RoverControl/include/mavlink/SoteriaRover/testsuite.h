@@ -37,16 +37,16 @@ static void mavlink_test_heartbeat(uint8_t system_id, uint8_t component_id, mavl
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_heartbeat_t packet_in = {
-        17.0,45.0,73.0,101.0,53,120,187,254,3
+        963497464,45.0,73.0,101.0,129.0,65,132,199,3
     };
     mavlink_heartbeat_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
+        packet1.modeDur_ms = packet_in.modeDur_ms;
         packet1.pitch_deg = packet_in.pitch_deg;
         packet1.roll_deg = packet_in.roll_deg;
         packet1.yaw_deg = packet_in.yaw_deg;
         packet1.objDist_cm = packet_in.objDist_cm;
         packet1.motor_mode = packet_in.motor_mode;
-        packet1.modeDur_ms = packet_in.modeDur_ms;
         packet1.tiltFlag = packet_in.tiltFlag;
         packet1.objDetFlag = packet_in.objDetFlag;
         packet1.mavlink_version = packet_in.mavlink_version;

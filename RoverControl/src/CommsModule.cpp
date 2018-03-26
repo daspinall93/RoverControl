@@ -10,46 +10,60 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 void CommsModule::Start(int port, char* ip)
 {
 	std::cout << "[COMMS]Starting Module..." << std::endl;
 
 	// Set ip address to send messages to and port to receive on and send to
-	groundipAddr = ip;
-	groundPortNum = port;
-	roverPortNum = port;
+	outIpAddr = ip;
+	outPortNum = port + 1;
+	inPortNum = port;
 
-	/* SETUP THE ROVER SOCKET */
 	//TODO Add error checking to the socket set up process
-	socketNum = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	inSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-	//configure the socket for use
-	memset((char *) &socketidRover, 0, sizeof(socketidRover));
-	socketidRover.sin_family = AF_INET;
-	socketidRover.sin_port = htons(roverPortNum);
-	socketidRover.sin_addr.s_addr = INADDR_ANY;
+	// Configure the socket for TC
+	memset((char *) &inSocketId, 0, sizeof(inSocketId));
+	inSocketId.sin_family = AF_INET;
+	inSocketId.sin_port = htons(inPortNum);
+	inSocketId.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(socketNum, (struct sockaddr*) &socketidRover,
+	if (bind(inSocket, (struct sockaddr*) &inSocketId,
 			sizeof(struct sockaddr)) == -1)
 	{
-		printf("Error on binding \n");
+		printf("Error on binding insocket, errno = %d \n", errno);
 	}
+
+	outSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	memset((char *) &outSocketId, 0, sizeof(struct sockaddr));
+
+	// Configure socket for sending TM
+	outSocketId.sin_family = AF_INET;
+	outSocketId.sin_addr.s_addr = INADDR_ANY;
+	outSocketId.sin_port = htons(outPortNum);
+
+	if (bind(outSocket, (struct sockaddr*) &outSocketId,
+			sizeof(struct sockaddr)) == -1)
+	{
+		printf("Error on binding output socket, errno = %d \n", errno);
+	}
+
+	outSocketId.sin_family = AF_INET;
+	outSocketId.sin_addr.s_addr = inet_addr(outIpAddr);
+	outSocketId.sin_port = htons(outPortNum);
 
 	/* ATTEMPT TO MAKE NON-BLOCKING */
 #if (defined __QNX__) | (defined __QNXNTO__)
-	if (fcntl(sock, F_SETFL, O_NONBLOCK | FASYNC) < 0)
+	//if (fcntl(outSocket, F_SETFL, O_NONBLOCK | FASYNC) < 0)
+	if (fcntl(inSocket, F_SETFL, O_NONBLOCK | FASYNC) < 0)
 #else
-	if (fcntl(socketNum, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
+	//if (fcntl(outSocket, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
+	if (fcntl(inSocket, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
 #endif
 
-	memset((char *) &socketidGround, 0, sizeof(struct sockaddr));
-
-	/* GROUND SOCKET CONFIG */
 	socketLength = sizeof(struct sockaddr_in);
-	socketidGround.sin_family = AF_INET;
-	socketidGround.sin_addr.s_addr = inet_addr(groundipAddr);
-	socketidGround.sin_port = htons(groundPortNum);
 
 	/* SET THE BUFFER ARRAY TO 0 */
 	memset(bufferArray, 0, sizeof(bufferArray));
@@ -58,7 +72,8 @@ void CommsModule::Start(int port, char* ip)
 void CommsModule::Stop()
 {
 	/* CLOSE SOCKET */
-	close(socketNum);
+	close(inSocket);
+	close(outSocket);
 }
 
 void CommsModule::Execute(const mavlink_comms_command_t& CommsCommand_in,
@@ -86,9 +101,14 @@ void CommsModule::Execute(const mavlink_comms_command_t& CommsCommand_in,
 
 void CommsModule::TransmitData(const mavlink_comms_command_t& CommsCommand_in)
 {
+	// Copy to local buffer
+	memset(bufferArray, 0, sizeof(bufferArray));
 
-	bytesSent = sendto(socketNum, CommsCommand_in.msgSendBuffer, CommsCommand_in.bufferLength, 0,
-			(struct sockaddr*) &socketidGround, sizeof(struct sockaddr_in));
+	memcpy(bufferArray, CommsCommand_in.msgSendBuffer, CommsCommand_in.bufferLength);
+	bufferLength = CommsCommand_in.bufferLength;
+
+	bytesSent = sendto(outSocket, bufferArray, bufferLength, 0,
+			(struct sockaddr*) &outSocketId, sizeof(struct sockaddr_in));
 
 }
 
@@ -97,8 +117,8 @@ void CommsModule::ReceiveData()
 	memset(bufferArray, 0, sizeof(bufferArray));
 
 	/* CHECK ON NUMBER OF BYTES RECEIVED AND STORED IN THE BUFFER */
-	bytesReceived = recvfrom(socketNum, bufferArray, sizeof(bufferArray), 0,
-			(struct sockaddr*) &socketidGround, (socklen_t*) &socketLength);
+	bytesReceived = recvfrom(inSocket, bufferArray, sizeof(bufferArray), 0,
+			(struct sockaddr*) &inSocketId, (socklen_t*) &socketLength);
 
 	bufferLength = bytesReceived;
 
@@ -124,5 +144,6 @@ void CommsModule::Debug()
 {
 	printf("[COMMS]bytes sent = %d \n", bytesSent);
 	printf("[COMMS]bytes received = %d \n", bytesReceived);
+
 }
 

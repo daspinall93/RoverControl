@@ -62,7 +62,7 @@ void TelemModule::UpdateReport(mavlink_telem_report_t& TelemReport_out)
 	// Put the generated buffer into the telem report buffer
 	memcpy(TelemReport_out.buffer, buffer,
 			bufferLength);
-	TelemReport_out.bufferLength = 1;
+	TelemReport_out.bufferLength = bufferLength;
 
 }
 

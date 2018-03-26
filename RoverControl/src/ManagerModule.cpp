@@ -54,6 +54,12 @@ void ManagerModule::Execute()
 
 		if (tenhzFlag)
 		{
+
+
+		}
+		if (onehzFlag)
+		{
+
 			// Check to see if any messages have been received and send messages
 			PrepComms(CommsCommand, TelemReport);
 			Comms.Execute(CommsCommand, CommsReport);
@@ -72,10 +78,6 @@ void ManagerModule::Execute()
 			// Run the Telem module to send data back to GS
 			PrepTelem(TelemCommand, MotorReport, SonarReport, InertReport);
 			Telem.Execute(TelemCommand, TelemReport);
-
-		}
-		if (onehzFlag)
-		{
 
 			Sonar.Execute(TelecReport.SonarCommand, SonarReport);
 			TelecReport.SonarCommand.newCommand = 0; // Set new command flag to 0

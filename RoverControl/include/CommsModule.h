@@ -34,13 +34,14 @@ public:
 	void Stop();
 
 private:
-	struct sockaddr_in socketidRover, socketidGround;//structures specifying the socket properties
-	int socketNum;	//value to identify socket returned from socket()
+	struct sockaddr_in inSocketId, outSocketId;//structures specifying the socket properties
+	int inSocket;	//value to identify socket returned from socket()
+	int outSocket;
 	int socketLength;
 
-	int groundPortNum; //the port on the GS to connect to
-	int roverPortNum;
-	char* groundipAddr;
+	int outPortNum; //the port on the GS to connect to
+	int inPortNum;
+	char* outIpAddr;
 
 	uint8_t bufferArray[BUFFER_LENGTH];
 	int bufferLength;	//length of the buffer currently occupied

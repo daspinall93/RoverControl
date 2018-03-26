@@ -5,24 +5,24 @@
 
 MAVPACKED(
 typedef struct __mavlink_heartbeat_t {
+ uint32_t modeDur_ms; /*< */
  float pitch_deg; /*< */
  float roll_deg; /*< */
  float yaw_deg; /*< */
  float objDist_cm; /*< */
  uint8_t motor_mode; /*< Mode of the locomotion module*/
- uint8_t modeDur_ms; /*< */
  uint8_t tiltFlag; /*< */
  uint8_t objDetFlag; /*< */
  uint8_t mavlink_version; /*< MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version*/
 }) mavlink_heartbeat_t;
 
-#define MAVLINK_MSG_ID_HEARTBEAT_LEN 21
-#define MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN 21
-#define MAVLINK_MSG_ID_0_LEN 21
-#define MAVLINK_MSG_ID_0_MIN_LEN 21
+#define MAVLINK_MSG_ID_HEARTBEAT_LEN 24
+#define MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN 24
+#define MAVLINK_MSG_ID_0_LEN 24
+#define MAVLINK_MSG_ID_0_MIN_LEN 24
 
-#define MAVLINK_MSG_ID_HEARTBEAT_CRC 44
-#define MAVLINK_MSG_ID_0_CRC 44
+#define MAVLINK_MSG_ID_HEARTBEAT_CRC 76
+#define MAVLINK_MSG_ID_0_CRC 76
 
 
 
@@ -31,30 +31,30 @@ typedef struct __mavlink_heartbeat_t {
     0, \
     "HEARTBEAT", \
     9, \
-    {  { "motor_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, motor_mode) }, \
-         { "modeDur_ms", NULL, MAVLINK_TYPE_UINT8_T, 0, 17, offsetof(mavlink_heartbeat_t, modeDur_ms) }, \
-         { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_heartbeat_t, pitch_deg) }, \
-         { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_heartbeat_t, roll_deg) }, \
-         { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, yaw_deg) }, \
-         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 18, offsetof(mavlink_heartbeat_t, tiltFlag) }, \
-         { "objDetFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 19, offsetof(mavlink_heartbeat_t, objDetFlag) }, \
-         { "objDist_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_heartbeat_t, objDist_cm) }, \
-         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 20, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
+    {  { "motor_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 20, offsetof(mavlink_heartbeat_t, motor_mode) }, \
+         { "modeDur_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_heartbeat_t, modeDur_ms) }, \
+         { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_heartbeat_t, pitch_deg) }, \
+         { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, roll_deg) }, \
+         { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_heartbeat_t, yaw_deg) }, \
+         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 21, offsetof(mavlink_heartbeat_t, tiltFlag) }, \
+         { "objDetFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 22, offsetof(mavlink_heartbeat_t, objDetFlag) }, \
+         { "objDist_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_heartbeat_t, objDist_cm) }, \
+         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 23, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_HEARTBEAT { \
     "HEARTBEAT", \
     9, \
-    {  { "motor_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, motor_mode) }, \
-         { "modeDur_ms", NULL, MAVLINK_TYPE_UINT8_T, 0, 17, offsetof(mavlink_heartbeat_t, modeDur_ms) }, \
-         { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_heartbeat_t, pitch_deg) }, \
-         { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_heartbeat_t, roll_deg) }, \
-         { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, yaw_deg) }, \
-         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 18, offsetof(mavlink_heartbeat_t, tiltFlag) }, \
-         { "objDetFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 19, offsetof(mavlink_heartbeat_t, objDetFlag) }, \
-         { "objDist_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_heartbeat_t, objDist_cm) }, \
-         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 20, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
+    {  { "motor_mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 20, offsetof(mavlink_heartbeat_t, motor_mode) }, \
+         { "modeDur_ms", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_heartbeat_t, modeDur_ms) }, \
+         { "pitch_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_heartbeat_t, pitch_deg) }, \
+         { "roll_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, roll_deg) }, \
+         { "yaw_deg", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_heartbeat_t, yaw_deg) }, \
+         { "tiltFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 21, offsetof(mavlink_heartbeat_t, tiltFlag) }, \
+         { "objDetFlag", NULL, MAVLINK_TYPE_UINT8_T, 0, 22, offsetof(mavlink_heartbeat_t, objDetFlag) }, \
+         { "objDist_cm", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_heartbeat_t, objDist_cm) }, \
+         { "mavlink_version", NULL, MAVLINK_TYPE_UINT8_T, 0, 23, offsetof(mavlink_heartbeat_t, mavlink_version) }, \
          } \
 }
 #endif
@@ -76,29 +76,29 @@ typedef struct __mavlink_heartbeat_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t motor_mode, uint8_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
+                               uint8_t motor_mode, uint32_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_float(buf, 0, pitch_deg);
-    _mav_put_float(buf, 4, roll_deg);
-    _mav_put_float(buf, 8, yaw_deg);
-    _mav_put_float(buf, 12, objDist_cm);
-    _mav_put_uint8_t(buf, 16, motor_mode);
-    _mav_put_uint8_t(buf, 17, modeDur_ms);
-    _mav_put_uint8_t(buf, 18, tiltFlag);
-    _mav_put_uint8_t(buf, 19, objDetFlag);
-    _mav_put_uint8_t(buf, 20, 3);
+    _mav_put_uint32_t(buf, 0, modeDur_ms);
+    _mav_put_float(buf, 4, pitch_deg);
+    _mav_put_float(buf, 8, roll_deg);
+    _mav_put_float(buf, 12, yaw_deg);
+    _mav_put_float(buf, 16, objDist_cm);
+    _mav_put_uint8_t(buf, 20, motor_mode);
+    _mav_put_uint8_t(buf, 21, tiltFlag);
+    _mav_put_uint8_t(buf, 22, objDetFlag);
+    _mav_put_uint8_t(buf, 23, 3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
 #else
     mavlink_heartbeat_t packet;
+    packet.modeDur_ms = modeDur_ms;
     packet.pitch_deg = pitch_deg;
     packet.roll_deg = roll_deg;
     packet.yaw_deg = yaw_deg;
     packet.objDist_cm = objDist_cm;
     packet.motor_mode = motor_mode;
-    packet.modeDur_ms = modeDur_ms;
     packet.tiltFlag = tiltFlag;
     packet.objDetFlag = objDetFlag;
     packet.mavlink_version = 3;
@@ -128,29 +128,29 @@ static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t com
  */
 static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t motor_mode,uint8_t modeDur_ms,float pitch_deg,float roll_deg,float yaw_deg,uint8_t tiltFlag,uint8_t objDetFlag,float objDist_cm)
+                                   uint8_t motor_mode,uint32_t modeDur_ms,float pitch_deg,float roll_deg,float yaw_deg,uint8_t tiltFlag,uint8_t objDetFlag,float objDist_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_float(buf, 0, pitch_deg);
-    _mav_put_float(buf, 4, roll_deg);
-    _mav_put_float(buf, 8, yaw_deg);
-    _mav_put_float(buf, 12, objDist_cm);
-    _mav_put_uint8_t(buf, 16, motor_mode);
-    _mav_put_uint8_t(buf, 17, modeDur_ms);
-    _mav_put_uint8_t(buf, 18, tiltFlag);
-    _mav_put_uint8_t(buf, 19, objDetFlag);
-    _mav_put_uint8_t(buf, 20, 3);
+    _mav_put_uint32_t(buf, 0, modeDur_ms);
+    _mav_put_float(buf, 4, pitch_deg);
+    _mav_put_float(buf, 8, roll_deg);
+    _mav_put_float(buf, 12, yaw_deg);
+    _mav_put_float(buf, 16, objDist_cm);
+    _mav_put_uint8_t(buf, 20, motor_mode);
+    _mav_put_uint8_t(buf, 21, tiltFlag);
+    _mav_put_uint8_t(buf, 22, objDetFlag);
+    _mav_put_uint8_t(buf, 23, 3);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
 #else
     mavlink_heartbeat_t packet;
+    packet.modeDur_ms = modeDur_ms;
     packet.pitch_deg = pitch_deg;
     packet.roll_deg = roll_deg;
     packet.yaw_deg = yaw_deg;
     packet.objDist_cm = objDist_cm;
     packet.motor_mode = motor_mode;
-    packet.modeDur_ms = modeDur_ms;
     packet.tiltFlag = tiltFlag;
     packet.objDetFlag = objDetFlag;
     packet.mavlink_version = 3;
@@ -204,29 +204,29 @@ static inline uint16_t mavlink_msg_heartbeat_encode_chan(uint8_t system_id, uint
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t motor_mode, uint8_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
+static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint8_t motor_mode, uint32_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
-    _mav_put_float(buf, 0, pitch_deg);
-    _mav_put_float(buf, 4, roll_deg);
-    _mav_put_float(buf, 8, yaw_deg);
-    _mav_put_float(buf, 12, objDist_cm);
-    _mav_put_uint8_t(buf, 16, motor_mode);
-    _mav_put_uint8_t(buf, 17, modeDur_ms);
-    _mav_put_uint8_t(buf, 18, tiltFlag);
-    _mav_put_uint8_t(buf, 19, objDetFlag);
-    _mav_put_uint8_t(buf, 20, 3);
+    _mav_put_uint32_t(buf, 0, modeDur_ms);
+    _mav_put_float(buf, 4, pitch_deg);
+    _mav_put_float(buf, 8, roll_deg);
+    _mav_put_float(buf, 12, yaw_deg);
+    _mav_put_float(buf, 16, objDist_cm);
+    _mav_put_uint8_t(buf, 20, motor_mode);
+    _mav_put_uint8_t(buf, 21, tiltFlag);
+    _mav_put_uint8_t(buf, 22, objDetFlag);
+    _mav_put_uint8_t(buf, 23, 3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #else
     mavlink_heartbeat_t packet;
+    packet.modeDur_ms = modeDur_ms;
     packet.pitch_deg = pitch_deg;
     packet.roll_deg = roll_deg;
     packet.yaw_deg = yaw_deg;
     packet.objDist_cm = objDist_cm;
     packet.motor_mode = motor_mode;
-    packet.modeDur_ms = modeDur_ms;
     packet.tiltFlag = tiltFlag;
     packet.objDetFlag = objDetFlag;
     packet.mavlink_version = 3;
@@ -257,29 +257,29 @@ static inline void mavlink_msg_heartbeat_send_struct(mavlink_channel_t chan, con
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t motor_mode, uint8_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
+static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t motor_mode, uint32_t modeDur_ms, float pitch_deg, float roll_deg, float yaw_deg, uint8_t tiltFlag, uint8_t objDetFlag, float objDist_cm)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
-    _mav_put_float(buf, 0, pitch_deg);
-    _mav_put_float(buf, 4, roll_deg);
-    _mav_put_float(buf, 8, yaw_deg);
-    _mav_put_float(buf, 12, objDist_cm);
-    _mav_put_uint8_t(buf, 16, motor_mode);
-    _mav_put_uint8_t(buf, 17, modeDur_ms);
-    _mav_put_uint8_t(buf, 18, tiltFlag);
-    _mav_put_uint8_t(buf, 19, objDetFlag);
-    _mav_put_uint8_t(buf, 20, 3);
+    _mav_put_uint32_t(buf, 0, modeDur_ms);
+    _mav_put_float(buf, 4, pitch_deg);
+    _mav_put_float(buf, 8, roll_deg);
+    _mav_put_float(buf, 12, yaw_deg);
+    _mav_put_float(buf, 16, objDist_cm);
+    _mav_put_uint8_t(buf, 20, motor_mode);
+    _mav_put_uint8_t(buf, 21, tiltFlag);
+    _mav_put_uint8_t(buf, 22, objDetFlag);
+    _mav_put_uint8_t(buf, 23, 3);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #else
     mavlink_heartbeat_t *packet = (mavlink_heartbeat_t *)msgbuf;
+    packet->modeDur_ms = modeDur_ms;
     packet->pitch_deg = pitch_deg;
     packet->roll_deg = roll_deg;
     packet->yaw_deg = yaw_deg;
     packet->objDist_cm = objDist_cm;
     packet->motor_mode = motor_mode;
-    packet->modeDur_ms = modeDur_ms;
     packet->tiltFlag = tiltFlag;
     packet->objDetFlag = objDetFlag;
     packet->mavlink_version = 3;
@@ -301,7 +301,7 @@ static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mav
  */
 static inline uint8_t mavlink_msg_heartbeat_get_motor_mode(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  16);
+    return _MAV_RETURN_uint8_t(msg,  20);
 }
 
 /**
@@ -309,9 +309,9 @@ static inline uint8_t mavlink_msg_heartbeat_get_motor_mode(const mavlink_message
  *
  * @return 
  */
-static inline uint8_t mavlink_msg_heartbeat_get_modeDur_ms(const mavlink_message_t* msg)
+static inline uint32_t mavlink_msg_heartbeat_get_modeDur_ms(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  17);
+    return _MAV_RETURN_uint32_t(msg,  0);
 }
 
 /**
@@ -321,7 +321,7 @@ static inline uint8_t mavlink_msg_heartbeat_get_modeDur_ms(const mavlink_message
  */
 static inline float mavlink_msg_heartbeat_get_pitch_deg(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  0);
+    return _MAV_RETURN_float(msg,  4);
 }
 
 /**
@@ -331,7 +331,7 @@ static inline float mavlink_msg_heartbeat_get_pitch_deg(const mavlink_message_t*
  */
 static inline float mavlink_msg_heartbeat_get_roll_deg(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  4);
+    return _MAV_RETURN_float(msg,  8);
 }
 
 /**
@@ -341,7 +341,7 @@ static inline float mavlink_msg_heartbeat_get_roll_deg(const mavlink_message_t* 
  */
 static inline float mavlink_msg_heartbeat_get_yaw_deg(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  8);
+    return _MAV_RETURN_float(msg,  12);
 }
 
 /**
@@ -351,7 +351,7 @@ static inline float mavlink_msg_heartbeat_get_yaw_deg(const mavlink_message_t* m
  */
 static inline uint8_t mavlink_msg_heartbeat_get_tiltFlag(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  18);
+    return _MAV_RETURN_uint8_t(msg,  21);
 }
 
 /**
@@ -361,7 +361,7 @@ static inline uint8_t mavlink_msg_heartbeat_get_tiltFlag(const mavlink_message_t
  */
 static inline uint8_t mavlink_msg_heartbeat_get_objDetFlag(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  19);
+    return _MAV_RETURN_uint8_t(msg,  22);
 }
 
 /**
@@ -371,7 +371,7 @@ static inline uint8_t mavlink_msg_heartbeat_get_objDetFlag(const mavlink_message
  */
 static inline float mavlink_msg_heartbeat_get_objDist_cm(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  12);
+    return _MAV_RETURN_float(msg,  16);
 }
 
 /**
@@ -381,7 +381,7 @@ static inline float mavlink_msg_heartbeat_get_objDist_cm(const mavlink_message_t
  */
 static inline uint8_t mavlink_msg_heartbeat_get_mavlink_version(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  20);
+    return _MAV_RETURN_uint8_t(msg,  23);
 }
 
 /**
@@ -393,12 +393,12 @@ static inline uint8_t mavlink_msg_heartbeat_get_mavlink_version(const mavlink_me
 static inline void mavlink_msg_heartbeat_decode(const mavlink_message_t* msg, mavlink_heartbeat_t* heartbeat)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    heartbeat->modeDur_ms = mavlink_msg_heartbeat_get_modeDur_ms(msg);
     heartbeat->pitch_deg = mavlink_msg_heartbeat_get_pitch_deg(msg);
     heartbeat->roll_deg = mavlink_msg_heartbeat_get_roll_deg(msg);
     heartbeat->yaw_deg = mavlink_msg_heartbeat_get_yaw_deg(msg);
     heartbeat->objDist_cm = mavlink_msg_heartbeat_get_objDist_cm(msg);
     heartbeat->motor_mode = mavlink_msg_heartbeat_get_motor_mode(msg);
-    heartbeat->modeDur_ms = mavlink_msg_heartbeat_get_modeDur_ms(msg);
     heartbeat->tiltFlag = mavlink_msg_heartbeat_get_tiltFlag(msg);
     heartbeat->objDetFlag = mavlink_msg_heartbeat_get_objDetFlag(msg);
     heartbeat->mavlink_version = mavlink_msg_heartbeat_get_mavlink_version(msg);

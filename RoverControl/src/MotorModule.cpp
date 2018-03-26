@@ -132,6 +132,8 @@ void MotorModule::Execute(mavlink_motor_command_t& MotorCommand_in,
 
 	}
 
+	UpdateReport(MotorReport_out);
+
 	Debug();
 }
 
