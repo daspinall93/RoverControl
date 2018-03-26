@@ -32,6 +32,8 @@ public:
 	void Execute();
 	void Stop();
 
+	bool debugEnabled;
+
 private:
 	/* OBJECTS TO CALL */
 	MotorModule Motor;
@@ -76,7 +78,11 @@ private:
 	void UpdateTimer();
 	void GetCmdLineInput();
 	void ExecuteCommand();
-	void Debug();
+	void Debug(const mavlink_comms_report_t& CommsReport,
+			const mavlink_telem_report_t& TelemReport,
+			mavlink_motor_report_t& MotorReport,
+			mavlink_inert_report_t& InertReport,
+			mavlink_sonar_report_t& SonarReport);
 
 	// Functions for preparing input to modules
 	void PrepComms(mavlink_comms_command_t& CommsCommand,

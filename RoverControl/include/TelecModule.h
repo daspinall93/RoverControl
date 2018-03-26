@@ -21,6 +21,7 @@ public:
 	void Start();
 	void Execute(mavlink_telec_report_t& TelecReport_out,
 			mavlink_telec_command_t& TelecReport_in);
+	bool debugEnabled;
 
 private:
 	unsigned char buffer[2041];

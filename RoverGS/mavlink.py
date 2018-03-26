@@ -26,7 +26,7 @@ MAVLINK_SIGNATURE_BLOCK_LEN = 13
 MAVLINK_IFLAG_SIGNED = 0x01
 
 native_supported = platform.system() != 'Windows' # Not yet supported on other dialects
-native_force = 'MAVNATIVE_FORCE' in os.environ # Will force use of native code regardless of what client app wants
+native_force = 'MAVNATIVE_FORCE' in os.environ # Will force use of native code regardless of what RoverGS app wants
 native_testing = 'MAVNATIVE_TESTING' in os.environ # Will force both native and legacy code to be used and their results compared
 
 if native_supported and float(WIRE_PROTOCOL_VERSION) <= 1:

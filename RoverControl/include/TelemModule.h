@@ -20,6 +20,8 @@ public:
 	void Stop();
 	void Debug();
 
+	bool debugEnabled;
+
 private:
 	unsigned char buffer[2041];
 	int bufferLength;

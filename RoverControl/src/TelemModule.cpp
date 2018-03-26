@@ -68,7 +68,10 @@ void TelemModule::UpdateReport(mavlink_telem_report_t& TelemReport_out)
 
 void TelemModule::Debug(void)
 {
-	std::cout << "[TELEM]Message Length = " << msgLength << std::endl;
-	std::cout << "[TELEM]Buffer Length = " << bufferLength << std::endl;
+	if (debugEnabled==true)
+	{
+		std::cout << "[TELEM]Message Length = " << msgLength << std::endl;
+		std::cout << "[TELEM]Buffer Length = " << bufferLength << std::endl;
+	}
 }
 

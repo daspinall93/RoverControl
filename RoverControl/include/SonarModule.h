@@ -19,6 +19,8 @@ public:
 			mavlink_sonar_report_t& SonarReport_out);
 	void Stop();
 
+	bool debugEnabled;
+
 private:
 	long int echoStartTime_us;
 	long int echoEndTime_us;

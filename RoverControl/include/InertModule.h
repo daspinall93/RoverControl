@@ -48,6 +48,8 @@ public:
 	void CalibrateMPU();
 	void Stop();
 
+	bool debugEnabled;
+
 private:
 
 	/* ACCELEROMETER ADC VALUES */
@@ -88,8 +90,8 @@ private:
 	uint8_t tiltFlag;
 
 	/* TIME */
-	long int prevCall;
-	long int currentCall;
+	long int prevCall_ms;
+	long int currentCall_ms;
 
 	/* LOCALISATION FUNCTIONS */
     void UpdateAnglesGyro();

@@ -119,9 +119,12 @@ void TelecModule::UpdateReport(mavlink_telec_report_t& TelecReport_out)
 
 void TelecModule::Debug()
 {
-	std::cout << "[TELEC]Number of parsed messages = " << numParsedMsgs << std::endl;
-	if (numParsedMsgs > 0)
+	if (debugEnabled==true)
 	{
-		std::cout << "[TELEC]Message ID = " << parsedMsg.msgid << std::endl;
+		std::cout << "[TELEC]Number of parsed messages = " << numParsedMsgs << std::endl;
+		if (numParsedMsgs > 0)
+		{
+			std::cout << "[TELEC]Message ID = " << parsedMsg.msgid << std::endl;
+		}
 	}
 }

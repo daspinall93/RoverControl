@@ -24,6 +24,8 @@ public:
     void Execute(mavlink_motor_command_t& MotorCommand_in, mavlink_motor_report_t& MotorReport_out);
     void Stop();
 
+    bool debugEnabled;
+
 private:
 
 	uint8_t m1_subMode;

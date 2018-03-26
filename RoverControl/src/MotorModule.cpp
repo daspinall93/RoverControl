@@ -27,6 +27,11 @@
 #define PWM_ENABLED 1
 #define PWM_RANGE 1024
 
+// if PT MODE is 1 then point turns are carried out, if it isn't
+// then curved turns are carried out
+#define PT_MODE 1
+#define CURVE_RATIO 0.5
+
 void MotorModule::Start()
 {
 
@@ -306,6 +311,12 @@ void MotorModule::ModeTurnRight(mavlink_motor_command_t& MotorCommand_in)
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
 	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
+#if PT_MODE
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
+#else
+	m2_pwmInput = CalculatepwmData((int)(MotorCommand_in.power_per * CURVE_RATIO));
+#endif
+
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M1_INPIN1, HIGH);
 	bcm2835_gpio_write(M1_INPIN2, LOW);
@@ -322,15 +333,20 @@ void MotorModule::ModeTurnRight(mavlink_motor_command_t& MotorCommand_in)
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
+
 
 	/* SET THE DIRECTION OF MOTOR */
+#if PT_MODE
 	bcm2835_gpio_write(M2_INPIN1, LOW);
 	bcm2835_gpio_write(M2_INPIN2, HIGH);
+#else
+	bcm2835_gpio_write(M2_INPIN1, HIGH);
+	bcm2835_gpio_write(M2_INPIN2, LOW);
+#endif
 
 	/* SET THE OUTPUT AVERAGE VOLTAGE */
 #if PWM_ENABLED
-	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m2_pwmInput);
 #else
 	bcm2835_gpio_write(M2_PWMPIN, HIGH);
 #endif
@@ -350,11 +366,24 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t& MotorCommand_in)
 
 	/* UPDATE M1 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
+
+	#if PT_MODE
 	m1_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
+#else
+	m1_pwmInput = CalculatepwmData((int)(MotorCommand_in.power_per * CURVE_RATIO));
+#endif
+
+	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
+
 
 	/* SET THE DIRECTION OF MOTOR */
+#if PT_MODE
 	bcm2835_gpio_write(M1_INPIN1, LOW);
 	bcm2835_gpio_write(M1_INPIN2, HIGH);
+#else
+	bcm2835_gpio_write(M1_INPIN1, HIGH);
+	bcm2835_gpio_write(M1_INPIN2, LOW);
+#endif
 
 	/* SET THE OUTPUT AVERAGE VOLTAGE */
 #if PWM_ENABLED
@@ -368,7 +397,6 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t& MotorCommand_in)
 
 	/* UPDATE M2 */
 	/* CALCULATE PWM INPUT FROM THE INPUT COMMAND */
-	m2_pwmInput = CalculatepwmData(MotorCommand_in.power_per);
 
 	/* SET THE DIRECTION OF MOTOR */
 	bcm2835_gpio_write(M2_INPIN1, HIGH);
@@ -376,7 +404,7 @@ void MotorModule::ModeTurnLeft(mavlink_motor_command_t& MotorCommand_in)
 
 	/* SET THE OUTPUT AVERAGE VOLTAGE */
 #if PWM_ENABLED
-	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m1_pwmInput);
+	bcm2835_pwm_set_data(M2_PWM_CHANNEL, m2_pwmInput);
 #else
 	bcm2835_gpio_write(M2_PWMPIN, HIGH);
 #endif
@@ -402,15 +430,18 @@ void MotorModule::UpdateReport(mavlink_motor_report_t& MotorReport_out)
 
 void MotorModule::Debug()
 {
-	printf("[MOTOR]Mode = %d \t Time elapsed = %ld \n", mode,
-			modeElapsedTime_ms);
-	printf("[MOTOR%d]Mode = %d \t pwmInput = %d \n", 1, m1_subMode,
-			m1_pwmInput);
-	printf("[MOTOR%d]Mode = %d \t pwmInput = %d \n", 2, m2_subMode,
-			m2_pwmInput);
+	if (debugEnabled==true)
+	{
+		printf("[MOTOR]Mode = %d \t Time elapsed = %ld \n \t power_per", mode,
+				modeElapsedTime_ms);
+		printf("[MOTOR%d]Mode = %d \t pwmInput = %d \n", 1, m1_subMode,
+				m1_pwmInput);
+		printf("[MOTOR%d]Mode = %d \t pwmInput = %d \n", 2, m2_subMode,
+				m2_pwmInput);
+	}
 }
 
-uint32_t MotorModule::CalculatepwmData(uint32_t power_per)
+int MotorModule::CalculatepwmData(int power_per)
 {
 	uint32_t pwmData;
 	pwmData = (int) (((float) power_per / 100.0) * (float) PWM_RANGE);

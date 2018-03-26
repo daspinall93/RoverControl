@@ -127,7 +127,10 @@ void SonarModule::UpdateReport(mavlink_sonar_report_t& SonarReport_out)
 
 void SonarModule::Debug()
 {
-	std::cout << "[SONAR]Object detected flag = " << objectDetectedFlag << std::endl;
-	std::cout << "[SONAR]Object Distance = " << distance_cm << std::endl;
+	if (debugEnabled==true)
+	{
+		std::cout << "[SONAR]Object detected flag = " << objectDetectedFlag << std::endl;
+		std::cout << "[SONAR]Object Distance = " << distance_cm << std::endl;
+	}
 
 }

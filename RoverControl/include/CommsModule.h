@@ -27,11 +27,13 @@
 class CommsModule
 {
 public:
-//	CommsModule(int port, char* ip);
+
 	void Start(int port, char* ip);
 	void Execute(const mavlink_comms_command_t& CommsCommand_in,
 			mavlink_comms_report_t& CommsReport_out);
 	void Stop();
+
+	bool debugEnabled;
 
 private:
 	struct sockaddr_in inSocketId, outSocketId;//structures specifying the socket properties

@@ -142,8 +142,10 @@ void CommsModule::UpdateReport(mavlink_comms_report_t& CommsReport_out)
 
 void CommsModule::Debug()
 {
-	printf("[COMMS]bytes sent = %d \n", bytesSent);
-	printf("[COMMS]bytes received = %d \n", bytesReceived);
-
+	if (debugEnabled==true)
+	{
+		printf("[COMMS]bytes sent = %d \n", bytesSent);
+		printf("[COMMS]bytes received = %d \n", bytesReceived);
+	}
 }
 

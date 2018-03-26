@@ -2,6 +2,7 @@ import argparse
 import datetime
 import GroundStation as gs
 import time
+from GroundStation import RoverSettings
 
 def Main():
 
@@ -15,13 +16,14 @@ def Main():
     fileName = "mavLog/client_" + \
         str(now.month) + "_" + str(now.day) + "_" + \
         str(now.hour) + "_" + str(now.minute) + "_" + str(now.second) + ".log"
+        
+    roverSet = RoverSettings(power_per=90, duration_ms=100)
 
-    Ground = gs.GStation(args.port, args.ip, fileName)
+    Ground = gs.GStation(args.port, args.ip, fileName, roverSet)
     Ground.startGS()
     
     time.sleep(1) # Allow thread to close
     
-
 #     station = gs.GroundStation(args.ip, args.port, logFileName)
 #     station.StartStation()
 

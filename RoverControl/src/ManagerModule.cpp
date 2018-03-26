@@ -17,25 +17,31 @@
 #include <stdio.h>
 #include <string.h>
 
-/* FOR CONSTANT PWM */
-#define PWM_PERCENTAGE 70
-
 void ManagerModule::Start(int port, char* ip)
 {
+
+	debugEnabled = false;
+
 	// Enable the bcm library for pin access
 	bcm2835_init();
 
 	// Start the modules
+	Inert.debugEnabled = false;
 	Inert.Start();
 
+	Motor.debugEnabled = false;
 	Motor.Start();
 
+	Sonar.debugEnabled = false;
 	Sonar.Start();
 
+	Comms.debugEnabled = false;
 	Comms.Start(port, ip);
 
+	Telec.debugEnabled = false;
 	Telec.Start();
 
+	Telem.debugEnabled = false;
 	Telem.Start();
 
 	/* START THE ROVER MODULES TIMER */
@@ -54,12 +60,6 @@ void ManagerModule::Execute()
 
 		if (tenhzFlag)
 		{
-
-
-		}
-		if (onehzFlag)
-		{
-
 			// Check to see if any messages have been received and send messages
 			PrepComms(CommsCommand, TelemReport);
 			Comms.Execute(CommsCommand, CommsReport);
@@ -79,18 +79,18 @@ void ManagerModule::Execute()
 			PrepTelem(TelemCommand, MotorReport, SonarReport, InertReport);
 			Telem.Execute(TelemCommand, TelemReport);
 
+		}
+		if (onehzFlag)
+		{
+
 			Sonar.Execute(TelecReport.SonarCommand, SonarReport);
 			TelecReport.SonarCommand.newCommand = 0; // Set new command flag to 0
+
+			Debug(CommsReport, TelemReport, MotorReport, InertReport, SonarReport);
 		}
 
 		/* DELAY TO STOP FROM RUNNING TOO QUICKLY */
 		bcm2835_delay(10);
-
-		/* CHECK FOR COMMAND INPUT */
-		//GetCmdLineInput();
-		/* EXECUTE ANY COMMANDS */
-		//ExecuteCommand();
-		Debug();
 
 	}
 
@@ -198,8 +198,30 @@ void ManagerModule::PrepTelem(mavlink_telem_command_t& TelemCommand,
 	TelemCommand.MotorReport = MotorReport;
 	TelemCommand.SonarReport = SonarReport;
 }
-void ManagerModule::Debug()
+void ManagerModule::Debug(const mavlink_comms_report_t& CommsReport,
+		const mavlink_telem_report_t& TelemReport,
+		mavlink_motor_report_t& MotorReport,
+		mavlink_inert_report_t& InertReport,
+		mavlink_sonar_report_t& SonarReport)
 {
+	// Print out Comms Debug
+	if (debugEnabled==true)
+	{
+		std::cout << "[MOTOR]Mode: " << unsigned(MotorReport.mode) << std::endl;
+		std::cout << "[MOTOR]M1 Input: " << MotorReport.m1_pwmInput
+				<< std::endl;
+		std::cout << "[MOTOR]M2 Input: " << MotorReport.m2_pwmInput
+				<< std::endl;
+		std::cout << "[MOTOR]Mode time elapsed: "
+				<< MotorReport.modeElapsedTime_ms << std::endl;
+		std::cout << "[SONAR]Object detected flag = "
+				<< unsigned(SonarReport.objectDetected_flag) << std::endl;
+		std::cout << "[SONAR]Object Distance = "
+				<< SonarReport.objectDistance_cm << std::endl;
+		printf("[INERT]roll = %f, pitch = %f, yaw = %f \n",
+				InertReport.roll_deg, InertReport.pitch_deg,
+				InertReport.yaw_deg);
+	}
 
 }
 
