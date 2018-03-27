@@ -188,10 +188,8 @@ class IOHandle(object):
                     if sent == 0:
                         raise SendError
 
-                except Queue.Empty:
-                    pass
-                except SendError:
-                    print("Data not sent")                    
+                except (Queue.Empty, SendError):
+                    pass                 
                    
             # Check for any telemtry that has been received
             try:
@@ -202,11 +200,16 @@ class IOHandle(object):
 #                 mavmsg = self.mav.decode(buf)
                 mavmsg = (self.mav.parse_buffer(buf).pop())
 #                 print(mavmsg)
-                self.tmQueue.put(mavmsg)
+                # Check if queue already has something in it to ensure queue doesn't get full
+                if (self.tmQueue.qsize() >= 1):
+                    pass
+                else:
+                    self.tmQueue.put(mavmsg)
                   
-            except socket.error:
+            except (socket.error, Queue.Full) as e:
                 # print("No data received")
                 pass 
+            
         
             # Delay thread for 100ms
             time.sleep(0.1)
